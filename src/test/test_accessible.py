@@ -1,4 +1,4 @@
-from src.service.accessible_service import AccessibleService
+from service.accessible_service import AccessibleService
 
 
 class TestEs(object):

@@ -2,9 +2,9 @@ import time
 
 from bs4 import BeautifulSoup
 
-from src.service.snapshot_service import SnapshotService
-from src.service.webdriver_util import WebDriver
-import urllib.request
+from service.snapshot_service import SnapshotService
+from service.webdriver_util import WebDriver
+
 
 class TestWangdaitianyan(object):
     if __name__ == "__main__":

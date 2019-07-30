@@ -2,19 +2,19 @@
 
 from bs4 import BeautifulSoup
 
-from src.config.mylog import logger
-from src.dao.keyword_dao import KeywordDao
-from src.dao.monitor_website_dao import MonitorWebsiteDao
-from src.dao.monitor_weburl_dao import MonitorWeburlDao
-from src.model.monitor_website import MonitorWebsite
-from src.model.monitor_weburl import MonitorWeburl
-from src.service.accessible_service import AccessibleService
-from src.service.snapshot_service import SnapshotService
-from src.service.traffic_service import TrafficService
-from src.service.webdriver_util import WebDriver
-from src.service.weburl_service import UrlService
-import src.util.globalvar as gl
-from src.service.pic_recg_service import PicRecgService
+from config.mylog import logger
+from dao.keyword_dao import KeywordDao
+from dao.monitor_website_dao import MonitorWebsiteDao
+from dao.monitor_weburl_dao import MonitorWeburlDao
+from model.monitor_website import MonitorWebsite
+from model.monitor_weburl import MonitorWeburl
+from service.accessible_service import AccessibleService
+from service.snapshot_service import SnapshotService
+from service.traffic_service import TrafficService
+from service.webdriver_util import WebDriver
+from service.weburl_service import UrlService
+import util.globalvar as gl
+from service.pic_recg_service import PicRecgService
 
 
 class MonitorWebsiteService:

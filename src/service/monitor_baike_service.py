@@ -4,9 +4,9 @@ import urllib.request
 
 from bs4 import BeautifulSoup
 
-from src.service.senti_util import SentiUtil
-from src.service.webdriver_util import WebDriver
-from src.config.mylog import logger
+from service.senti_util import SentiUtil
+from service.webdriver_util import WebDriver
+from config.mylog import logger
 
 
 class MonitorBaikeService:

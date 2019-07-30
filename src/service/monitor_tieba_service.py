@@ -2,10 +2,10 @@ import urllib.request
 
 from bs4 import BeautifulSoup
 
-import src.util.globalvar as gl
-from src.service.senti_util import SentiUtil
-from src.service.webdriver_util import WebDriver
-from src.config.mylog import logger
+import util.globalvar as gl
+from service.senti_util import SentiUtil
+from service.webdriver_util import WebDriver
+from config.mylog import logger
 """
 贴吧监控服务
 """

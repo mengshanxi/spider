@@ -1,6 +1,6 @@
 # coding:utf-8
-from src.dao.mysql_util import MysqldbHelper
-from src.model.keyword import Keyword
+from dao.mysql_util import MysqldbHelper
+from model.keyword import Keyword
 
 
 class KeywordDao(object):

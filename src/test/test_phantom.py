@@ -3,7 +3,7 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from src.config.config_load import phantomjs_path
+from config.config_load import phantomjs_path
 import urllib.request
 import time
 

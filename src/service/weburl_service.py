@@ -3,9 +3,9 @@ import urllib.request
 
 from bs4 import BeautifulSoup
 
-from src.config.mylog import logger
-from src.dao.weburl_dao import WeburlDao
-from src.model.weburl import Weburl
+from config.mylog import logger
+from dao.weburl_dao import WeburlDao
+from model.weburl import Weburl
 
 
 class UrlService:
@@ -76,11 +76,11 @@ class UrlService:
             for k in soup.find_all('img'):
                 src = str(k.get('src'))
                 logger.info("origin src: %s", src)
-                if src.endswith(".jpg") or src.endswith(".jpeg") or src.endswith(".bmp") or src.endswith(
+                if endswith(".jpg") or endswith(".jpeg") or endswith(".bmp") or endswith(
                         ".png"):
-                    if src.startswith('http://') or src.startswith('https://'):
+                    if startswith('http://') or startswith('https://'):
                         pass
-                    elif src.startswith('/'):
+                    elif startswith('/'):
                         src = website["domainName"] + src
                     else:
                         src = website["domainName"] + "/" + src

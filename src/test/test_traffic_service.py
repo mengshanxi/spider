@@ -1,4 +1,4 @@
-from src.service.traffic_service import TrafficService
+from service.traffic_service import TrafficService
 
 
 class TestWebsite(object):

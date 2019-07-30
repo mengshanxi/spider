@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-from src.dao.inspect_task_dao import InspectTaskDao
+from dao.inspect_task_dao import InspectTaskDao
 
 
 class InspectTaskService:

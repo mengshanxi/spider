@@ -1,6 +1,6 @@
 # coding:utf-8
-from src.dao.mysql_util import MysqldbHelper
-from src.config.mylog import logger
+from dao.mysql_util import MysqldbHelper
+from config.mylog import logger
 
 class MonitorWebsiteDao(object):
 

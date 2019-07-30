@@ -1,5 +1,5 @@
 # coding:utf-8
-from src.dao.mysql_util import MysqldbHelper
+from dao.mysql_util import MysqldbHelper
 
 
 class BcPersonDao(object):

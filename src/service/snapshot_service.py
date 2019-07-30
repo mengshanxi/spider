@@ -2,8 +2,8 @@ import time
 
 from PIL import Image
 
-from src.config.config_load import base_filepath
-from src.config.mylog import logger
+from config.config_load import base_filepath
+from config.mylog import logger
 from urllib import request
 
 

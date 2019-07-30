@@ -1,9 +1,9 @@
 # coding:utf-8
 import pymysql  # 导入 pymysql
-from src.config.config_load import host
-from src.config.config_load import username
-from src.config.config_load import password
-from src.config.config_load import database
+from config.config_load import host
+from config.config_load import username
+from config.config_load import password
+from config.config_load import database
 
 
 class MysqldbHelper(object):

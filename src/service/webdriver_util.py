@@ -3,9 +3,9 @@
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-from src.config.config_load import chromedriver_path
-from src.config.config_load import phantomjs_path
-from src.dao.third_config_dao import ThirdConfigDao
+from config.config_load import chromedriver_path
+from config.config_load import phantomjs_path
+from dao.third_config_dao import ThirdConfigDao
 
 
 class WebDriver:

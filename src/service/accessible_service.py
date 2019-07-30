@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from urllib.request import urlopen
-from src.config.mylog import logger
+from config.mylog import logger
 
 
 class AccessibleService:

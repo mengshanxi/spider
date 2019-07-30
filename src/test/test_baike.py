@@ -3,8 +3,8 @@ import urllib.request
 
 from bs4 import BeautifulSoup
 
-from src.service.snapshot_service import SnapshotService
-from src.service.webdriver_util import WebDriver
+from service.snapshot_service import SnapshotService
+from service.webdriver_util import WebDriver
 
 
 class TestWangdaitianyan(object):

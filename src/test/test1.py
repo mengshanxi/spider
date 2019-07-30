@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from src.dao.mysql_util import MysqldbHelper
+from dao.mysql_util import MysqldbHelper
 
 aaa = "32,33";
 aa = str.split(',')

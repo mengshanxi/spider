@@ -2,7 +2,7 @@
 # encoding:utf-8
 
 import os
-from src.config.config_load import base_filepath
+from config.config_load import base_filepath
 
 
 class FileUtil:

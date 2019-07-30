@@ -5,12 +5,12 @@ from bs4 import BeautifulSoup
 from flask import Flask
 from flask import request
 
-from src.config.mylog import logger
-from src.manager.ims_api import ImsApi
-from src.manager.spider_manager import SpiderManager
-from src.service.webdriver_util import WebDriver
+from config.mylog import logger
+from manager.ims_api import ImsApi
+from manager.spider_manager import SpiderManager
+from service.webdriver_util import WebDriver
 import threading
-import src.util.globalvar as gl
+import util.globalvar as gl
 
 app = Flask(__name__)
 

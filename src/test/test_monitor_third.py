@@ -1,4 +1,4 @@
-from src.service.monitor_senti_service import MonitorSentiService
+from service.monitor_senti_service import MonitorSentiService
 
 
 class TestEs(object):

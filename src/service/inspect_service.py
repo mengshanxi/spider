@@ -1,9 +1,9 @@
 # -*- coding:utf-8 -*-
 import json
 
-from src.dao.keyword_dao import KeywordDao
-from src.manager.ims_api import ImsApi
-from src.config.mylog import logger
+from dao.keyword_dao import KeywordDao
+from manager.ims_api import ImsApi
+from config.mylog import logger
 
 
 class InspectService:

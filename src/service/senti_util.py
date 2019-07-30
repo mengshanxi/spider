@@ -1,9 +1,9 @@
-from src.config.mylog import logger
-from src.dao.keyword_dao import KeywordDao
-from src.dao.monitor_third_dao import MonitorThirdDao
-from src.model.monitor_third import MonitorThird
-from src.service.snapshot_service import SnapshotService
-from src.service.webdriver_util import WebDriver
+from config.mylog import logger
+from dao.keyword_dao import KeywordDao
+from dao.monitor_third_dao import MonitorThirdDao
+from model.monitor_third import MonitorThird
+from service.snapshot_service import SnapshotService
+from service.webdriver_util import WebDriver
 
 """
 舆情处理工具

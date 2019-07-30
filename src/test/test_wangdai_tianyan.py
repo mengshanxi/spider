@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-from src.config.config_load import phantomjs_path
+from config.config_load import phantomjs_path
 
 
 class TestWangdaitianyan(object):

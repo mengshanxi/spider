@@ -1,13 +1,14 @@
 import re
+import time
+
 from PIL import Image
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
-import time
-from src.config.config_load import phantomjs_path
-from src.dao.third_config_dao import ThirdConfigDao
-from src.service.monitor_bc_service import MonitorBcService
-from selenium.webdriver.common.action_chains import ActionChains
+
+from config.config_load import phantomjs_path
+from dao.third_config_dao import ThirdConfigDao
+from service.monitor_bc_service import MonitorBcService
 
 
 class TestQichachaService(object):

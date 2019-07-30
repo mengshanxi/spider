@@ -1,7 +1,3 @@
-from src.service.snapshot_service import SnapshotService
-from src.service.webdriver_util import WebDriver
-from src.config.mylog import logger
-
 class Test2(object):
     if __name__ == "__main__":
         """

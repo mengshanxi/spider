@@ -3,7 +3,7 @@ import urllib.request
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 
-from src.config.config_load import phantomjs_path
+from config.config_load import phantomjs_path
 
 
 class TestQichachaService(object):

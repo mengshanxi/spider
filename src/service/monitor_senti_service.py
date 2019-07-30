@@ -1,13 +1,13 @@
-import src.util.globalvar as gl
-from src.service.inspect_task_service import InspectTaskService
-from src.service.monitor_baidu_service import MonitorBaiduService
-from src.service.monitor_baike_service import MonitorBaikeService
-from src.service.monitor_bus_service import MonitorBusService
-from src.service.monitor_chinaft_service import MonitorChinaftService
-from src.service.monitor_p2peye_service import MonitorP2peyeService
-from src.service.monitor_tieba_service import MonitorTiebaService
-from src.service.monitor_wdzj_service import MonitorWdzjService
-from src.config.mylog import logger
+import util.globalvar as gl
+from service.inspect_task_service import InspectTaskService
+from service.monitor_baidu_service import MonitorBaiduService
+from service.monitor_baike_service import MonitorBaikeService
+from service.monitor_bus_service import MonitorBusService
+from service.monitor_chinaft_service import MonitorChinaftService
+from service.monitor_p2peye_service import MonitorP2peyeService
+from service.monitor_tieba_service import MonitorTiebaService
+from service.monitor_wdzj_service import MonitorWdzjService
+from config.mylog import logger
 
 """
 三方监控服务

@@ -1,4 +1,4 @@
-from src.search.es_util import EsUtil
+from search.es_util import EsUtil
 
 
 class TestEs(object):

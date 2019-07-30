@@ -1,6 +1,6 @@
 # coding:utf-8
-from src.dao.mysql_util import MysqldbHelper
-from src.model.website import Website
+from dao.mysql_util import MysqldbHelper
+from model.website import Website
 
 
 class WebsiteDao(object):

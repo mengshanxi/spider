@@ -1,6 +1,6 @@
 # coding:utf-8
-from src.model.weburl import Weburl
-from src.dao.mysql_util import MysqldbHelper
+from model.weburl import Weburl
+from dao.mysql_util import MysqldbHelper
 
 
 class WeburlDao(object):

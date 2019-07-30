@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import urllib.request
 import re
-from src.model.traffic import Traffic
-from src.config.mylog import logger
+from model.traffic import Traffic
+from config.mylog import logger
 
 '''
 help:

@@ -5,19 +5,19 @@ import urllib.request
 from PIL import Image
 from bs4 import BeautifulSoup
 
-import src.util.globalvar as gl
-from src.config.config_load import base_filepath
-from src.config.mylog import logger
-from src.dao.bc_benefit_dao import BcBenifitDao
-from src.dao.bc_person_dao import BcPersonDao
-from src.dao.monitor_bc_dao import MonitorBcDao
-from src.dao.website_dao import WebsiteDao
-from src.model.bc_benefit import BcBenefit
-from src.model.bc_person import BcPerson
-from src.model.monitor_bc import MonitorBc
-from src.service.senti_util import SentiUtil
-from src.service.snapshot_service import SnapshotService
-from src.service.webdriver_util import WebDriver
+import util.globalvar as gl
+from config.config_load import base_filepath
+from config.mylog import logger
+from dao.bc_benefit_dao import BcBenifitDao
+from dao.bc_person_dao import BcPersonDao
+from dao.monitor_bc_dao import MonitorBcDao
+from dao.website_dao import WebsiteDao
+from model.bc_benefit import BcBenefit
+from model.bc_person import BcPerson
+from model.monitor_bc import MonitorBc
+from service.senti_util import SentiUtil
+from service.snapshot_service import SnapshotService
+from service.webdriver_util import WebDriver
 
 """
 企查查监控服务

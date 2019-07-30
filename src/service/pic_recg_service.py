@@ -1,7 +1,7 @@
 import pytesseract
 from PIL import Image
 
-from src.config.mylog import logger
+from config.mylog import logger
 
 
 class PicRecgService:

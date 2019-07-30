@@ -1,9 +1,9 @@
-import src.util.globalvar as gl
-from src.config.mylog import logger
-from src.service.inspect_service import InspectService
-from src.service.monitor_bc_service import MonitorBcService
-from src.service.monitor_senti_service import MonitorSentiService
-from src.service.monitor_website_service import MonitorWebsiteService
+import util.globalvar as gl
+from config.mylog import logger
+from service.inspect_service import InspectService
+from service.monitor_bc_service import MonitorBcService
+from service.monitor_senti_service import MonitorSentiService
+from service.monitor_website_service import MonitorWebsiteService
 
 
 class SpiderManager:

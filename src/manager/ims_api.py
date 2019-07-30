@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 import urllib.request
-from src.config.mylog import logger
-from src.config.config_load import ims_rest_base
+from config.mylog import logger
+from config.config_load import ims_rest_base
 
 
 class ImsApi:

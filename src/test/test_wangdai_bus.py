@@ -1,10 +1,11 @@
-from bs4 import BeautifulSoup
-from selenium.webdriver.common.keys import Keys
+import time
 
-from src.service.snapshot_service import SnapshotService
-from src.service.webdriver_util import WebDriver
-from src.config.mylog import logger
-import  time
+from bs4 import BeautifulSoup
+
+from config.mylog import logger
+from service.snapshot_service import SnapshotService
+from service.webdriver_util import WebDriver
+
 
 class TestWangdaitianyan(object):
     if __name__ == "__main__":
