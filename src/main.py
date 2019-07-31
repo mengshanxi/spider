@@ -19,10 +19,8 @@ app = Flask(__name__)
 def test():
     driver = WebDriver.get_phantomJS()
     driver.get("http://baidu.com")
-    source = driver.page_source
-    driver.quit()
-    print(source)
-    return str(driver.title)
+    title = driver.title
+    return str(title)
 
 
 @app.route('/api/v1/verify_cookie', methods=['POST'])
@@ -46,15 +44,12 @@ def verify_cookie():
 
                 soup = BeautifulSoup(source, 'html.parser')
                 title = soup.find(name="title").get_text()
-                driver.quit()
                 if (str(title) == "会员登录 - 企查查"):
                     return "false"
                 else:
                     return "true"
-            driver.quit()
 
         else:
-            driver.quit()
             return "false"
 
 
@@ -127,5 +122,5 @@ def start_task():
 """
 
 if __name__ == '__main__':
-    gl.init()
-    app.run(debug=True)
+    gl._init()
+    app.run(debug=True, host='0.0.0.0')

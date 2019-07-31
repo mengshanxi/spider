@@ -17,5 +17,3 @@ class TestWangdaitianyan(object):
         time.sleep(5)
         source = driver.page_source
         soup = BeautifulSoup(source, 'html.parser')
-        # 关闭浏览器
-        driver.quit()

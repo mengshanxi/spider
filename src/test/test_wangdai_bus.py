@@ -38,8 +38,6 @@ class TestWangdaitianyan(object):
                 href = new.find_all('a')[0].get("href")
                 logger.info("http://www.wangdaibus.com/" + href)
                 logger.info(new.get_text())
-        # 关闭浏览器
-        driver.quit()
         '''
         forum.php?mod=viewthread&tid=181410&highlight=%BE%A9%B6%AB
 

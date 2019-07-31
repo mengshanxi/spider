@@ -6,6 +6,7 @@ import util.globalvar as gl
 from service.senti_util import SentiUtil
 from service.webdriver_util import WebDriver
 from config.mylog import logger
+
 """
 贴吧监控服务
 """
@@ -14,7 +15,7 @@ from config.mylog import logger
 class MonitorTiebaService:
 
     @staticmethod
-    def monitor_tieba(website_name,merchant_name, batch_num):
+    def monitor_tieba(website_name, merchant_name, batch_num):
         """
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('--headless')
@@ -42,9 +43,6 @@ class MonitorTiebaService:
                                                       "http://tieba.baidu.com" + href, batch_num)
             else:
                 logger.info("百度贴吧没有搜索到数据: %s", merchant_name)
-            driver.quit()
         except Exception as e:
             logger.error(e)
-            driver.quit()
             return
-

@@ -24,7 +24,7 @@ class MysqldbHelper(object):
                                        db=self.database, charset='utf8')
             # 所有的查询，都在连接 con 的一个模块 cursor 上面运行的
             self.cur = self.con.cursor()
-        except:
+        except Exception as e:
             raise ("DataBase connect error,please check the db config.")
 
     def close(self):

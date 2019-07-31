@@ -34,5 +34,3 @@ class TestWangdaitianyan(object):
                 href = new.find_all('a')[1].get("href")
                 print("http://www.chinaft.com.cn"+href)
                 print(new.find_all('a')[1].get_text())
-        # 关闭浏览器
-        driver.quit()

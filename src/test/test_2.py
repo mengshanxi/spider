@@ -8,7 +8,6 @@ class Test2(object):
             logger.info(e)
             pass
         SnapshotService.create_snapshot(driver)
-        driver.quit()
         """
         a= "经营风险 0"
         print(a[-1:])

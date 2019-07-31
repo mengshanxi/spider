@@ -43,8 +43,6 @@ class MonitorP2peyeService:
                                                       batch_num)
             else:
                 logger.info("网贷天眼没有搜索到数据: %s", merchant_name)
-            driver.quit()
         except Exception as e:
-            driver.quit()
             logger.error(e)
             return

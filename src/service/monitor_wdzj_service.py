@@ -46,8 +46,6 @@ class MonitorWdzjService:
                                                       batch_num)
             else:
                 logger.info("网贷之家没有搜索到数据: %s", merchant_name)
-            # 关闭浏览器
-            driver.quit()
         except Exception as e:
             logger.error(e)
             driver.quit()

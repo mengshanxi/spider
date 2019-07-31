@@ -34,9 +34,7 @@ class MonitorBaikeService:
                 senti_util.snapshot_home("百度百科", merchant_name, url,
                                          batch_num, driver)
                 logger.info("百度百科没有搜索到数据: %s", merchant_name)
-            driver.quit()
 
         except Exception as e:
             logger.error(e)
-            driver.quit()
             return

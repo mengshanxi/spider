@@ -44,8 +44,6 @@ class MonitorBaiduService:
                 if title.find(website_name) != -1:
                     senti_util.senti_process_text("百度搜索", merchant_name, title, str(a_click.get("href")),
                                                   batch_num)
-            driver.quit()
         except Exception as e:
             logger.error(e)
-            driver.quit()
             return

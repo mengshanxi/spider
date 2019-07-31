@@ -49,10 +49,8 @@ class MonitorBcService:
             website_dao = WebsiteDao()
             website = website_dao.getwebsite_by_merchant(merchant_name)
             senti_util.senti_process_text("企查查", website.website_name, source, "https://www.qichacha.com" + url)
-            driver.quit()
         except Exception as e:
             logger.error(e)
-            driver.quit()
 
         """
         es_util = EsUtil()
@@ -88,7 +86,6 @@ class MonitorBcService:
             driver.get(rest_url)
         except Exception as e:
             logger.info(e)
-            driver.quit()
             return
 
         snapshot = SnapshotService.create_snapshot(driver)
@@ -265,7 +262,6 @@ class MonitorBcService:
             driver.get(url + "#fengxian")
         except Exception as e:
             logger.info(e)
-            driver.quit()
             return
         snapshot = SnapshotService.create_snapshot(driver)
 
@@ -291,7 +287,6 @@ class MonitorBcService:
             monitor_bc.kinds = '严重违法'
             monitor_bc.level = 0
         monitor_bc_dao.add(monitor_bc)
-        driver.quit()
 
     @staticmethod
     def get_merchant_url(batch_num, merchant_name):
@@ -302,7 +297,6 @@ class MonitorBcService:
             driver.get(url)
         except Exception as e:
             logger.error(e)
-            driver.quit()
             return None
         source = driver.page_source
         soup = BeautifulSoup(source, 'html.parser')
@@ -310,7 +304,6 @@ class MonitorBcService:
         title = soup.find(name="title").get_text()
         logger.info("qichacha res title :%s", str(title))
         if (str(title) == "会员登录 - 企查查"):
-            driver.quit()
             return None
         else:
             pass
@@ -340,7 +333,6 @@ class MonitorBcService:
                     driver.quit()
                     return None
                 else:
-                    driver.quit()
                     return href.strip()
             else:
                 snapshot = SnapshotService.create_snapshot(driver)
@@ -354,10 +346,8 @@ class MonitorBcService:
                 monitor_bc.kinds = '企业是否可查'
                 monitor_bc.level = 0
                 monitor_bc_dao.add(monitor_bc)
-                driver.quit()
                 return None
 
         except Exception as e:
             logger.error(e)
-            driver.quit()
             return None

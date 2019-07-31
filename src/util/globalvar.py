@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-def init():
+
+def _init():
     global _global_dict
     _global_dict = {}
 

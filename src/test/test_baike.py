@@ -33,5 +33,3 @@ class TestWangdaitianyan(object):
         else:
             #print("百科没有搜索到词条:%s" % "猫小贷")
             pass
-        # 关闭浏览器
-        driver.quit()

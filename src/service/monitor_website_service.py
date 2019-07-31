@@ -66,7 +66,6 @@ class MonitorWebsiteService:
                         monitor_website.pageview = '-'
                         monitor_website.snapshot = SnapshotService.simulation_404()
                         website_dao.add(monitor_website, batch_num)
-                    driver.quit()
                 else:
                     logger.info("domain_name: %s", domain_name)
                     monitor_website.access = '异常'
@@ -77,10 +76,8 @@ class MonitorWebsiteService:
                     monitor_website.snapshot = SnapshotService.simulation_404()
                     website_dao.add(monitor_website, batch_num)
                     logger.info("website is not available : %s return!", domain_name)
-                    driver.quit()
                     return
             except Exception as e:
-                driver.quit()
                 logger.info("check whether website available : %s ,there is exception", domain_name)
                 logger.info(e)
                 return

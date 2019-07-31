@@ -33,8 +33,6 @@ class TestWangdaitianyan(object):
             a_click = result_table.find("a");
             print(a_click.get_text())  # 标题
             print(str(a_click.get("href")))  # 链接
-        # 关闭浏览器
-        driver.quit()
         '''
         京东、盒马鲜生入驻重庆财富购物中心_凤凰资讯
         http://www.baidu.com/link?url=CV-k6a_vPNU_Y4uczGPGvuldDzwkbK2UaDoCVavtVp88Iete-1kkBj-6SC29fMZmygPNUz0hduJShHwPVPyJDa

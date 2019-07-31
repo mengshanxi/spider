@@ -76,11 +76,11 @@ class UrlService:
             for k in soup.find_all('img'):
                 src = str(k.get('src'))
                 logger.info("origin src: %s", src)
-                if endswith(".jpg") or endswith(".jpeg") or endswith(".bmp") or endswith(
+                if src.endswith(".jpg") or src.endswith(".jpeg") or src.endswith(".bmp") or src.endswith(
                         ".png"):
-                    if startswith('http://') or startswith('https://'):
+                    if src.startswith('http://') or src.startswith('https://'):
                         pass
-                    elif startswith('/'):
+                    elif src.startswith('/'):
                         src = website["domainName"] + src
                     else:
                         src = website["domainName"] + "/" + src

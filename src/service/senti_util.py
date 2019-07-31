@@ -24,7 +24,6 @@ class SentiUtil:
 
         driver = WebDriver.get_phantomJS()
         keyword_dao = KeywordDao()
-        keywords = keyword_dao.get_keywords()
         monitor_third_dao = MonitorThirdDao()
 
         #  截图
@@ -32,7 +31,7 @@ class SentiUtil:
             driver.get(href)
             snapshot = SnapshotService.create_snapshot(driver)
             is_normal = "正常"
-
+            keywords = keyword_dao.get_keywords()
             for keyword in keywords:
                 index = text.find(keyword.name)
                 monitor_third = MonitorThird()
@@ -59,11 +58,10 @@ class SentiUtil:
                     monitor_third_dao.add(monitor_third)
                 pass
 
-            # 关闭浏览器
-            driver.quit()
+        except ConnectionError as conn_error:
+            logger.error(conn_error)
         except Exception as e:
             logger.error(e)
-            driver.quit()
             return
 
     @staticmethod
@@ -84,9 +82,6 @@ class SentiUtil:
             monitor_third.is_normal = is_normal
             monitor_third.snapshot = snapshot
             monitor_third_dao.add(monitor_third)
-            # 关闭浏览器
-            driver.quit()
         except Exception as e:
             logger.error(e)
-            driver.quit()
             return

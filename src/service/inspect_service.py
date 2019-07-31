@@ -13,7 +13,7 @@ class InspectService:
         try:
             ims_api = ImsApi()
             logger.info("get websites by ims api,taskId:%s", str(task_id))
-            json_data = ims_api.get_websites(task_id)
+            json_data = ims_api.get_websites(task_id).decode("utf-8")
             websites = json.loads(json_data)
             return websites["websiteList"]
         except Exception as e:

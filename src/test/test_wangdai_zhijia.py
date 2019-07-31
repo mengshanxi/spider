@@ -33,5 +33,3 @@ class TestWangdaitianyan(object):
                 href = new.find_all('a')[0].get("href")
                 print(href[2:])
                 #print(new.get_text())
-        # 关闭浏览器
-        driver.quit()

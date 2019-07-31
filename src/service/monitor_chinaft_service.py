@@ -43,7 +43,5 @@ class MonitorChinaftService:
                                                       "http://www.chinaft.com.cn" + href, batch_num)
             else:
                 logger.info("交易中国没有搜索到数据: %s", merchant_name)
-            driver.quit()
         except Exception as e:
             logger.error(e)
-            driver.quit()

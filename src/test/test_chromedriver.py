@@ -67,7 +67,6 @@ class TestQichachaService(object):
     time.sleep(3)
     driver.save_screenshot('D:/6.png')
 
-    driver.quit()
 
     # desired_capabilities = DesiredCapabilities.PHANTOMJS.copy()
     # headers = {
@@ -79,4 +78,3 @@ class TestQichachaService(object):
     #                              service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'])
     # driver.get("https://www.jianshu.com/p/7ed519854be7")
     # driver.save_screenshot("D:/2.png")
-    # driver.quit()

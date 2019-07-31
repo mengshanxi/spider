@@ -46,8 +46,6 @@ class MonitorBusService:
                                                       batch_num)
             else:
                 logger.info("网贷巴士没有搜索到数据: %s", merchant_name)
-            driver.quit()
         except Exception as e:
             logger.error(e)
-            driver.quit()
             return
