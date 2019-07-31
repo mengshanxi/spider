@@ -1,11 +1,23 @@
 # coding:utf-8
-import pymysql  # 导入 pymysql
+import pymysql
 from config.config_load import host
 from config.config_load import username
 from config.config_load import password
 from config.config_load import database
 
 
+def singleton(cls):
+    _instance = {}
+
+    def inner():
+        if cls not in _instance:
+            _instance[cls] = cls()
+        return _instance[cls]
+
+    return inner
+
+
+@singleton
 class MysqldbHelper(object):
     """
     操作mysql数据库，基本方法
@@ -35,40 +47,6 @@ class MysqldbHelper(object):
             self.con.close()
         else:
             raise ("DataBase doesn't connect,close connectiong error;please check the db config.")
-
-    def getVersion(self):
-        """
-        获取数据库的版本号
-        """
-        self.cur.execute("SELECT VERSION()")
-        return self.getOneData()
-
-    def getOneData(self):
-        # 取得上个查询的结果，是单个结果
-        data = self.cur.fetchone()
-        return data
-
-    def creatTable(self, tablename, attrdict, constraint):
-        """
-        创建数据库表
-            args：
-                tablename  ：表名字
-                attrdict   ：属性键值对,{'book_name':'varchar(200) NOT NULL'...}
-                constraint ：主外键约束,PRIMARY KEY(`id`)
-        """
-        if self.isExistTable(tablename):
-            return
-        sql = ''
-        sql_mid = '`id` bigint(11) NOT NULL AUTO_INCREMENT,'
-        for attr, value in attrdict.items():
-            sql_mid = sql_mid + '`' + attr + '`' + ' ' + value + ','
-        sql = sql + 'CREATE TABLE IF NOT EXISTS %s (' % tablename
-        sql = sql + sql_mid
-        sql = sql + constraint
-        sql = sql + ') ENGINE=InnoDB DEFAULT CHARSET=utf8'
-        print
-        'creatTable:' + sql
-        self.executeCommit(sql)
 
     def executeSql(self, sql=''):
         """
@@ -270,24 +248,6 @@ class MysqldbHelper(object):
         print
         sql
         return self.executeCommit(sql)
-
-    def dropTable(self, tablename):
-        """
-        删除数据库表
-            args：
-                tablename  ：表名字
-        """
-        sql = "DROP TABLE  %s" % tablename
-        self.executeCommit(sql)
-
-    def deleteTable(self, tablename):
-        """
-        清空数据库表
-            args：
-                tablename  ：表名字
-        """
-        sql = "DELETE FROM %s" % tablename
-        self.executeCommit(sql)
 
 
 if __name__ == "__main__":
