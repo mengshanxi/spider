@@ -17,7 +17,7 @@ class WebDriver:
         # driver = webdriver.PhantomJS(executable_path=phantomjs_path, desired_capabilities=dcap,
         #                              service_args=['--ignore-ssl-errors=true'])
         driver = webdriver.Remote(command_executor='http://phantomjs:8910',
-                                  desired_capabilities=DesiredCapabilities.PHANTOMJS)
+                                  desired_capabilities=dcap)
 
         driver.set_page_load_timeout(10)
         driver.set_script_timeout(10)
