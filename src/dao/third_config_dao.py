@@ -1,15 +1,14 @@
 # coding:utf-8
-from dao.mysql_util import MysqldbHelper
+from dao.db import session
+from model.models import ThirdConfig
 
 
 class ThirdConfigDao(object):
 
     @staticmethod
-    def get(name):
-        mysql = MysqldbHelper()
-        sql = "select cookie from third_config where name='" + name + "'"
-        rtn = mysql.executeSql(sql)
-        if rtn.__len__() == 1:
-            return rtn[0][0]
+    def get_by_name(name):
+        third_config = session.query(ThirdConfig).filter(ThirdConfig.name == name).all()
+        if len(third_config):
+            return third_config[0].cookie
         else:
             return "nocookie"

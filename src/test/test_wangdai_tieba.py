@@ -1,10 +1,3 @@
-import time
-from config.mylog import logger
-from bs4 import BeautifulSoup
-from service.senti_util import SentiUtil
-from service.snapshot_service import SnapshotService
-from service.webdriver_util import WebDriver
-import urllib.request
 from service.monitor_tieba_service import MonitorTiebaService
 
 

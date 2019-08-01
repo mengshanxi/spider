@@ -2,10 +2,9 @@ import urllib.request
 
 from bs4 import BeautifulSoup
 
-import util.globalvar as gl
+from config.mylog import logger
 from service.senti_util import SentiUtil
 from service.webdriver_util import WebDriver
-from config.mylog import logger
 
 """
 贴吧监控服务
@@ -34,8 +33,6 @@ class MonitorTiebaService:
             news = soup.find_all("div", attrs={'class': 'threadlist_title pull_left j_th_tit '})
             if news.__len__() > 0:
                 for new in news:
-                    if not gl.check_by_batch_num(batch_num):
-                        break
                     href = new.find_all('a')[0].get("href")
                     content = new.find_all('a')[0].get_text()
                     if content.find(website_name) != -1:

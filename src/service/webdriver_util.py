@@ -28,7 +28,7 @@ class WebDriver:
     def get_phantomJS_withcookie():
         desired_capabilities = DesiredCapabilities.PHANTOMJS.copy()
         third_config_dao = ThirdConfigDao()
-        cookie = third_config_dao.get("qichacha")
+        cookie = third_config_dao.get_by_name("qichacha")
         headers = {
             'cookie': cookie}
         for key, value in headers.items():
@@ -45,11 +45,14 @@ class WebDriver:
 
     @staticmethod
     def get_chrome():
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument('--headless')
-        driver = webdriver.Chrome(chrome_options=chrome_options,
-                                  executable_path=chromedriver_path)
-        driver.set_page_load_timeout(10)
-        driver.set_script_timeout(10)
-        driver.maximize_window()
+        # chrome_options = webdriver.ChromeOptions()
+        # chrome_options.add_argument('--headless')
+        # driver = webdriver.Chrome(chrome_options=chrome_options,
+        #                           executable_path=chromedriver_path)
+        # driver.set_page_load_timeout(10)
+        # driver.set_script_timeout(10)
+        # driver.maximize_window()
+        driver = webdriver.Remote(
+            command_executor='http://phantomjs:8910',
+            desired_capabilities=DesiredCapabilities.FIREFOX)
         return driver

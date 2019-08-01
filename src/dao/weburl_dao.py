@@ -1,31 +1,20 @@
 # coding:utf-8
-from model.weburl import Weburl
+from dao.db import session
 from dao.mysql_util import MysqldbHelper
+from model.models import Weburl
 
 
 class WeburlDao(object):
 
     @staticmethod
     def get_all():
-        mysql = MysqldbHelper()
-        sql = "select id,url from weburl"
-        rtn = mysql.executeSql(sql)
-        weburls = []
-        for data in rtn:
-            weburl = Weburl()
-            weburl.id = data[0]
-            weburl.url = data[1]
-            weburls.append(data)
-        return weburls
+        weburl = session.query(Weburl).all()
+        return weburl
 
     @staticmethod
     def add(weburl):
-        mysql = MysqldbHelper()
-        records = mysql.executeSql("select count(id) as count from weburl where url='" + str(weburl.url).strip() + "'")
-        if records[0][0] == 0:
-            sql = "insert into weburl(url,title,website_name)values('" + str(weburl.url).strip() + "','" + str(
-                weburl.title).strip() + "','" + str(weburl.website_name).strip() + "')"
+        exist_weburl = session.query(Weburl).filter(Weburl.url == weburl.url).all()
+        if len(exist_weburl):
+            pass
         else:
-            sql = "update  weburl set title='" + str(weburl.title).strip() + "', website_name='" + str(
-                weburl.website_name).strip() + "' where url = '" + weburl.url + "'"
-        mysql.executeCommit(sql)
+            session.add(weburl)

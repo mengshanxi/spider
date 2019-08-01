@@ -1,18 +1,18 @@
 # coding:utf-8
-import urllib.request
+import threading
 
-from bs4 import BeautifulSoup
 from flask import Flask
 from flask import request
 
 from config.mylog import logger
-from manager.ims_api import ImsApi
-from manager.spider_manager import SpiderManager
+from manager.gather_center import GatherCenter
+from service.monitor_bc_service import MonitorBcService
 from service.webdriver_util import WebDriver
-import threading
-import util.globalvar as gl
+from service.weburl_service import WeburlService
 
 app = Flask(__name__)
+global status
+status = True
 
 
 @app.route('/api/v1/test/chrome', methods=['GET'])
@@ -25,32 +25,8 @@ def test():
 
 @app.route('/api/v1/verify_cookie', methods=['POST'])
 def verify_cookie():
-    if request.method == 'POST':
-        driver = WebDriver.get_phantomJS_withcookie()
-        url = "https://www.qichacha.com/search?key=" + urllib.parse.quote("天津融宝支付网络有限公司")
-        driver.get(url)
-        source = driver.page_source
-        soup = BeautifulSoup(source, 'html.parser')
-        tbodys = soup.find_all('tbody')
-        trs = tbodys[0].find_all('tr')
-        tds = trs[0].find_all('td')
-        a = tds[1].find_all('a')
-        name = a[0].get_text().strip()
-        if name == "天津融宝支付网络有限公司".strip():
-            href = a[0].get('href')
-            if href != 'NONE':
-                driver.get("https://www.qichacha.com" + href)
-                source = driver.page_source
-
-                soup = BeautifulSoup(source, 'html.parser')
-                title = soup.find(name="title").get_text()
-                if (str(title) == "会员登录 - 企查查"):
-                    return "false"
-                else:
-                    return "true"
-
-        else:
-            return "false"
+    monitor_bc_service = MonitorBcService()
+    return monitor_bc_service.check_cookie()
 
 
 '''
@@ -60,67 +36,46 @@ def verify_cookie():
 
 @app.route('/api/v1/spider/execute', methods=['POST'])
 def execute():
+    global status
+    status = True
     try:
         task_id = request.form['taskId']
         batch_num = request.form['batchNum']
         logger.info("inspect, taskId: %s" % str(task_id))
-
-        gl.set_value(str(task_id), batch_num)
-
         t = threading.Thread(target=inspect, args=(task_id, batch_num,))
         t.setDaemon(True)
         t.start()
-
         return 'OK'
     except Exception as e:
         logger.error(e)
 
 
 def inspect(task_id, batch_num):
-    spider_manager = SpiderManager()
-    if gl.check_by_task(task_id):
-        spider_manager.inspect(task_id, batch_num)
-        logger.info("inspect done!  taskId:%s" % str(task_id))
-
-    if gl.check_by_task(task_id):
-        ims_interface = ImsApi()
-        ims_interface.create_report(task_id, batch_num)
-        logger.info("trigger ims to create port!  taskId: %s,batch_num: %s" % (str(task_id), str(batch_num)))
+    spider_manager = GatherCenter()
+    while status:
+        logger.info("gather start!  taskId:%s" % str(task_id))
+        spider_manager.gather(task_id, batch_num)
+        logger.info("gather end!  taskId:%s" % str(task_id))
 
 
-@app.route('/api/v1/spider/stop', methods=['POST'])
-def stop():
+@app.route('/api/v1/spider/gather_urls', methods=['POST'])
+def gather_urls():
     try:
         task_id = request.form['taskId']
-        if gl.get_value(task_id) is not None:
-            batch_num = gl.get_value(task_id)
-            gl.remove(task_id)
-            return batch_num
+        weburl_service = WeburlService()
+        weburl_service.gather_urls_by_task(task_id)
         return 'KeyError'
     except KeyError as e:
         print(e)
         return 'KeyError'
 
 
-"""
-def execute_task():
-    logger.info("inspect auto...")
-    spider_manager = SpiderManager()
-    spider_manager.inspect_all_auto()
-    logger.info("inspect auto done!")
+@app.route('/api/v1/spider/stop', methods=['POST'])
+def stop():
+    global status
+    status = False
+    return 'SUCCESS'
 
-
-@app.route('/api/v1/spider/start_task', methods=['GET'])
-def start_task():
-    logger.info("schedule task start")
-    schedule.every().day.at("01:00").do(execute_task)
-    while True:
-        logger.info("wait to execute...")
-        time.sleep(30)
-        schedule.run_pending()
-        time.sleep(1)
-"""
 
 if __name__ == '__main__':
-    gl._init()
     app.run(debug=True, host='0.0.0.0')

@@ -2,7 +2,6 @@ import urllib.request
 
 from bs4 import BeautifulSoup
 
-import util.globalvar as gl
 from service.senti_util import SentiUtil
 from service.webdriver_util import WebDriver
 from config.mylog import logger
@@ -34,8 +33,6 @@ class MonitorP2peyeService:
             news = soup.find_all(attrs={'class': 'result-t'})
             if news.__len__() > 0:
                 for new in news:
-                    if not gl.check_by_batch_num(batch_num):
-                        break
                     href = new.find_all('a')[0].get("href")
                     content = new.get_text()
                     if content.find(website_name) != -1:

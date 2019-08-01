@@ -29,7 +29,7 @@ class SnapshotService:
         timestamp = int(time.time())
         snapshot = str(timestamp) + ".png"
         path = base_filepath + "/" + str(timestamp)
-        img_404 = base_filepath + "/template/404.png"
+        img_404 = base_filepath[:10] + "/template/404.png"
         try:
             im = Image.open(img_404)
             im_resize = im.resize((641, 458))

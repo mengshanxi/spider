@@ -5,15 +5,13 @@ import urllib.request
 from PIL import Image
 from bs4 import BeautifulSoup
 
-import util.globalvar as gl
 from config.config_load import base_filepath
 from config.mylog import logger
-from dao.bc_benefit_dao import BcBenifitDao
+from dao.bc_benefit_dao import BcBenefitDao
 from dao.bc_person_dao import BcPersonDao
 from dao.monitor_bc_dao import MonitorBcDao
 from dao.website_dao import WebsiteDao
-from model.bc_benefit import BcBenefit
-from model.bc_person import BcPerson
+from model.models import BcPerson, BcBenefit
 from model.monitor_bc import MonitorBc
 from service.senti_util import SentiUtil
 from service.snapshot_service import SnapshotService
@@ -47,42 +45,21 @@ class MonitorBcService:
             source = driver.page_source
             senti_util = SentiUtil()
             website_dao = WebsiteDao()
-            website = website_dao.getwebsite_by_merchant(merchant_name)
+            website = website_dao.get_by_merchant(merchant_name)
             senti_util.senti_process_text("企查查", website.website_name, source, "https://www.qichacha.com" + url)
         except Exception as e:
             logger.error(e)
 
-        """
-        es_util = EsUtil()
-        es_util.index_monitor_bc(merchant_name, source)
-        keyword_dao = KeywordDao()
-        keywords = keyword_dao.get_keyword()
-        json_dic = es_util.search('monitor_bc', ' '.join(keywords))
-        total = json_dic['hits']['total']
-        for i in range(total):
-            monitor_bc = MonitorBc()
-            merchant_name = json_dic['hits']['hits'][i]['_source']['merchant_name']
-            monitor_bc.merchant_name = str(merchant_name)
-            monitor_bc.outline = '包含异常信息'
-            monitor_bc.is_normal = '异常'
-            monitor_bc.snapshot = str(timestamp) + ".png"
-            monitor_bc_dao.update(monitor_bc)
-        """
-
     @staticmethod
     def inspect(batch_num, url, merchant_name, legalman):
-        if not gl.check_by_batch_num(batch_num):
-            return
         monitor_bc_dao = MonitorBcDao()
-        driver = WebDriver.get_phantomJS_withcookie()
+        driver = WebDriver.get_phantomJS()
         # 经营异常
         monitor_bc = MonitorBc()
         monitor_bc.batch_num = batch_num
         monitor_bc.merchant_name = merchant_name
         try:
-            rest_url = "https://www.qichacha.com/company_getinfos?unique=" + url[
-                                                                             30:62] + "&companyname=" + urllib.parse.quote(
-                merchant_name) + "&tab=fengxian"
+            rest_url = "https://www.qichacha.com/cfengxian_" + url[:5]
             driver.get(rest_url)
         except Exception as e:
             logger.info(e)
@@ -135,7 +112,7 @@ class MonitorBcService:
             trs = tbodys[0].find_all('tr')
             num = 0
 
-            bc_benefit_dao = BcBenifitDao()
+            bc_benefit_dao = BcBenefitDao()
 
             for tr in trs:
                 num += 1
@@ -179,7 +156,7 @@ class MonitorBcService:
         # 法人变更
         timestamp = int(time.time())
         snapshot = str(timestamp) + ".png"
-        path = base_filepath + "/imgs/" + str(timestamp)
+        path = base_filepath + "/" + str(timestamp)
         try:
             driver.save_screenshot(path + "_temp.png")
             bc_info = driver.find_element_by_xpath('//section[@id="Cominfo"]')
@@ -308,10 +285,10 @@ class MonitorBcService:
         else:
             pass
         try:
-            tbodys = soup.find_all('tbody')
+            tbodys = soup.find_all(id="search-result")
             trs = tbodys[0].find_all('tr')
             tds = trs[0].find_all('td')
-            a = tds[1].find_all('a')
+            a = tds[2].find_all('a')
 
             name = a[0].get_text().strip()
             if name == merchant_name.strip():
@@ -351,3 +328,31 @@ class MonitorBcService:
         except Exception as e:
             logger.error(e)
             return None
+
+    @staticmethod
+    def check_cookie():
+        driver = WebDriver.get_phantomJS_withcookie()
+        url = "https://www.qichacha.com/search?key=" + urllib.parse.quote("天津融宝支付网络有限公司")
+        driver.get(url)
+        source = driver.page_source
+        soup = BeautifulSoup(source, 'html.parser')
+        tbodys = soup.find_all('tbody')
+        trs = tbodys[0].find_all('tr')
+        tds = trs[0].find_all('td')
+        a = tds[1].find_all('a')
+        name = a[0].get_text().strip()
+        if name == "天津融宝支付网络有限公司".strip():
+            href = a[0].get_by_name('href')
+            if href != 'NONE':
+                driver.get("https://www.qichacha.com" + href)
+                source = driver.page_source
+
+                soup = BeautifulSoup(source, 'html.parser')
+                title = soup.find(name="title").get_text()
+                if (str(title) == "会员登录 - 企查查"):
+                    return "false"
+                else:
+                    return "true"
+
+        else:
+            return "false"

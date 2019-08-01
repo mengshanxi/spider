@@ -4,11 +4,13 @@ import urllib.request
 from bs4 import BeautifulSoup
 
 from config.mylog import logger
+from dao.website_dao import WebsiteDao
 from dao.weburl_dao import WeburlDao
-from model.weburl import Weburl
+from model.models import Weburl
+from service.inspect_service import InspectService
 
 
-class UrlService:
+class WeburlService:
 
     @staticmethod
     def get_urls(website):
@@ -39,12 +41,25 @@ class UrlService:
         return urls
 
     @staticmethod
+    def gather_urls_by_task(self, task_id):
+        if task_id != 'NONE':
+            inspect_service = InspectService()
+            websites = inspect_service.get_websites()
+            for website in websites:
+                self.gather_urls(website)
+        else:
+            website_dao = WebsiteDao()
+            websites = website_dao.get_all()
+            for website in websites:
+                self.gather_urls(website)
+
+    @staticmethod
     def gather_urls(website):
-        logger.info("gather url for website: %s ", website["websiteName"])
-        weburls = []
-        weburl_service = WeburlDao
+        logger.info("gather url for website: %s ", website.website_name)
+        weburl_service = WeburlDao()
         try:
-            req = urllib.request.Request(website["domainName"])
+            uri = 'http://' + website.domain_name
+            req = urllib.request.Request(uri)
             web_page = urllib.request.urlopen(req, timeout=10)
             html = web_page.read()
             soup = BeautifulSoup(html, 'html.parser', from_encoding="gb18030")  # 文档对象
@@ -59,18 +74,19 @@ class UrlService:
                 elif href.startswith('http://') or href.startswith('https://'):
                     href = href
                 elif href.startswith('/'):
-                    href = website["domainName"] + href
+                    href = uri + href
                 elif href.startswith('./'):
-                    href = website["domainName"] + href[1:]
+                    href = uri + href[1:]
                 else:
-                    href = website["domainName"] + "/" + href
+                    href = uri + "/" + href
 
                 title = soup.find('title').string
                 weburl = Weburl()
                 weburl.url = href
-                weburl.website_name = website["websiteName"]
+                weburl.website_id = website.id
+                weburl.website_name = website.website_name
                 weburl.title = title
-                weburls.append(weburl)
+                weburl.type = 'page'
                 weburl_service.add(weburl)
 
             for k in soup.find_all('img'):
@@ -81,19 +97,17 @@ class UrlService:
                     if src.startswith('http://') or src.startswith('https://'):
                         pass
                     elif src.startswith('/'):
-                        src = website["domainName"] + src
+                        src = uri + src
                     else:
-                        src = website["domainName"] + "/" + src
-
+                        src = uri + "/" + src
                     weburl = Weburl()
                     weburl.url = src
-                    weburl.website_name = website["websiteName"]
-                    weburl.title = "图片识别"
-                    weburls.append(weburl)
+                    weburl.website_id = website.id
+                    weburl.website_name = website.website_name
+                    weburl.title = soup.find('title').string
+                    weburl.type = 'pic'
                     weburl_service.add(weburl)
                 else:
                     pass
-            return weburls
-
         except Exception as e:
             logger.error(e)

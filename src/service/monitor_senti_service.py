@@ -1,4 +1,4 @@
-import util.globalvar as gl
+from config.mylog import logger
 from service.inspect_task_service import InspectTaskService
 from service.monitor_baidu_service import MonitorBaiduService
 from service.monitor_baike_service import MonitorBaikeService
@@ -7,7 +7,6 @@ from service.monitor_chinaft_service import MonitorChinaftService
 from service.monitor_p2peye_service import MonitorP2peyeService
 from service.monitor_tieba_service import MonitorTiebaService
 from service.monitor_wdzj_service import MonitorWdzjService
-from config.mylog import logger
 
 """
 三方监控服务
@@ -22,10 +21,6 @@ class MonitorSentiService:
         inspect_task_service = InspectTaskService()
         platforms = inspect_task_service.get_inspect_paltforms(task_id)
         for platform in platforms:
-            if not gl.check_by_task(task_id):
-                logger.info("taskId has removed : %s", task_id)
-                break
-
             if platform == "网贷天眼":
                 logger.info("sentiment monitor with  : %s", platform)
                 p2peye_service = MonitorP2peyeService()

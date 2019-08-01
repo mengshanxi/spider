@@ -23,10 +23,10 @@ class TrafficService:
             res = res.decode('UTF-8')
             reach_rank = re.findall("REACH[^\d]*(\d+)", res)
 
-            ##访客排名
+            ## 访客排名
             if not reach_rank:
                 reach_rank = "-"
-            ##全球排名
+            ## 全球排名
             popularity_rank = re.findall("POPULARITY[^\d]*(\d+)", res)
             if not popularity_rank:
                 popularity_rank = "-"

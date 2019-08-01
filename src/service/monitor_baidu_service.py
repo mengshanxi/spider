@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 
-import util.globalvar as gl
 from service.senti_util import SentiUtil
 from service.webdriver_util import WebDriver
 from config.mylog import logger
@@ -37,8 +36,6 @@ class MonitorBaiduService:
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
             for result_table in soup.find_all('h3', class_='t'):
-                if not gl.check_by_batch_num(batch_num):
-                    break
                 a_click = result_table.find("a")
                 title = a_click.get_text()
                 if title.find(website_name) != -1:

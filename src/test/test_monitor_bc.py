@@ -26,7 +26,7 @@ class TestQichachaService(object):
         #                          merchant_name="天津融宝支付网络有限公司 ")
         desired_capabilities = DesiredCapabilities.PHANTOMJS.copy()
         third_config_dao = ThirdConfigDao
-        cookie = third_config_dao.get("qichacha")
+        cookie = third_config_dao.get_by_name("qichacha")
         headers = {
             'cookie': cookie}
         for key, value in headers.items():

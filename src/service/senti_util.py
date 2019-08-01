@@ -1,7 +1,7 @@
 from config.mylog import logger
 from dao.keyword_dao import KeywordDao
 from dao.monitor_third_dao import MonitorThirdDao
-from model.monitor_third import MonitorThird
+from model.models import MonitorThird
 from service.snapshot_service import SnapshotService
 from service.webdriver_util import WebDriver
 
@@ -31,7 +31,7 @@ class SentiUtil:
             driver.get(href)
             snapshot = SnapshotService.create_snapshot(driver)
             is_normal = "正常"
-            keywords = keyword_dao.get_keywords()
+            keywords = keyword_dao.get_all()
             for keyword in keywords:
                 index = text.find(keyword.name)
                 monitor_third = MonitorThird()

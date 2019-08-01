@@ -3,7 +3,7 @@ import pymysql
 
 pymysql.install_as_MySQLdb()
 from dao.db import session
-from model.global_config import Global
+from model.models import Global
 
 
 class TestMysql(object):
