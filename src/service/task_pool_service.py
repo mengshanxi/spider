@@ -18,7 +18,7 @@ class TaskPoolService:
         session.query(TaskPool).filter(TaskPool.id == task_pool.id).update({"status": "processing"})
         if task_pool.type == "website":
             website = session.query(Website).filter(Website.id == task_pool.website_id).one()
-            return website, task_pool.task_id, task_pool.status, task_pool.id
+            return website, task_pool.task_id, task_pool.type, task_pool.id
         elif task_pool.type == "weburl":
             weburl = session.query(Weburl).filter(Weburl.url == task_pool.url).one()
             return weburl, task_pool.task_id, task_pool.type, task_pool.id
