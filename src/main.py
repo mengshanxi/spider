@@ -1,6 +1,5 @@
 # coding:utf-8
 import threading
-
 from flask import Flask
 from flask import request
 

@@ -3,6 +3,7 @@
 from dao.db import session
 from model.models import Website, TaskPool, Weburl
 import config.global_val as gl
+import socket
 
 
 class TaskPoolService:
@@ -25,4 +26,5 @@ class TaskPoolService:
 
     @staticmethod
     def close_task(task_pool_id):
-        session.query(TaskPool).filter(TaskPool.id == task_pool_id).update({"status": "done"})
+        hostname = socket.gethostname()
+        session.query(TaskPool).filter(TaskPool.id == task_pool_id).update({"status": "done", "processor": hostname})
