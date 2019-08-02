@@ -4,6 +4,23 @@ from sqlalchemy import Column, String, Integer, DateTime, Text
 from dao.db import Base
 
 
+class TaskPool(Base):
+    __tablename__ = 'task_pool'
+    id = Column(Integer(), primary_key=True)
+    title = Column(String(255))
+    task_id = Column(Integer())
+    batch_num = Column(String(255))
+    url = Column(String(255))
+    website_id = Column(Integer())
+    website_name = Column(String(255))
+    merchant_name = Column(String(255))
+    type = Column(String(255))
+    status = Column(String(255))
+    processor = Column(String(255))
+    create_time = Column(DateTime())
+    last_update = Column(DateTime())
+
+
 class InspectTask(Base):
     __tablename__ = 'inspect_task'
     id = Column(Integer(), primary_key=True)

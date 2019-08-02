@@ -9,10 +9,13 @@ from manager.gather_center import GatherCenter
 from service.monitor_bc_service import MonitorBcService
 from service.webdriver_util import WebDriver
 from service.weburl_service import WeburlService
+import config.global_val as gl
 
 app = Flask(__name__)
-global status
-status = True
+gl._init()
+
+# 定义跨模块全局变量
+gl.set_value('STATUS', True)
 
 
 @app.route('/api/v1/test/chrome', methods=['GET'])
@@ -26,7 +29,8 @@ def test():
 @app.route('/api/v1/verify_cookie', methods=['POST'])
 def verify_cookie():
     monitor_bc_service = MonitorBcService()
-    return monitor_bc_service.check_cookie()
+    # return monitor_bc_service.check_cookie()
+    return "SUCCESS"
 
 
 '''
@@ -36,13 +40,11 @@ def verify_cookie():
 
 @app.route('/api/v1/spider/execute', methods=['POST'])
 def execute():
-    global status
-    status = True
+    gl.set_value('STATUS', True)
     try:
-        task_id = request.form['taskId']
         batch_num = request.form['batchNum']
-        logger.info("inspect, taskId: %s" % str(task_id))
-        t = threading.Thread(target=inspect, args=(task_id, batch_num,))
+        logger.info("spider begin batchNum: %s" % str(batch_num))
+        t = threading.Thread(target=inspect, args=(batch_num,))
         t.setDaemon(True)
         t.start()
         return 'OK'
@@ -50,12 +52,13 @@ def execute():
         logger.error(e)
 
 
-def inspect(task_id, batch_num):
+def inspect(batch_num):
     spider_manager = GatherCenter()
-    while status:
-        logger.info("gather start!  taskId:%s" % str(task_id))
-        spider_manager.gather(task_id, batch_num)
-        logger.info("gather end!  taskId:%s" % str(task_id))
+    while gl.get_value('STATUS'):
+        logger.info("gather task start!  batch_num:%s" % str(batch_num))
+        spider_manager.gather(batch_num)
+        logger.info("gather task end!  batch_num:%s" % str(batch_num))
+    logger.info("batchNum gather task end!  batch_num:%s" % str(batch_num))
 
 
 @app.route('/api/v1/spider/gather_urls', methods=['POST'])
@@ -72,8 +75,7 @@ def gather_urls():
 
 @app.route('/api/v1/spider/stop', methods=['POST'])
 def stop():
-    global status
-    status = False
+    gl.set_value('STATUS', False)
     return 'SUCCESS'
 
 

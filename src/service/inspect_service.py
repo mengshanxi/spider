@@ -17,11 +17,6 @@ class InspectService:
         return websites
 
     @staticmethod
-    def get_website(task_id):
-        website = session.query(Website).filter(Website.website_name == '威海紫健圣果').one()
-        return website
-
-    @staticmethod
     def get_keywords(level):
         keyword_dao = KeywordDao()
         return keyword_dao.get_all(level)
