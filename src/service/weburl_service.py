@@ -12,7 +12,6 @@ from service.inspect_service import InspectService
 
 class WeburlService:
 
-    @staticmethod
     def get_urls(website):
         urls = set()
         try:
@@ -40,11 +39,10 @@ class WeburlService:
             return urls
         return urls
 
-    @staticmethod
     def gather_urls_by_task(self, task_id):
         if task_id != 'NONE':
             inspect_service = InspectService()
-            websites = inspect_service.get_websites()
+            websites = inspect_service.get_websites(task_id)
             for website in websites:
                 self.gather_urls(website)
         else:
@@ -53,8 +51,7 @@ class WeburlService:
             for website in websites:
                 self.gather_urls(website)
 
-    @staticmethod
-    def gather_urls(website):
+    def gather_urls(self, website):
         logger.info("gather url for website: %s ", website.website_name)
         weburl_service = WeburlDao()
         try:

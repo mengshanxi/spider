@@ -13,7 +13,8 @@ class InspectService:
         inspect_dao = InspectTaskDao()
         inspect_task = inspect_dao.get_task(task_id)
         websites = session.query(Website).filter(Website.attention == inspect_task.attention).filter(
-            Website.industry == inspect_task.industry).filter(Website.industry2 == inspect_task.industry2).all()
+            Website.industry.contains(inspect_task.industry)).filter(
+            Website.industry2.contains(inspect_task.industry2)).all()
         return websites
 
     @staticmethod

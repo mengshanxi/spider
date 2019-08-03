@@ -2,9 +2,9 @@
 import threading
 from flask import Flask
 from flask import request
-
 from config.mylog import logger
 from manager.gather_center import GatherCenter
+from manager.ims_api import ImsApi
 from service.monitor_bc_service import MonitorBcService
 from service.webdriver_util import WebDriver
 from service.weburl_service import WeburlService
@@ -17,7 +17,7 @@ gl._init()
 gl.set_value('STATUS', True)
 
 
-@app.route('/api/v1/test/chrome', methods=['GET'])
+@app.route('/test/chrome', methods=['GET'])
 def test():
     driver = WebDriver.get_phantomJS()
     driver.get("http://baidu.com")
@@ -25,7 +25,7 @@ def test():
     return str(title)
 
 
-@app.route('/api/v1/verify_cookie', methods=['POST'])
+@app.route('/verify_cookie', methods=['POST'])
 def verify_cookie():
     monitor_bc_service = MonitorBcService()
     # return monitor_bc_service.check_cookie()
@@ -37,7 +37,7 @@ def verify_cookie():
 '''
 
 
-@app.route('/api/v1/spider/execute', methods=['POST'])
+@app.route('/spider/execute', methods=['POST'])
 def execute():
     gl.set_value('STATUS', True)
     try:
@@ -60,23 +60,25 @@ def inspect(batch_num):
     logger.info("batchNum gather task end!  batch_num:%s" % str(batch_num))
 
 
-@app.route('/api/v1/spider/gather_urls', methods=['POST'])
+@app.route('/spider/gather_urls', methods=['POST'])
 def gather_urls():
     try:
         task_id = request.form['taskId']
         weburl_service = WeburlService()
         weburl_service.gather_urls_by_task(task_id)
-        return 'KeyError'
+        return 'SUCCESS'
     except KeyError as e:
         print(e)
-        return 'KeyError'
+        return 'ERROR'
 
 
-@app.route('/api/v1/spider/stop', methods=['POST'])
+@app.route('/spider/stop', methods=['POST'])
 def stop():
     gl.set_value('STATUS', False)
     return 'SUCCESS'
 
 
 if __name__ == '__main__':
+    ims_api = ImsApi()
+    ims_api.register()
     app.run(debug=True, host='0.0.0.0')

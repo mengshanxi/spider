@@ -2,21 +2,22 @@
 
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
-from config.config_load import chromedriver_path
-from config.config_load import phantomjs_path
+import os
 from dao.third_config_dao import ThirdConfigDao
 
 
 class WebDriver:
+
     @staticmethod
     def get_phantomJS():
+        browser = os.environ['browser']
+        port = os.environ['port']
         dcap = dict(DesiredCapabilities.PHANTOMJS)
         dcap['phantomjs.page.settings.userAgent'] = (
             'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36')
         # driver = webdriver.PhantomJS(executable_path=phantomjs_path, desired_capabilities=dcap,
         #                              service_args=['--ignore-ssl-errors=true'])
-        driver = webdriver.Remote(command_executor='http://phantomjs:8910',
+        driver = webdriver.Remote(command_executor='http://' + browser + ':' + port,
                                   desired_capabilities=dcap)
 
         driver.set_page_load_timeout(10)
@@ -26,6 +27,8 @@ class WebDriver:
 
     @staticmethod
     def get_phantomJS_withcookie():
+        browser = os.environ['browser']
+        port = os.environ['port']
         desired_capabilities = DesiredCapabilities.PHANTOMJS.copy()
         third_config_dao = ThirdConfigDao()
         cookie = third_config_dao.get_by_name("qichacha")
@@ -36,7 +39,7 @@ class WebDriver:
         # driver = webdriver.PhantomJS(executable_path=phantomjs_path,
         #                              desired_capabilities=desired_capabilities,
         #                              service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'])
-        driver = webdriver.Remote(command_executor='http://phantomjs:8910',
+        driver = webdriver.Remote(command_executor='http://' + browser + ':' + port,
                                   desired_capabilities=desired_capabilities)
         driver.set_page_load_timeout(10)
         driver.set_script_timeout(10)

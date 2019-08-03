@@ -4,8 +4,8 @@ from sqlalchemy import Column, String, Integer, DateTime, Text
 from dao.db import Base
 
 
-class TaskPool(Base):
-    __tablename__ = 'task_pool'
+class TaskItem(Base):
+    __tablename__ = 'task_item'
     id = Column(Integer(), primary_key=True)
     title = Column(String(255))
     task_id = Column(Integer())
