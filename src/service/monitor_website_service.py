@@ -34,7 +34,7 @@ class MonitorWebsiteService:
                 domain_name_rich = access.get_access_res(domain_name)
                 logger.info("domain_name: %s", domain_name)
                 logger.info("domain_name_rich: %s", domain_name_rich)
-                driver = WebDriver.get_phantomJS()
+                driver = WebDriver.get_phantomjs()
                 if domain_name_rich is not None:
                     logger.info("domain : %s", str(domain_name_rich))
                     monitor_website.access = '正常'

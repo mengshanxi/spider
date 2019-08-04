@@ -18,7 +18,7 @@ class TestWangdaitianyan(object):
         driver.find_element_by_id("scform_srchtxt").send_keys(u"京东")
         driver.find_element_by_id("scform_submit").click()     
         """
-        driver = WebDriver.get_phantomJS()
+        driver = WebDriver.get_phantomjs()
         try:
             driver.get("http://www.wangdaibus.com/search/list?subject=%E4%BA%AC%E4%B8%9C")
             aaa="京东"

@@ -17,7 +17,7 @@ class TestWangdaitianyan(object):
         driver.find_element_by_id("kw").send_keys(u"京东")
         driver.find_element_by_id("su").click()
         """
-        driver = WebDriver.get_phantomJS()
+        driver = WebDriver.get_phantomjs()
         try:
             driver.get("https://www.baidu.com/")
             driver.find_element_by_xpath('//input[@name="wd"]').send_keys(u"京东")

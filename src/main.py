@@ -19,7 +19,7 @@ gl.set_value('STATUS', True)
 
 @app.route('/test/chrome', methods=['GET'])
 def test():
-    driver = WebDriver.get_phantomJS()
+    driver = WebDriver.get_phantomjs()
     driver.get("http://baidu.com")
     title = driver.title
     return str(title)

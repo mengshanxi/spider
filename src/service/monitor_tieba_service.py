@@ -21,7 +21,7 @@ class MonitorTiebaService:
         driver = webdriver.Chrome(chrome_options=chrome_options,
                                   executable_path=chromedriver_path)
         """
-        driver = WebDriver.get_phantomJS()
+        driver = WebDriver.get_phantomjs()
         senti_util = SentiUtil()
         try:
             url = "http://tieba.baidu.com/f?fr=wwwt&kw=" + urllib.parse.quote(website_name)

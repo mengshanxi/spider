@@ -9,7 +9,7 @@ from dao.third_config_dao import ThirdConfigDao
 class WebDriver:
 
     @staticmethod
-    def get_phantomJS():
+    def get_phantomjs():
         browser = os.environ['browser']
         port = os.environ['port']
         dcap = dict(DesiredCapabilities.PHANTOMJS)
@@ -26,7 +26,7 @@ class WebDriver:
         return driver
 
     @staticmethod
-    def get_phantomJS_withcookie():
+    def get_phantomjs_with_cookie():
         browser = os.environ['browser']
         port = os.environ['port']
         desired_capabilities = DesiredCapabilities.PHANTOMJS.copy()

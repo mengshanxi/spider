@@ -18,7 +18,7 @@ class MonitorBaikeService:
         driver = webdriver.Chrome(chrome_options=chrome_options,
                                   executable_path=chromedriver_path)
         """
-        driver = WebDriver.get_phantomJS()
+        driver = WebDriver.get_phantomjs()
         senti_util = SentiUtil()
         url = 'https://baike.baidu.com/item/%s' % urllib.parse.quote(website_name.replace("(", "（").replace(")", "）"))
         try:

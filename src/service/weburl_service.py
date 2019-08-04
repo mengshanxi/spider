@@ -7,7 +7,7 @@ from config.mylog import logger
 from dao.website_dao import WebsiteDao
 from dao.weburl_dao import WeburlDao
 from model.models import Weburl
-from service.inspect_service import InspectService
+from service.inspect_task_service import InspectTaskService
 
 
 class WeburlService:
@@ -41,7 +41,7 @@ class WeburlService:
 
     def gather_urls_by_task(self, task_id):
         if task_id != 'NONE':
-            inspect_service = InspectService()
+            inspect_service = InspectTaskService()
             websites = inspect_service.get_websites(task_id)
             for website in websites:
                 self.gather_urls(website)

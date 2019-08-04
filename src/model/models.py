@@ -4,6 +4,17 @@ from sqlalchemy import Column, String, Integer, DateTime, Text
 from dao.db import Base
 
 
+class InspectDetail(Base):
+    __tablename__ = 'inspect_detail'
+    id = Column(Integer(), primary_key=True)
+    tmpl_id = Column(Integer())
+    platform_name = Column(String(255))
+    website_name = Column(String(255))
+    merchant_name = Column(String(255))
+    checked = Column(Integer())
+    create_time = Column(DateTime())
+
+
 class TaskItem(Base):
     __tablename__ = 'task_item'
     id = Column(Integer(), primary_key=True)

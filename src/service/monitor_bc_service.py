@@ -39,7 +39,7 @@ class MonitorBcService:
             monitor_bc_dao.add(monitor_bc)
             return
 
-        driver = WebDriver.get_phantomJS_withcookie()
+        driver = WebDriver.get_phantomjs_with_cookie()
         try:
             driver.get("https://www.qichacha.com" + url)
             source = driver.page_source
@@ -53,7 +53,7 @@ class MonitorBcService:
     @staticmethod
     def inspect(batch_num, url, merchant_name, legalman):
         monitor_bc_dao = MonitorBcDao()
-        driver = WebDriver.get_phantomJS()
+        driver = WebDriver.get_phantomjs()
         # 经营异常
         monitor_bc = MonitorBc()
         monitor_bc.batch_num = batch_num
@@ -268,7 +268,7 @@ class MonitorBcService:
     @staticmethod
     def get_merchant_url(batch_num, merchant_name):
 
-        driver = WebDriver.get_phantomJS_withcookie()
+        driver = WebDriver.get_phantomjs_with_cookie()
         url = "https://www.qichacha.com/search?key=" + urllib.parse.quote(merchant_name)
         try:
             driver.get(url)
@@ -331,7 +331,7 @@ class MonitorBcService:
 
     @staticmethod
     def check_cookie():
-        driver = WebDriver.get_phantomJS_withcookie()
+        driver = WebDriver.get_phantomjs_with_cookie()
         url = "https://www.qichacha.com/search?key=" + urllib.parse.quote("天津融宝支付网络有限公司")
         driver.get(url)
         source = driver.page_source

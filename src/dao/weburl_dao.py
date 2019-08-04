@@ -1,6 +1,5 @@
 # coding:utf-8
 from dao.db import session
-from dao.mysql_util import MysqldbHelper
 from model.models import Weburl
 
 

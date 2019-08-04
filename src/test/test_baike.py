@@ -16,7 +16,7 @@ class TestWangdaitianyan(object):
                                   executable_path="C:/chromedriver_2.38/chromedriver.exe")
         url = 'https://baike.baidu.com/item/%s' % urllib.parse.quote("猫小贷")
         """
-        driver = WebDriver.get_phantomJS()
+        driver = WebDriver.get_phantomjs()
         driver.get('https://baike.baidu.com/item/%s' % urllib.parse.quote("方针文产商城"))
         SnapshotService.create_snapshot(driver)
         time.sleep(5)

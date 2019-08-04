@@ -29,7 +29,7 @@ class MonitorWeburlService:
         reachable = access.get_access_res(weburl.url)
         logger.info("rtn url : %s", str(reachable))
         #  截图
-        driver = WebDriver.get_phantomJS()
+        driver = WebDriver.get_phantomjs()
         snapshot = SnapshotService.create_snapshot(driver)
 
         if reachable is None:

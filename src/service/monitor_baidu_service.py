@@ -21,7 +21,7 @@ class MonitorBaiduService:
         driver = webdriver.Chrome(chrome_options=chrome_options,
                                   executable_path=chromedriver_path)
         """
-        driver = WebDriver.get_phantomJS()
+        driver = WebDriver.get_phantomjs()
         senti_util = SentiUtil()
         try:
             url = "https://www.baidu.com/"

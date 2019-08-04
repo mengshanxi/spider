@@ -22,7 +22,7 @@ class SentiUtil:
                                   executable_path=chromedriver_path)
         """""
 
-        driver = WebDriver.get_phantomJS()
+        driver = WebDriver.get_phantomjs()
         keyword_dao = KeywordDao()
         monitor_third_dao = MonitorThirdDao()
 

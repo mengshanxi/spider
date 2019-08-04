@@ -8,13 +8,14 @@ import socket
 
 class ImsApi(object):
 
-    def register(self):
+    @staticmethod
+    def register():
         try:
             hostname = socket.gethostname()
             ip = socket.gethostbyname(hostname)
             url = ims_rest_base + "open/api/v1/agent/register"
-            dict = {"ip": ip}
-            data = bytes(parse.urlencode(dict), encoding="utf8")
+            data_json = {"ip": ip}
+            data = bytes(parse.urlencode(data_json), encoding="utf8")
             new_url = request.Request(url, data)
             logger.info(new_url)
             request.urlopen(new_url)
