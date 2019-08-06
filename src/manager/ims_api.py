@@ -17,7 +17,23 @@ class ImsApi(object):
             data_json = {"ip": ip}
             data = bytes(parse.urlencode(data_json), encoding="utf8")
             new_url = request.Request(url, data)
-            logger.info(new_url)
+            logger.info("agent register ip: %s..." % str(ip))
+            request.urlopen(new_url)
+        except Exception as e:
+            logger.info("register fail")
+            logger.info(e)
+            pass
+
+    @staticmethod
+    def heartbeat():
+        try:
+            hostname = socket.gethostname()
+            ip = socket.gethostbyname(hostname)
+            url = ims_rest_base + "open/api/v1/agent/heartbeat"
+            data_json = {"ip": ip}
+            data = bytes(parse.urlencode(data_json), encoding="utf8")
+            new_url = request.Request(url, data)
+            logger.info("send heartbeat ip: %s..." % str(ip))
             request.urlopen(new_url)
         except Exception as e:
             logger.info("register fail")

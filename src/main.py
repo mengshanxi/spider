@@ -1,5 +1,7 @@
 # coding:utf-8
 import threading
+
+import time
 from flask import Flask
 from flask import request
 from config.mylog import logger
@@ -15,6 +17,7 @@ gl._init()
 
 # 定义跨模块全局变量
 gl.set_value('STATUS', True)
+ims_api = ImsApi()
 
 
 @app.route('/test/chrome', methods=['GET'])
@@ -78,7 +81,19 @@ def stop():
     return 'SUCCESS'
 
 
+def run(interval):
+    while True:
+        try:
+            # sleep for the remaining seconds of interval
+            time_remaining = interval - time.time() % interval
+            time.sleep(time_remaining)
+            # execute the command
+            ims_api.heartbeat()
+        except Exception as e:
+            print(e)
+
+
 if __name__ == '__main__':
-    ims_api = ImsApi()
     ims_api.register()
+    run(60)
     app.run(debug=True, host='0.0.0.0')
