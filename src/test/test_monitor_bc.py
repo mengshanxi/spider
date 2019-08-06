@@ -17,10 +17,10 @@ class TestQichachaService(object):
         # url = "https://www.qichacha.com/search?key=%E4%BA%AC%E4%B8%9C"
         # url = "https://www.qichacha.com/firm_cf2dcea7ed6c31269ccda79df6ba064a.html"
 
-        # url = service.get_merchant_url(merchant_name='天津融宝支付网络有限公司')
+        url = service.get_merchant_url(merchant_name='天津融宝支付网络有限公司')
         ##service.add_monitor_bc(merchant_name='天津融宝支付网络有限公司 ', url=url)
         # print("https://www.qichacha.com" + url)
-        url = "/firm_877d32d9f838380236fd48630dcecea0.shtml"
+        #url = "/firm_877d32d9f838380236fd48630dcecea0.shtml"
         # if url != 'NONE':
         # service.parase_bc_module("https://www.qichacha.com" + url,
         #                          merchant_name="天津融宝支付网络有限公司 ")
