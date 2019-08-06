@@ -81,19 +81,14 @@ def stop():
     return 'SUCCESS'
 
 
-def run(interval):
-    while True:
-        try:
-            # sleep for the remaining seconds of interval
-            time_remaining = interval - time.time() % interval
-            time.sleep(time_remaining)
-            # execute the command
-            ims_api.heartbeat()
-        except Exception as e:
-            print(e)
+def heartbeat():
+    ims_api.heartbeat()
+    timer = threading.Timer(5, heartbeat)
+    timer.start()
 
 
 if __name__ == '__main__':
     ims_api.register()
-    run(60)
+    timer = threading.Timer(60, heartbeat)
+    timer.start()
     app.run(debug=True, host='0.0.0.0')

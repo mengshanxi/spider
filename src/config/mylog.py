@@ -16,21 +16,19 @@ def get_logger():
     console_log = logging.StreamHandler()
     console_log.setLevel(logging.DEBUG)
     data_format = time.strftime('%Y-%m-%d', time.localtime(time.time()))
-    print(rootPath)
     log_file_path = rootPath + os.sep + "src" + os.sep + "logs" + os.sep + "spider_" + data_format + '.log'
     file_log = TimedRotatingFileHandler(log_file_path,
                                         when="S",
                                         interval=10,
                                         backupCount=4)
     file_log.setLevel(logging.INFO)
-
     console_fmt = logging.Formatter('%(asctime)s -%(name)s- %(levelname)s :%(message)s')
     file_fmt = logging.Formatter('%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
     console_log.setFormatter(console_fmt)
     file_log.setFormatter(file_fmt)
 
     loggers.addHandler(console_log)
-    loggers.addHandler(file_log)
+    #loggers.addHandler(file_log)
     return loggers
 
 

@@ -4,13 +4,20 @@ from sqlalchemy import Column, String, Integer, DateTime, Text
 from dao.db import Base
 
 
+class Strategy(Base):
+    __tablename__ = 'strategy'
+    id = Column(Integer(), primary_key=True)
+    task_overtime = Column(Integer())
+    cache_days = Column(Integer())
+    gather_percent = Column(Integer())
+
+
 class InspectDetail(Base):
     __tablename__ = 'inspect_detail'
     id = Column(Integer(), primary_key=True)
     tmpl_id = Column(Integer())
     platform_name = Column(String(255))
     website_name = Column(String(255))
-    merchant_name = Column(String(255))
     checked = Column(Integer())
     create_time = Column(DateTime())
 
@@ -190,5 +197,6 @@ class Website(Base):
     attention = Column(String(100))
     username = Column(String(100))
     password = Column(String(100))
+    last_gather_time = Column(DateTime())
     create_time = Column(DateTime())
     last_update = Column(DateTime())

@@ -1,12 +1,13 @@
-from dao.website_dao import WebsiteDao
-from manager.gather_center import GatherCenter
-from service.monitor_bc_service import MonitorBcService
-from service.weburl_service import WeburlService
+import datetime
+import time
 
-from config.mylog import logger
+from service.inspect_task_service import InspectTaskService
+
+
 class TestMysql(object):
     if __name__ == "__main__":
-        logger.info("gather task start!  batch_num:%s" % '11')
+        insepect_task_service =  InspectTaskService()
+        insepect_task_service.get_websites(34)
         # test='/usr/local/snapshots'
         # print(test[:10])
         # website_dao = WebsiteDao()

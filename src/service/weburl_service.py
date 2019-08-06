@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from config.mylog import logger
 from dao.website_dao import WebsiteDao
 from dao.weburl_dao import WeburlDao
+from manager.ims_api import ImsApi
 from model.models import Weburl
 from service.inspect_task_service import InspectTaskService
 
@@ -40,16 +41,20 @@ class WeburlService:
         return urls
 
     def gather_urls_by_task(self, task_id):
+        ims_api = ImsApi()
         if task_id != 'NONE':
             inspect_service = InspectTaskService()
             websites = inspect_service.get_websites(task_id)
             for website in websites:
                 self.gather_urls(website)
+                ims_api.done_url_gather(website)
         else:
             website_dao = WebsiteDao()
             websites = website_dao.get_all()
             for website in websites:
                 self.gather_urls(website)
+                ims_api.done_url_gather(website)
+
 
     def gather_urls(self, website):
         logger.info("gather url for website: %s ", website.website_name)
