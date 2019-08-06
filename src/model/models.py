@@ -173,6 +173,7 @@ class Weburl(Base):
     url = Column(String(100))
     website_id = Column(String(100))
     website_name = Column(String(100))
+    parent = Column(Text())
     type = Column(String(10))
     create_time = Column(DateTime())
     last_update = Column(DateTime())

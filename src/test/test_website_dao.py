@@ -2,12 +2,15 @@ import datetime
 import time
 
 from service.inspect_task_service import InspectTaskService
+from service.weburl_service import WeburlService
 
 
 class TestMysql(object):
     if __name__ == "__main__":
-        insepect_task_service =  InspectTaskService()
-        insepect_task_service.get_websites(34)
+        weburl_service = WeburlService()
+        weburl_service.gather_urls(1, "http://rczhiyun.com", "财新联合汽车租赁（北京）有限公司","rczhiyun.com", 0)
+        # insepect_task_service =  InspectTaskService()
+        # insepect_task_service.get_websites(34)
         # test='/usr/local/snapshots'
         # print(test[:10])
         # website_dao = WebsiteDao()
@@ -27,4 +30,3 @@ class TestMysql(object):
         #         print()
         #     except Exception as e:
         #         pass
-

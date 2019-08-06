@@ -12,33 +12,7 @@ from service.inspect_task_service import InspectTaskService
 
 
 class WeburlService:
-
-    def get_urls(website):
-        urls = set()
-        try:
-            req = urllib.request.Request(website)
-            web_page = urllib.request.urlopen(req, timeout=10)
-            html = web_page.read()
-            soup = BeautifulSoup(html, 'html.parser')  # 文档对象
-            for k in soup.find_all('a'):
-                # print(k)
-                # print(k.get('class'))#查a标签的class属性
-                # print(k.get('id'))#查a标签的id值
-                # print(k.get('href'))#查a标签的href值
-                # print(k.string)#查a标签的string
-                href = str(k.get('href'))
-                logger.info("gather url href:%s" % str(href))
-                if href.endswith(".jpg") or href.endswith(".jpeg") or href.endswith(".bmp") or href.endswith(
-                        ".png") or href.endswith(".swf") or href == '/' or href == 'http://':
-                    continue
-                if href.startswith('http://'):
-                    urls.add(href)
-                elif href.startswith('/'):
-                    urls.add(website + href)
-        except Exception as e:
-            logger.error(e)
-            return urls
-        return urls
+    count = 0
 
     def gather_urls_by_task(self, task_id):
         ims_api = ImsApi()
@@ -46,25 +20,48 @@ class WeburlService:
             inspect_service = InspectTaskService()
             websites = inspect_service.get_websites(task_id)
             for website in websites:
-                self.gather_urls(website)
+                uri = 'http://' + website.domain_name
+                self.gather_urls(website.id, uri, website.website_name, website.domain_name, 0)
                 ims_api.done_url_gather(website)
         else:
             website_dao = WebsiteDao()
             websites = website_dao.get_all()
             for website in websites:
-                self.gather_urls(website)
+                uri = 'http://' + website.domain_name
+                self.gather_urls(website.id, uri, website.website_name, website.domain_name, 0)
                 ims_api.done_url_gather(website)
 
-
-    def gather_urls(self, website):
-        logger.info("gather url for website: %s ", website.website_name)
+    def gather_urls(self, website_id, uri, website_name, domain_name, level):
+        if level == 2:
+            logger.info("gather url just to 3 level: %s ", website_name)
+            return
+        logger.info("gather url for website: %s ", website_name)
         weburl_service = WeburlDao()
         try:
-            uri = 'http://' + website.domain_name
             req = urllib.request.Request(uri)
             web_page = urllib.request.urlopen(req, timeout=10)
             html = web_page.read()
-            soup = BeautifulSoup(html, 'html.parser', from_encoding="gb18030")  # 文档对象
+            soup = BeautifulSoup(html, 'html.parser', from_encoding="gb18030")
+            for k in soup.find_all('img'):
+                src = str(k.get('src'))
+                logger.info("origin src: %s", src)
+                if src.endswith(".jpg") or src.endswith(".jpeg") or src.endswith(".bmp") or src.endswith(
+                        ".png"):
+                    if src.startswith('http://') or src.startswith('https://'):
+                        pass
+                    elif src.startswith('/'):
+                        src = "http://" + domain_name + src
+                    else:
+                        src = uri + "/" + src
+                    weburl = Weburl(url=src.replace("//", "/"),
+                                    website_id=website_id,
+                                    website_name=website_name,
+                                    title=soup.find('title').string,
+                                    type='pic',
+                                    parent=uri)
+                    weburl_service.add(weburl)
+                else:
+                    pass
             for k in soup.find_all('a'):
                 href = str(k.get('href'))
                 logger.info("origin href: %s", href)
@@ -76,40 +73,21 @@ class WeburlService:
                 elif href.startswith('http://') or href.startswith('https://'):
                     href = href
                 elif href.startswith('/'):
-                    href = uri + href
+                    href = "http://" + domain_name + href
                 elif href.startswith('./'):
                     href = uri + href[1:]
                 else:
                     href = uri + "/" + href
 
                 title = soup.find('title').string
-                weburl = Weburl()
-                weburl.url = href
-                weburl.website_id = website.id
-                weburl.website_name = website.website_name
-                weburl.title = title
-                weburl.type = 'page'
+                weburl = Weburl(website_id=website_id,
+                                website_name=website_name,
+                                title=title,
+                                type='page',
+                                parent=uri,
+                                url=href.replace("//", "/"))
                 weburl_service.add(weburl)
+                self.gather_urls(website_id, href, website_name, domain_name, level + 1)
 
-            for k in soup.find_all('img'):
-                src = str(k.get('src'))
-                logger.info("origin src: %s", src)
-                if src.endswith(".jpg") or src.endswith(".jpeg") or src.endswith(".bmp") or src.endswith(
-                        ".png"):
-                    if src.startswith('http://') or src.startswith('https://'):
-                        pass
-                    elif src.startswith('/'):
-                        src = uri + src
-                    else:
-                        src = uri + "/" + src
-                    weburl = Weburl()
-                    weburl.url = src
-                    weburl.website_id = website.id
-                    weburl.website_name = website.website_name
-                    weburl.title = soup.find('title').string
-                    weburl.type = 'pic'
-                    weburl_service.add(weburl)
-                else:
-                    pass
         except Exception as e:
             logger.error(e)
