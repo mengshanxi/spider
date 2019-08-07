@@ -57,7 +57,6 @@ class GatherCenter:
                 try:
                     service.inspect(str(batch_num), "https://www.qichacha.com" + url, entity.merchant_name,
                                     entity.legal_person)
-                    print()
                 except Exception as e:
                     logger.info(e)
                     pass

@@ -1,4 +1,6 @@
 # coding:utf-8
+import datetime
+
 from dao.db import session
 from model.models import Weburl
 
@@ -16,4 +18,6 @@ class WeburlDao(object):
         if len(exist_weburl):
             pass
         else:
+            weburl.create_time = datetime.datetime.now()
+            weburl.last_update = datetime.datetime.now()
             session.add(weburl)

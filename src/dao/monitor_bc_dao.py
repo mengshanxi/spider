@@ -6,4 +6,8 @@ class MonitorBcDao(object):
 
     @staticmethod
     def add(monitor_bc):
-        session.add(monitor_bc)
+        try:
+            session.add(monitor_bc)
+            session.commit()
+        except Exception  as e:
+            print(e)

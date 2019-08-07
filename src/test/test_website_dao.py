@@ -5,14 +5,14 @@ import urllib
 from bs4 import BeautifulSoup
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chrome import webdriver
-
+import os
 from config.config_load import chromedriver_path, phantomjs_path
 from config.mylog import logger
 from service.inspect_task_service import InspectTaskService
 from service.monitor_bc_service import MonitorBcService
+from service.webdriver_util import WebDriver
 from service.weburl_service import WeburlService
 
-from selenium import webdriver
 
 
 class TestMysql(object):
@@ -25,12 +25,16 @@ class TestMysql(object):
              "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.96 Safari/537.36"
              )
         dcap = dict(DesiredCapabilities.PHANTOMJS)
-        dcap["phantomjs.page.settings.userAgent"] = user_agent
+        #dcap["phantomjs.page.settings.userAgent"] = user_agent
         # url = "https://www.qichacha.com/search?key=" + urllib.parse.quote("京东")
         url = "https://www.qichacha.com/"
-        driver = webdriver.PhantomJS(executable_path=phantomjs_path,
-                                     desired_capabilities=dcap,
-                                     service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'])
+        # driver = webdriver.PhantomJS(executable_path=phantomjs_path,
+        #                              desired_capabilities=dcap,
+        #                              service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'])
+        os.environ['browser']="172.17.161.230"
+        os.environ['port']='8912'
+        webdriver = WebDriver()
+        driver = webdriver.get_phantomjs()
 
         driver.set_window_size(1920, 1080)
     try:
