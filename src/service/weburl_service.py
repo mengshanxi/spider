@@ -25,7 +25,7 @@ class WeburlService:
                 ims_api.done_url_gather(website)
         else:
             website_dao = WebsiteDao()
-            websites = website_dao.get_all()
+            websites = website_dao.get_overtime()
             for website in websites:
                 uri = 'http://' + website.domain_name
                 self.gather_urls(website.id, uri, website.website_name, website.domain_name, 0)
