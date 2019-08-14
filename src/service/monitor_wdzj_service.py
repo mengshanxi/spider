@@ -22,7 +22,7 @@ class MonitorWdzjService:
         driver = webdriver.Chrome(chrome_options=chrome_options,
                                   executable_path=chromedriver_path)
         """
-        driver = WebDriver.get_phantomjs()
+        driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
         try:
             url = "https://www.wdzj.com/front/search/index?key=" + urllib.parse.quote(website_name)

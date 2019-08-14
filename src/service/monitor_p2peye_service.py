@@ -21,7 +21,7 @@ class MonitorP2peyeService:
         driver = webdriver.Chrome(chrome_options=chrome_options,
                                   executable_path=chromedriver_path)
         """
-        driver = WebDriver.get_phantomjs()
+        driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
         try:
             url = "https://www.p2peye.com/search.php?mod=zonghe&srchtxt=" + urllib.parse.quote(website_name)

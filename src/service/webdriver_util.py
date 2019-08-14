@@ -48,14 +48,12 @@ class WebDriver:
 
     @staticmethod
     def get_chrome():
-        # chrome_options = webdriver.ChromeOptions()
-        # chrome_options.add_argument('--headless')
-        # driver = webdriver.Chrome(chrome_options=chrome_options,
-        #                           executable_path=chromedriver_path)
-        # driver.set_page_load_timeout(10)
-        # driver.set_script_timeout(10)
-        # driver.maximize_window()
-        driver = webdriver.Remote(
-            command_executor='http://phantomjs:8910',
-            desired_capabilities=DesiredCapabilities.FIREFOX)
+        browser = os.environ['browser']
+        port = os.environ['port']
+        driver = webdriver.Remote(command_executor='http://' + browser + ':' + port + '/wd/hub',
+                                  desired_capabilities=DesiredCapabilities.CHROME)
+
+        driver.set_page_load_timeout(10)
+        driver.set_script_timeout(10)
+        driver.maximize_window()
         return driver

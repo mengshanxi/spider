@@ -21,7 +21,7 @@ class MonitorBaiduService:
         driver = webdriver.Chrome(chrome_options=chrome_options,
                                   executable_path=chromedriver_path)
         """
-        driver = WebDriver.get_phantomjs()
+        driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
         try:
             url = "https://www.baidu.com/"
@@ -29,7 +29,7 @@ class MonitorBaiduService:
             search_text_blank = driver.find_element_by_id("kw")
             search_text_blank.send_keys(website_name)
             search_text_blank.send_keys(Keys.RETURN)
-            time.sleep(10)
+            time.sleep(5)
             # driver.find_element_by_xpath('//input[@name="wd"]').send_keys(website_name)
             senti_util.snapshot_home("百度搜索", merchant_name, url,
                                      batch_num, driver)
