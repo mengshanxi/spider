@@ -48,9 +48,9 @@ class WebDriver:
 
     @staticmethod
     def get_chrome():
-        browser = os.environ['browser']
-        port = os.environ['port']
-        driver = webdriver.Remote(command_executor='http://' + browser + ':' + port + '/wd/hub',
+        chrome = os.environ['chrome']
+        port = '4444'
+        driver = webdriver.Remote(command_executor='http://' + chrome + ':' + port + '/wd/hub',
                                   desired_capabilities=DesiredCapabilities.CHROME)
 
         driver.set_page_load_timeout(10)
