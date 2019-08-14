@@ -21,8 +21,9 @@ class TestWangdaitianyan(object):
         driver.set_page_load_timeout(5)
         driver.set_script_timeout(5)
         driver.maximize_window()
+        url = "https://www.p2peye.com/search.php?mod=zonghe&srchtxt=" + urllib.parse.quote('上海菁厘信息科技有限公司')
         #driver.get('https://baike.baidu.com/item/%s' % urllib.parse.quote("京东"))
-        driver.get("http://www.chinaft.com.cn/news/search/_1.shtml?key="  + urllib.parse.quote('京东'))
+        driver.get(url)
         time.sleep(3)
         driver.save_screenshot("ff.png")
 
