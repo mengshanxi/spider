@@ -1,11 +1,10 @@
+from model.models import Weburl
 from service.accessible_service import AccessibleService
+from service.monitor_weburl_service import MonitorWeburlService
 
 
 class TestEs(object):
     if __name__ == "__main__":
-        access = AccessibleService()
-        rtn = access.get_access_res("www.zhongguohsp.com")
-        if rtn:
-            print("可以访问")
-        else:
-            print("不可以访问")
+        monitor_url_service = MonitorWeburlService()
+        weburl= Weburl(website_name='深圳市荣格科技有限公司',url='http:/szrgsh.com/index.html')
+        monitor_url_service.monitor_website(weburl,'1')

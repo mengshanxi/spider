@@ -10,3 +10,4 @@ class MonitorWeburlDao(object):
     def add(monitor_url):
         monitor_url.create_time = datetime.datetime.now()
         session.add(monitor_url)
+        session.commit()

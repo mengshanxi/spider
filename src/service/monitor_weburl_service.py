@@ -27,67 +27,66 @@ class MonitorWeburlService:
         monitor_weburl.title = weburl.title
         # 监测死链接
         reachable = access.get_access_res(weburl.url)
-        logger.info("rtn url : %s", str(reachable))
-        #  截图
-        driver = WebDriver.get_phantomjs()
-        snapshot = SnapshotService.create_snapshot(driver)
-
         if reachable is None:
+            logger.info("检测到误404 : %s", weburl.url)
             monitor_weburl.outline = '检测到误404'
             monitor_weburl.is_normal = '异常'
             monitor_weburl.level = 2
             monitor_weburl.snapshot = ''
             monitor_weburl.kinds = '死链接'
             monitor_weburl_dao.add(monitor_weburl)
-        else:
+            return
+            #  截图
+        driver = WebDriver.get_chrome()
+        try:
+            driver.get(weburl.url)
+            snapshot = SnapshotService.create_snapshot(driver)
             monitor_weburl.outline = '网页打开正常'
             monitor_weburl.is_normal = '正常'
             monitor_weburl.level = 0
             monitor_weburl.snapshot = snapshot
             monitor_weburl.kinds = '是否能打开'
             monitor_weburl_dao.add(monitor_weburl)
-            return
 
-        try:
-            driver.get(weburl.url)
+            source = driver.page_source
+            soup = BeautifulSoup(source, 'html.parser')
+            logger.info("检测是否含敏感词 : %s", weburl.url)
+            # 监测页面敏感词
+            for keyword in keywords:
+                index = soup.find(keyword.name)
+                if index is not None:
+                    logger.info("senti url alert,there is : %s", str(keyword.name))
+                    monitor_weburl.outline = '检测到敏感词:' + str(keyword.name)
+                    monitor_weburl.is_normal = '异常'
+                    monitor_weburl.level = 2
+                    monitor_weburl.snapshot = snapshot
+                    monitor_weburl.kinds = '命中敏感词'
+
+                    monitor_weburl_dao.add(monitor_weburl)
+            # 监测 非金融平台包含充值、提现、钱包功能
+            illegal_fun = soup.find("充值")
+            if illegal_fun is not None:
+                logger.info("senti url alert,there is : %s", str("充值"))
+                monitor_weburl.outline = '检测到包含充值、提现、钱包功能'
+                monitor_weburl.is_normal = '异常'
+                monitor_weburl.level = 2
+                monitor_weburl.snapshot = snapshot
+                monitor_weburl.kinds = '非法功能'
+
+                monitor_weburl_dao.add(monitor_weburl)
+            # 监测 误导宣传
+            mislead1 = soup.find("融宝资金担保")
+            mislead2 = soup.find("融宝托管")
+            if mislead1 is not None or mislead2 is not None:
+                monitor_weburl.outline = '检测到误导宣传'
+                monitor_weburl.is_normal = '异常'
+                monitor_weburl.level = 2
+                monitor_weburl.snapshot = snapshot
+                monitor_weburl.kinds = '误导宣传'
+
+                monitor_weburl_dao.add(monitor_weburl)
         except Exception as e:
             logger.error(e)
             return
         finally:
             driver.quit()
-        source = driver.page_source
-        soup = BeautifulSoup(source, 'html.parser')
-        # 监测页面敏感词
-        for keyword in keywords:
-            index = soup.find(keyword.name)
-            if index is not None:
-                logger.info("senti url alert,there is : %s", str(keyword.name))
-                monitor_weburl.outline = '检测到敏感词:' + str(keyword.name)
-                monitor_weburl.is_normal = '异常'
-                monitor_weburl.level = 2
-                monitor_weburl.snapshot = snapshot
-                monitor_weburl.kinds = '命中敏感词'
-
-                monitor_weburl_dao.add(monitor_weburl)
-        # 监测 非金融平台包含充值、提现、钱包功能
-        illegal_fun = soup.find("充值")
-        if illegal_fun is not None:
-            logger.info("senti url alert,there is : %s", str("充值"))
-            monitor_weburl.outline = '检测到包含充值、提现、钱包功能'
-            monitor_weburl.is_normal = '异常'
-            monitor_weburl.level = 2
-            monitor_weburl.snapshot = snapshot
-            monitor_weburl.kinds = '非法功能'
-
-            monitor_weburl_dao.add(monitor_weburl)
-        # 监测 误导宣传
-        mislead1 = soup.find("融宝资金担保")
-        mislead2 = soup.find("融宝托管")
-        if mislead1 is not None or mislead2 is not None:
-            monitor_weburl.outline = '检测到误导宣传'
-            monitor_weburl.is_normal = '异常'
-            monitor_weburl.level = 2
-            monitor_weburl.snapshot = snapshot
-            monitor_weburl.kinds = '误导宣传'
-
-            monitor_weburl_dao.add(monitor_weburl)
