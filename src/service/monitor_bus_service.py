@@ -49,3 +49,5 @@ class MonitorBusService:
         except Exception as e:
             logger.error(e)
             return
+        finally:
+            driver.quit()

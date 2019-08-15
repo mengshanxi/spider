@@ -74,3 +74,5 @@ class MonitorWebsiteService:
                 logger.info("check whether website available : %s ,there is exception", domain_name)
                 logger.info(e)
                 return
+            finally:
+                driver.quit()

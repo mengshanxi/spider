@@ -43,3 +43,5 @@ class MonitorTiebaService:
         except Exception as e:
             logger.error(e)
             return
+        finally:
+            driver.quit()

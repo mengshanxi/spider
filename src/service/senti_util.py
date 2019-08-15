@@ -63,6 +63,8 @@ class SentiUtil:
         except Exception as e:
             logger.error(e)
             return
+        finally:
+            driver.quit()
 
     @staticmethod
     def snapshot_home(platform, website_name, href, batch_num, driver):

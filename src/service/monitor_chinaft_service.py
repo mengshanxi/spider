@@ -45,3 +45,5 @@ class MonitorChinaftService:
                 logger.info("交易中国没有搜索到数据: %s", merchant_name)
         except Exception as e:
             logger.error(e)
+        finally:
+            driver.quit()

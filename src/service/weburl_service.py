@@ -32,7 +32,7 @@ class WeburlService:
                 ims_api.done_url_gather(website)
 
     def gather_urls(self, website_id, uri, website_name, domain_name, level):
-        if level == 2:
+        if level == 1:
             logger.info("gather url just to 3 level: %s ", website_name)
             return
         logger.info("gather url for website: %s ", website_name)
@@ -53,7 +53,7 @@ class WeburlService:
                         src = "http://" + domain_name + src
                     else:
                         src = uri + "/" + src
-                    weburl = Weburl(url=src.replace("//", "/"),
+                    weburl = Weburl(url=src.replace("//", "/").replace("/../", "/"),
                                     website_id=website_id,
                                     website_name=website_name,
                                     title=soup.find('title').string,
@@ -85,9 +85,9 @@ class WeburlService:
                                 title=title,
                                 type='page',
                                 parent=uri,
-                                url=href.replace("//", "/"))
+                                url=href.replace("//", "/").replace("/../", "/"))
                 weburl_service.add(weburl)
-                self.gather_urls(website_id, href, website_name, domain_name, level + 1)
+                # self.gather_urls(website_id, href, website_name, domain_name, level + 1)
 
         except Exception as e:
             logger.error(e)

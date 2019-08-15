@@ -53,6 +53,8 @@ class MonitorWeburlService:
         except Exception as e:
             logger.error(e)
             return
+        finally:
+            driver.quit()
         source = driver.page_source
         soup = BeautifulSoup(source, 'html.parser')
         # 监测页面敏感词

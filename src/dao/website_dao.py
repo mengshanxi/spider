@@ -33,6 +33,7 @@ class WebsiteDao(object):
         for website in websites:
             last_gather_time = website.last_gather_time
             if last_gather_time is None:
+                filterd.append(website)
                 continue
             elif time.mktime(time.strptime(str(last_gather_time), "%Y-%m-%d %H:%M:%S")) > overtime:
                 continue

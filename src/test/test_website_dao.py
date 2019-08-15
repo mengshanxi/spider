@@ -1,18 +1,8 @@
-import datetime
-import time
-import urllib
-
 from bs4 import BeautifulSoup
 from selenium.webdriver import DesiredCapabilities
-from selenium.webdriver.chrome import webdriver
-import os
-from config.config_load import chromedriver_path, phantomjs_path
-from config.mylog import logger
-from service.inspect_task_service import InspectTaskService
-from service.monitor_bc_service import MonitorBcService
-from service.webdriver_util import WebDriver
-from service.weburl_service import WeburlService
+from selenium import webdriver
 
+from config.mylog import logger
 
 
 class TestMysql(object):
@@ -31,14 +21,16 @@ class TestMysql(object):
         # driver = webdriver.PhantomJS(executable_path=phantomjs_path,
         #                              desired_capabilities=dcap,
         #                              service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'])
-        os.environ['browser']="172.17.161.230"
-        os.environ['port']='8912'
-        webdriver = WebDriver()
-        driver = webdriver.get_phantomjs()
+        driver = webdriver.Remote(command_executor='http://172.17.161.230:8913/wd/hub',
+                                  desired_capabilities=DesiredCapabilities.CHROME)
 
-        driver.set_window_size(1920, 1080)
+        driver.set_page_load_timeout(10)
+        driver.set_script_timeout(10)
+        driver.maximize_window()
     try:
         driver.get(url)
+        driver.save_screenshot("bb.jpg")
+        driver.quit()
     except Exception as e:
         logger.error(e)
     driver.find_element_by_id("searchkey").send_keys("京东")

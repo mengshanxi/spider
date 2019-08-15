@@ -48,5 +48,6 @@ class MonitorWdzjService:
                 logger.info("网贷之家没有搜索到数据: %s", merchant_name)
         except Exception as e:
             logger.error(e)
-            driver.quit()
             return
+        finally:
+            driver.quit()

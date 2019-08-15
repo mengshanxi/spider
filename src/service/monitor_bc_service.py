@@ -27,11 +27,11 @@ class MonitorBcService:
     @staticmethod
     def inspect(batch_num, url, merchant_name, legalman):
         monitor_bc_dao = MonitorBcDao()
-        driver = WebDriver.get_phantomjs()
         monitor_bc = MonitorBc()
         monitor_bc.batch_num = batch_num
         monitor_bc.merchant_name = merchant_name
         try:
+            driver = WebDriver.get_phantomjs()
             # 1.受益人
             rest_url = url + "#base"
             driver.get(rest_url)
@@ -67,8 +67,11 @@ class MonitorBcService:
         except Exception as e:
             logger.info(e)
             return
+        finally:
+            driver.quit()
 
         try:
+            driver = WebDriver.get_phantomjs()
             # 2.股东成员
             driver.get(url)
             source = driver.page_source
@@ -97,12 +100,15 @@ class MonitorBcService:
         except Exception as e:
             logger.info(e)
             return
+        finally:
+            driver.quit()
 
         # 3.法人变更
         timestamp = int(time.time())
         snapshot = str(timestamp) + ".png"
         path = base_filepath + "/" + str(timestamp)
         try:
+            driver = WebDriver.get_phantomjs()
             driver.save_screenshot(path + "_temp.png")
             bc_info = driver.find_element_by_xpath('//section[@id="Cominfo"]')
             locations = bc_info.location
@@ -118,6 +124,8 @@ class MonitorBcService:
         except Exception as e:
             pass
             logger.info(e)
+        finally:
+            driver.quit()
 
         legalmans = soup.find_all(class_='seo font-20')
         if str(legalman).strip() is "":
@@ -199,6 +207,7 @@ class MonitorBcService:
 
         # 7.严重违法
         try:
+            driver = WebDriver.get_phantomjs()
             driver.get(url + "#fengxian")
             snapshot = SnapshotService.create_snapshot(driver)
             source = driver.page_source
@@ -248,6 +257,8 @@ class MonitorBcService:
         except Exception as e:
             logger.info(e)
             return
+        finally:
+            driver.quit()
 
     @staticmethod
     def get_merchant_url(batch_num, merchant_name):
@@ -289,6 +300,8 @@ class MonitorBcService:
         except Exception as e:
             logger.error(e)
             return None
+        finally:
+            driver.quit()
 
 
 @staticmethod
@@ -308,7 +321,6 @@ def check_cookie():
         if href != 'NONE':
             driver.get("https://www.qichacha.com" + href)
             source = driver.page_source
-
             soup = BeautifulSoup(source, 'html.parser')
             title = soup.find(name="title").get_text()
             if (str(title) == "会员登录 - 企查查"):
