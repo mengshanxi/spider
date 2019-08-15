@@ -26,6 +26,8 @@ class MonitorBcService:
 
     @staticmethod
     def inspect(batch_num, url, merchant_name, legalman):
+        test = "https://www.qichacha.com/company_getinfos?unique=" + url[30:62] + "&companyname=" + urllib.parse.quote(
+            merchant_name) + "&tab=fengxian"
         monitor_bc_dao = MonitorBcDao()
         monitor_bc = MonitorBc()
         monitor_bc.batch_num = batch_num
@@ -51,20 +53,23 @@ class MonitorBcService:
                     num += 1
                     if num != 1:
                         tds = tr.find_all('td')
-                        fullname = tds[1].find_all(name='a')[0].get_text()
-                        is_shouyiren = tds[1].find_all(name='span', class_=re.compile('ntag sm text-primary click'))[
-                                           0].get_text().find('受益人') > 0
-                        if is_shouyiren:
-                            proportion = tds[2].get_text().strip()
-                            invest_train = '-'
+                        if tds.__len__() >= 3:
+                            fullname = tds[1].find_all(name='a')[0].get_text()
+                            is_shouyiren = \
+                            tds[1].find_all(name='span', class_=re.compile('ntag sm text-primary click'))[
+                                0].get_text().find('受益人') > 0
+                            if is_shouyiren:
+                                proportion = tds[2].get_text().strip()
+                                invest_train = '-'
 
-                            bc_benefit = BcBenefit()
-                            bc_benefit.batch_num = batch_num
-                            bc_benefit.merchant_name = merchant_name.strip()
-                            bc_benefit.fullname = fullname.strip()
-                            bc_benefit.proportion = proportion.strip()
-                            bc_benefit.invest_train = invest_train.strip()
-                            bc_benefit_dao.add(bc_benefit)
+                                bc_benefit = BcBenefit()
+                                bc_benefit.batch_num = batch_num
+                                bc_benefit.merchant_name = merchant_name.strip()
+                                bc_benefit.fullname = fullname.strip()
+                                bc_benefit.proportion = proportion.strip()
+                                bc_benefit.invest_train = invest_train.strip()
+                                bc_benefit_dao.add(bc_benefit)
+
         except Exception as e:
             logger.info(e)
         finally:
@@ -100,28 +105,25 @@ class MonitorBcService:
                         bc_person_dao.add(bc_person)
         except Exception as e:
             logger.info(e)
-        finally:
-            driver.quit()
 
         # 3.法人变更
         timestamp = int(time.time())
         snapshot = str(timestamp) + ".png"
         path = base_filepath + "/" + str(timestamp)
         try:
-            driver = WebDriver.get_chrome()
+            driver = WebDriver.get_phantomjs()
             driver.get(url)
             logger.info("企查查检测法人变更 : %s", merchant_name)
-            driver.save_screenshot(path + ".png")
+            driver.save_screenshot(path + "_temp.png")
             bc_info = driver.find_element_by_xpath('//section[@id="Cominfo"]')
             locations = bc_info.location
             sizes = bc_info.size
             rangle = (int(locations['x']), int(locations['y']), int(locations['x'] + sizes['width']),
                       int(locations['y'] + sizes['height']))
-            img = Image.open(path + ".png")
+            img = Image.open(path + "_temp.png")
             jpg = img.crop(rangle)
-            jpg.save(path + "_temp.png")
-            im = Image.open(path + "_temp.png")
-            im_resize = im.resize((50, 50))
+            jpg.save(path + ".png")
+            im_resize = img.resize((50, 50))
             im_resize.save(path + "_thumb.bmp")
 
             legalmans = soup.find_all(class_='seo font-20')
@@ -270,7 +272,7 @@ class MonitorBcService:
     def get_merchant_url(batch_num, merchant_name):
         webdriver = WebDriver()
         url = "https://www.qichacha.com"
-        driver = webdriver.get_phantomjs()
+        driver = webdriver.get_chrome()
         driver.set_window_size(1920, 1080)
         try:
             driver.get(url)
