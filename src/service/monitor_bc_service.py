@@ -217,7 +217,7 @@ class MonitorBcService:
             driver.save_screenshot(path + ".png")
             img = Image.open(path + ".png")
             jpg = img.crop((91, 572, 191, 672))
-            jpg.save(path + "._thumb.bmp")
+            jpg.save(path + "_thumb.bmp")
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
             companys = soup.find_all(name='div', class_='company-nav-tab')
