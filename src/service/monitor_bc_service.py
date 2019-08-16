@@ -67,14 +67,8 @@ class MonitorBcService:
                                     bc_benefit.proportion = proportion.strip()
                                     bc_benefit.invest_train = invest_train.strip()
                                     bc_benefit_dao.add(bc_benefit)
-        except Exception as e:
-            logger.info(e)
-        finally:
-            driver.quit()
 
-        try:
             logger.info("企查查检测股东成员 : %s", merchant_name)
-            driver = WebDriver.get_chrome()
             # 2.股东成员
             driver.get(url)
             source = driver.page_source
@@ -100,16 +94,11 @@ class MonitorBcService:
                         bc_person.job = job.strip()
 
                         bc_person_dao.add(bc_person)
-        except Exception as e:
-            logger.info(e)
 
-        # 3.法人变更
-        timestamp = int(time.time())
-        snapshot = str(timestamp) + ".png"
-        path = base_filepath + "/" + str(timestamp)
-        try:
-            driver = WebDriver.get_chrome()
-            driver.get(url)
+                # 3.法人变更
+            timestamp = int(time.time())
+            snapshot = str(timestamp) + ".png"
+            path = base_filepath + "/" + str(timestamp)
             from selenium.webdriver.common.keys import Keys
             driver.find_element_by_link_text("工商信息").send_keys(Keys.RETURN)
             logger.info("企查查检测法人变更 : %s", merchant_name)
@@ -152,11 +141,7 @@ class MonitorBcService:
                                                kinds='法人变更:' + legalmans[0].get_text(),
                                                level=1)
                     monitor_bc_dao.add(monitor_bc)
-        except Exception as e:
-            logger.info(e)
-        finally:
-            driver.quit()
-        try:
+
             #  4.经营状态：注销 迁出
             logger.info("企查查检测经营状态：注销 迁出 : %s", merchant_name)
             cminfo = soup.find_all(name='section', id=re.compile('Cominfo'))
@@ -202,17 +187,12 @@ class MonitorBcService:
                                        kinds='经营状态',
                                        level=0)
             monitor_bc_dao.add(monitor_bc)
-        except Exception as e:
-            logger.info(e)
 
-        # 7.严重违法
-        logger.info("企查查检测严重违法 : %s", merchant_name)
-        try:
+            # 7.严重违法
+            logger.info("企查查检测严重违法 : %s", merchant_name)
             timestamp = int(time.time())
             snapshot = str(timestamp) + ".png"
             path = base_filepath + "/" + str(timestamp)
-            driver = WebDriver.get_chrome()
-            driver.get(url + "#fengxian")
             driver.find_element_by_partial_link_text("经营风险").send_keys(Keys.RETURN)
             driver.save_screenshot(path + ".png")
             img = Image.open(path + ".png")
