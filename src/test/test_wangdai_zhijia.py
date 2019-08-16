@@ -16,7 +16,7 @@ class TestWangdaitianyan(object):
         driver.get("https://www.wdzj.com/front/search/index?key=" + urllib.parse.quote("猫小贷"))
         """
         try:
-            driver = WebDriver.get_phantomjs()
+            driver = WebDriver.get_chrome()
             driver.get("http://www.wdzj.com/news/yc/2934681.html")
 
         except Exception as e:  # 异常处理

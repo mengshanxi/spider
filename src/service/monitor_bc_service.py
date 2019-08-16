@@ -1,7 +1,6 @@
 import datetime
 import re
 import time
-import urllib.request
 
 from PIL import Image
 from bs4 import BeautifulSoup
@@ -26,8 +25,6 @@ class MonitorBcService:
 
     @staticmethod
     def inspect(batch_num, url, merchant_name, legalman):
-        test = "https://www.qichacha.com/company_getinfos?unique=" + url[30:62] + "&companyname=" + urllib.parse.quote(
-            merchant_name) + "&tab=fengxian"
         monitor_bc_dao = MonitorBcDao()
         monitor_bc = MonitorBc()
         monitor_bc.batch_num = batch_num
@@ -55,21 +52,21 @@ class MonitorBcService:
                         tds = tr.find_all('td')
                         if tds.__len__() >= 3:
                             fullname = tds[1].find_all(name='a')[0].get_text()
-                            is_shouyiren = \
-                            tds[1].find_all(name='span', class_=re.compile('ntag sm text-primary click'))[
-                                0].get_text().find('受益人') > 0
-                            if is_shouyiren:
-                                proportion = tds[2].get_text().strip()
-                                invest_train = '-'
+                            shouyirens = tds[1].find_all(name='span', class_=re.compile('ntag sm text-primary click'))
+                            if shouyirens.__len__() >= 1:
+                                is_shouyiren = shouyirens[
+                                                   0].get_text().find('受益人') > 0
+                                if is_shouyiren:
+                                    proportion = tds[2].get_text().strip()
+                                    invest_train = '-'
 
-                                bc_benefit = BcBenefit()
-                                bc_benefit.batch_num = batch_num
-                                bc_benefit.merchant_name = merchant_name.strip()
-                                bc_benefit.fullname = fullname.strip()
-                                bc_benefit.proportion = proportion.strip()
-                                bc_benefit.invest_train = invest_train.strip()
-                                bc_benefit_dao.add(bc_benefit)
-
+                                    bc_benefit = BcBenefit()
+                                    bc_benefit.batch_num = batch_num
+                                    bc_benefit.merchant_name = merchant_name.strip()
+                                    bc_benefit.fullname = fullname.strip()
+                                    bc_benefit.proportion = proportion.strip()
+                                    bc_benefit.invest_train = invest_train.strip()
+                                    bc_benefit_dao.add(bc_benefit)
         except Exception as e:
             logger.info(e)
         finally:
@@ -111,20 +108,15 @@ class MonitorBcService:
         snapshot = str(timestamp) + ".png"
         path = base_filepath + "/" + str(timestamp)
         try:
-            driver = WebDriver.get_phantomjs()
+            driver = WebDriver.get_chrome()
             driver.get(url)
+            from selenium.webdriver.common.keys import Keys
+            driver.find_element_by_link_text("工商信息").send_keys(Keys.RETURN)
             logger.info("企查查检测法人变更 : %s", merchant_name)
-            driver.save_screenshot(path + "_temp.png")
-            bc_info = driver.find_element_by_xpath('//section[@id="Cominfo"]')
-            locations = bc_info.location
-            sizes = bc_info.size
-            rangle = (int(locations['x']), int(locations['y']), int(locations['x'] + sizes['width']),
-                      int(locations['y'] + sizes['height']))
-            img = Image.open(path + "_temp.png")
-            jpg = img.crop(rangle)
-            jpg.save(path + ".png")
-            im_resize = img.resize((50, 50))
-            im_resize.save(path + "_thumb.bmp")
+            driver.save_screenshot(path + ".png")
+            img = Image.open(path + ".png")
+            jpg = img.crop((265, 158, 420, 258))
+            jpg.save(path + "_thumb.bmp")
 
             legalmans = soup.find_all(class_='seo font-20')
             if str(legalman).strip() is "":
@@ -216,9 +208,16 @@ class MonitorBcService:
         # 7.严重违法
         logger.info("企查查检测严重违法 : %s", merchant_name)
         try:
+            timestamp = int(time.time())
+            snapshot = str(timestamp) + ".png"
+            path = base_filepath + "/" + str(timestamp)
             driver = WebDriver.get_chrome()
             driver.get(url + "#fengxian")
-            snapshot = SnapshotService.create_snapshot(driver)
+            driver.find_element_by_partial_link_text("经营风险").send_keys(Keys.RETURN)
+            driver.save_screenshot(path + ".png")
+            img = Image.open(path + ".png")
+            jpg = img.crop((91, 572, 191, 672))
+            jpg.save(path + "._thumb.bmp")
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
             companys = soup.find_all(name='div', class_='company-nav-tab')
@@ -310,31 +309,3 @@ class MonitorBcService:
             return None
         finally:
             driver.quit()
-
-
-@staticmethod
-def check_cookie():
-    driver = WebDriver.get_phantomjs_with_cookie()
-    url = "https://www.qichacha.com/search?key=" + urllib.parse.quote("天津融宝支付网络有限公司")
-    driver.get(url)
-    source = driver.page_source
-    soup = BeautifulSoup(source, 'html.parser')
-    tbodys = soup.find_all('tbody')
-    trs = tbodys[0].find_all('tr')
-    tds = trs[0].find_all('td')
-    a = tds[1].find_all('a')
-    name = a[0].get_text().strip()
-    if name == "天津融宝支付网络有限公司".strip():
-        href = a[0].get_by_name('href')
-        if href != 'NONE':
-            driver.get("https://www.qichacha.com" + href)
-            source = driver.page_source
-            soup = BeautifulSoup(source, 'html.parser')
-            title = soup.find(name="title").get_text()
-            if (str(title) == "会员登录 - 企查查"):
-                return "false"
-            else:
-                return "true"
-
-    else:
-        return "false"

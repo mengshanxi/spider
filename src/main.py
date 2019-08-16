@@ -20,13 +20,6 @@ gl.set_value('STATUS', True)
 ims_api = ImsApi()
 
 
-@app.route('/test/chrome', methods=['GET'])
-def test():
-    driver = WebDriver.get_phantomjs()
-    driver.get("http://baidu.com")
-    title = driver.title
-    return str(title)
-
 
 @app.route('/verify_cookie', methods=['POST'])
 def verify_cookie():
