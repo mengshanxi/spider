@@ -206,7 +206,6 @@ class MonitorBcService:
             serious_illegal = risks[4].get_text()
             logger.info("manage_abn:%s", str(manage_abn))
             logger.info("serious_illegal:%s", str(serious_illegal))
-            # 严重违法
             if int(manage_abn) > 0:
                 monitor_bc = MonitorBc(batch_num=batch_num,
                                        merchant_name=merchant_name,
