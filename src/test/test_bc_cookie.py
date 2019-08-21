@@ -1,19 +1,22 @@
-import urllib.request
+import time
+
+from selenium import webdriver
+from selenium.webdriver import DesiredCapabilities
+from selenium.webdriver.common.keys import Keys
 
 
 class TestCookie(object):
     if __name__ == "__main__":
-        header = {
-            'User-Agent': ' Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36',
-            'cookie': '1zg_did=%7B%212d1id%22%3A%20%221641330d61764'
-        }
-        word = urllib.parse.quote("测试")
-        url = 'http://www.qichacha.com/search?key=%s' % word
-        try:
-            req = urllib.request.Request(url, headers=header)
-            res = urllib.request.urlopen(req).read()
-            res = res.decode('UTF-8')
-            print(res)
-        except Exception as e:
-            print(1)
-            print(e)
+        driver = webdriver.Remote(command_executor='http://172.17.161.230:8911/wd/hub',
+                                  desired_capabilities=DesiredCapabilities.CHROME)
+        driver.get("https://www.qichacha.com/firm_84c17a005a759a5e0d875c1ebb6c9846.html")
+        time.sleep(3)
+        driver.find_element_by_partial_link_text("经营风险").send_keys(Keys.RETURN)
+        time.sleep(1)
+        driver.find_element_by_partial_link_text("经营异常").send_keys(Keys.RETURN)
+        time.sleep(1)
+        driver.set_page_load_timeout(10)
+        driver.set_script_timeout(10)
+        driver.maximize_window()
+        driver.save_screenshot("D:/cc.jpg")
+        driver.quit()
