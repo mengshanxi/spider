@@ -21,9 +21,17 @@ class TestMysql(object):
         search_text_blank = driver.find_element_by_id("searchbox")
         search_text_blank.send_keys('移动支付')
         driver.find_element_by_xpath('//button[contains(text(), "搜索")]').click()
-
         time.sleep(5)
-        driver.save_screenshot("D:/bb.jpg")
+        source = driver.page_source
+        soup = BeautifulSoup(source, 'html.parser')
+        items = soup.find_all(attrs={'class': 'blackcat-con'})
+        if items.__len__() > 0:
+            for item in items:
+                href = item.find_all('a')[0].get("href")
+                content = item.find_all('h1')[0].get_text()
+        else:
+            logger.info("黑猫投诉没有搜索到数据:")
         driver.quit()
     except Exception as e:
         logger.error(e)
+        driver.quit()

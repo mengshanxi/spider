@@ -21,9 +21,16 @@ class TestMysql(object):
         search_text_blank = driver.find_element_by_id("scform_srchtxt")
         search_text_blank.send_keys('京东')
         search_text_blank.send_keys(Keys.RETURN)
-
-        time.sleep(5)
-        driver.save_screenshot("D:/bb.jpg")
+        source = driver.page_source
+        soup = BeautifulSoup(source, 'html.parser')
+        news = soup.find_all(attrs={'class': 'result-t'})
+        if news.__len__() > 0:
+            for new in news:
+                href = new.find_all('a')[0].get("href")
+                content = new.get_text()
+        else:
+            logger.info("支付圈没有搜索到数据:")
         driver.quit()
     except Exception as e:
         logger.error(e)
+        driver.quit()
