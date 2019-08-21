@@ -15,12 +15,6 @@ class MonitorP2peyeService:
 
     @staticmethod
     def monitor(website_name, merchant_name, batch_num):
-        """
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument('--headless')
-        driver = webdriver.Chrome(chrome_options=chrome_options,
-                                  executable_path=chromedriver_path)
-        """
         driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
         try:

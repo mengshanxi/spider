@@ -13,7 +13,7 @@ class TaskPoolService:
         task_pool = session.query(TaskItem).filter(TaskItem.batch_num == batch_num).filter(
             TaskItem.status == 'pending').first()
         if task_pool is None:
-            #  没有pengding状态的任务
+            #  没有pending状态的任务
             gl.set_value('STATUS', False)
             return None, None, None, None
         session.query(TaskItem).filter(TaskItem.id == task_pool.id).update({"status": "processing"})
