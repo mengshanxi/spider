@@ -14,14 +14,6 @@ class SentiUtil:
 
     @staticmethod
     def senti_process_text(platform, website_name, text, href, batch_num):
-
-        """
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument('--headless')
-        driver = webdriver.Chrome(chrome_options=chrome_options,
-                                  executable_path=chromedriver_path)
-        """""
-
         driver = WebDriver.get_chrome()
         keyword_dao = KeywordDao()
         monitor_third_dao = MonitorThirdDao()

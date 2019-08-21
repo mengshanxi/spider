@@ -19,7 +19,7 @@ class TestMysql(object):
         os.environ['browser'] = "172.17.161.230"
         os.environ['port'] = '8912'
         webdriver = WebDriver()
-        driver = webdriver.get_phantomjs()
+        driver = webdriver.get_chrome()
         driver.set_window_size(1920, 1080)
         # 打开登录页面
         driver.get('https://www.qichacha.com/user_login')

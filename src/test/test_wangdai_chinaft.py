@@ -16,7 +16,7 @@ class TestWangdaitianyan(object):
                                   executable_path="C:/chromedriver_2.38/chromedriver.exe")
         driver.get("http://www.chinaft.com.cn/news/search/_1.shtml?key=" + urllib.parse.quote("京东"))
         """
-        driver = WebDriver.get_phantomjs()
+        driver = WebDriver.get_chrome()
         try :
             driver.get("http://www.chinaft.com.cn/news/search/_1.shtml?key=" + urllib.parse.quote("京东"))
         except Exception as e:
