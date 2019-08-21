@@ -14,7 +14,7 @@ from config.mylog import logger
 class MonitorP2peyeService:
 
     @staticmethod
-    def monitor_p2peye(website_name, merchant_name,batch_num):
+    def monitor(website_name, merchant_name, batch_num):
         """
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('--headless')

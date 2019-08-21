@@ -16,7 +16,7 @@ from service.webdriver_util import WebDriver
 class MonitorZfzjService:
 
     @staticmethod
-    def monitor_tousu(website_name, merchant_name, batch_num):
+    def monitor(website_name, merchant_name, batch_num):
         driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
         try:

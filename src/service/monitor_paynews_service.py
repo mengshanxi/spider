@@ -14,7 +14,7 @@ from config.mylog import logger
 class MonitorPaynewsService:
 
     @staticmethod
-    def monitor_paynews(website_name, merchant_name, batch_num):
+    def monitor(website_name, merchant_name, batch_num):
         driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
         try:

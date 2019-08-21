@@ -8,4 +8,4 @@ class TestEs(object):
         test = '中视好食品科技(北京)有限公司'
         print(test.replace("(", "（").replace(")","）"))
         service = MonitorBaikeService()
-        service.monitor_baike('中视好食品科技(北京)有限公司',27)
+        service.monitor('中视好食品科技(北京)有限公司', 27)

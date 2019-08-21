@@ -14,7 +14,7 @@ from service.webdriver_util import WebDriver
 class MonitorTiebaService:
 
     @staticmethod
-    def monitor_tieba(website_name, merchant_name, batch_num):
+    def monitor(website_name, merchant_name, batch_num):
         """
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('--headless')

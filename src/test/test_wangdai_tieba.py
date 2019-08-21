@@ -11,4 +11,4 @@ class TestWangdaitianyan(object):
         driver.get("http://tieba.baidu.com/f?fr=wwwt&kw=" + urllib.parse.quote("京东"))
         """
         MonitorTiebaService = MonitorTiebaService()
-        MonitorTiebaService.monitor_tieba("京东", "", 1)
+        MonitorTiebaService.monitor("京东", "", 1)

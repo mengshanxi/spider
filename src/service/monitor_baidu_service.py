@@ -14,7 +14,7 @@ import time
 class MonitorBaiduService:
 
     @staticmethod
-    def monitor_baidu(website_name,merchant_name, batch_num):
+    def monitor(website_name, merchant_name, batch_num):
         """
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('--headless')
