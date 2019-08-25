@@ -17,9 +17,9 @@ class AccessibleService:
             driver.get(http_url)
             title = driver.title
             if title.__contains__('404'):
-                return None
+                return None, None
             else:
-                return http_url
+                return http_url, driver.current_url
         except Exception as e:
             logger.error(e)
         finally:
