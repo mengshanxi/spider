@@ -135,7 +135,7 @@ class MonitorBcService:
                     else:
                         monitor_bc = MonitorBc(batch_num=batch_num,
                                                merchant_name=merchant_name,
-                                               outline='检测到法人信息与系统中维护的法人不一致',
+                                               outline='检测到法人变更，变更为:' + legalmans[0].get_text(),
                                                snapshot=str(snapshot),
                                                is_normal='异常',
                                                kinds='法人变更:' + legalmans[0].get_text(),
