@@ -26,6 +26,8 @@ class MonitorWebsiteService:
                 monitor_website = MonitorWebsite()
                 monitor_website.website_name = website.website_name
                 monitor_website.merchant_name = website.merchant_name
+                monitor_website.merchant_num = website.merchant_num
+                monitor_website.saler = website.saler
                 monitor_website.domain_name = domain_name
                 monitor_website.batch_num = batch_num
                 monitor_website.kinds = "首页是否可打开"
@@ -45,7 +47,8 @@ class MonitorWebsiteService:
                     monitor_website.pageview = pageview.reach_rank[0]
                     try:
                         driver.get(domain_name_rich)
-                        snapshot = SnapshotService.create_snapshot(driver)
+                        snapshot = SnapshotService.create_snapshot(driver, batch_num, website.merchant_name,
+                                                                   website.merchant_num, '网站')
                         monitor_website.snapshot = snapshot
                         monitor_website_dao.add(monitor_website, batch_num)
                     except Exception as e:

@@ -13,7 +13,7 @@ from service.webdriver_util import WebDriver
 class SentiUtil:
 
     @staticmethod
-    def senti_process_text(platform, website_name, text, href, batch_num):
+    def senti_process_text(platform, website_name, text, href, batch_num, merchant_name, merchant_num):
         driver = WebDriver.get_chrome()
         keyword_dao = KeywordDao()
         monitor_third_dao = MonitorThirdDao()
@@ -21,7 +21,7 @@ class SentiUtil:
         #  截图
         try:
             driver.get(href)
-            snapshot = SnapshotService.create_snapshot(driver)
+            snapshot = SnapshotService.create_snapshot(driver, batch_num, merchant_name, merchant_num, '舆情')
             is_normal = "正常"
             keywords = keyword_dao.get_all()
             for keyword in keywords:
@@ -59,12 +59,11 @@ class SentiUtil:
             driver.quit()
 
     @staticmethod
-    def snapshot_home(platform, website_name, href, batch_num, driver):
+    def snapshot_home(platform, website_name, href, batch_num, merchant_name, merchant_num, driver):
         monitor_third_dao = MonitorThirdDao()
-
         #  截图
         try:
-            snapshot = SnapshotService.create_snapshot(driver)
+            snapshot = SnapshotService.create_snapshot(driver, batch_num, merchant_name, merchant_num, '舆情')
             is_normal = "正常"
             monitor_third = MonitorThird()
             monitor_third.website_name = website_name

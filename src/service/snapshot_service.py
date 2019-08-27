@@ -25,6 +25,22 @@ class SnapshotService:
         return snapshot
 
     @staticmethod
+    def create_snapshot(driver, batch_num, merchant_name, merchant_num, senti_type):
+        timestamp = int(time.time())
+        snapshot = str(timestamp) + ".png"
+        path = base_filepath + "/" + batch_num + "_" + + merchant_name + "_" + merchant_num + "_" + senti_type + "_" + str(
+            timestamp)
+        try:
+            driver.save_screenshot(path + ".png")
+            im = Image.open(path + ".png")
+            im_resize = im.resize((50, 50), Image.ANTIALIAS)
+            im_resize.save(path + "_thumb.bmp")
+        except Exception as e:
+            logger.info(e)
+            return snapshot
+        return snapshot
+
+    @staticmethod
     def simulation_404():
         timestamp = int(time.time())
         snapshot = str(timestamp) + ".png"

@@ -40,7 +40,8 @@ class MonitorWeburlService:
         driver = WebDriver.get_chrome()
         try:
             driver.get(weburl.url)
-            snapshot = SnapshotService.create_snapshot(driver)
+            snapshot = SnapshotService.create_snapshot(driver, batch_num, weburl.merchant_name,
+                                                       weburl.merchant_num, '内容')
             monitor_weburl.outline = '网页打开正常'
             monitor_weburl.is_normal = '正常'
             monitor_weburl.level = 0

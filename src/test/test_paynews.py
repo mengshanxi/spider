@@ -23,13 +23,16 @@ class TestMysql(object):
         search_text_blank.send_keys(Keys.RETURN)
         source = driver.page_source
         soup = BeautifulSoup(source, 'html.parser')
-        news = soup.find_all(attrs={'class': 'result-t'})
-        if news.__len__() > 0:
+        driver.save_screenshot("D:/a.png")
+        div_list = soup.find(attrs={'class': 'slst mtw'})
+        if div_list.__len__() > 0:
+            news = div_list.find_all('li')
             for new in news:
                 href = new.find_all('a')[0].get("href")
-                content = new.get_text()
+                content = new.find_all('a')[0].get_text()
+                print(content)
         else:
-            logger.info("支付圈没有搜索到数据:")
+            logger.info("支付产业网没有搜索到数据: %s")
         driver.quit()
     except Exception as e:
         logger.error(e)

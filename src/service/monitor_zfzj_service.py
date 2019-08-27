@@ -16,7 +16,7 @@ from service.webdriver_util import WebDriver
 class MonitorZfzjService:
 
     @staticmethod
-    def monitor(website_name, merchant_name, batch_num):
+    def monitor(keyword, website_name, batch_num, merchant_name, merchant_num):
         driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
         try:
@@ -24,23 +24,23 @@ class MonitorZfzjService:
             driver.get(url)
             source = driver.page_source
             search_text_blank = driver.find_element_by_id("scform_srchtxt")
-            search_text_blank.send_keys(merchant_name)
+            search_text_blank.send_keys(keyword)
             search_text_blank.send_keys(Keys.RETURN)
             time.sleep(5)
-            senti_util.snapshot_home("支付快讯", merchant_name, url,
-                                     batch_num, driver)
+            senti_util.snapshot_home("支付快讯", website_name, url,
+                                     batch_num, merchant_name, merchant_num)
             soup = BeautifulSoup(source, 'html.parser')
             items = soup.find_all(attrs={'class': 'slst mtw'})
             if items.__len__() > 0:
                 for item in items.find_all('li'):
                     href = item.find_all('a')[0].get("href")
                     content = item.find_all('a')[0].get_text()
-                    if content.find(website_name) != -1:
-                        senti_util.senti_process_text("支付快讯", merchant_name, content,
+                    if content.find(keyword) != -1:
+                        senti_util.senti_process_text("支付快讯", website_name, content,
                                                       "http://www.paycircle.cn" + href[1:],
-                                                      batch_num)
+                                                      batch_num, merchant_name, merchant_num)
             else:
-                logger.info("支付快讯没有搜索到数据: %s", merchant_name)
+                logger.info("支付快讯没有搜索到数据: %s", keyword)
         except Exception as e:
             logger.error(e)
             return

@@ -14,7 +14,7 @@ from service.webdriver_util import WebDriver
 class MonitorTiebaService:
 
     @staticmethod
-    def monitor(website_name, merchant_name, batch_num):
+    def monitor(keyword, website_name, batch_num, merchant_name, merchant_num):
         """
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('--headless')
@@ -24,10 +24,10 @@ class MonitorTiebaService:
         driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
         try:
-            url = "http://tieba.baidu.com/f?fr=wwwt&kw=" + urllib.parse.quote(website_name)
+            url = "http://tieba.baidu.com/f?fr=wwwt&kw=" + urllib.parse.quote(keyword)
             driver.get(url)
-            senti_util.snapshot_home("百度贴吧", merchant_name, url,
-                                     batch_num, driver)
+            senti_util.snapshot_home("百度贴吧", website_name, url, batch_num, merchant_name, merchant_num,
+                                     driver)
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
             news = soup.find_all("div", attrs={'class': 'threadlist_title pull_left j_th_tit '})
@@ -35,11 +35,12 @@ class MonitorTiebaService:
                 for new in news:
                     href = new.find_all('a')[0].get("href")
                     content = new.find_all('a')[0].get_text()
-                    if content.find(website_name) != -1:
-                        senti_util.senti_process_text("百度贴吧", merchant_name, content,
-                                                      "http://tieba.baidu.com" + href, batch_num)
+                    if content.find(keyword) != -1:
+                        senti_util.senti_process_text("百度贴吧", website_name, content,
+                                                      "http://tieba.baidu.com" + href, batch_num, merchant_name,
+                                                      merchant_num)
             else:
-                logger.info("百度贴吧没有搜索到数据: %s", merchant_name)
+                logger.info("百度贴吧没有搜索到数据: %s", keyword)
         except Exception as e:
             logger.error(e)
             return
