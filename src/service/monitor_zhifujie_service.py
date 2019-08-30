@@ -27,7 +27,7 @@ class MonitorZhifujieService:
             time.sleep(5)
             source = driver.page_source
             senti_util.snapshot_home("支付界", website_name, url,
-                                     batch_num, merchant_name, merchant_num)
+                                     batch_num, merchant_name, merchant_num,driver)
             soup = BeautifulSoup(source, 'html.parser')
             items = soup.find_all(attrs={'class': 'main-news-content-item'})
             if items.__len__() > 0:

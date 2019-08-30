@@ -275,12 +275,19 @@ class MonitorBcService:
             if name == merchant_name.strip() and str(href) is not None:
                 return href.strip()
             else:
-                snapshot = SnapshotService.create_snapshot(driver)
+                timestamp = int(time.time())
+                path = base_filepath + "/" + batch_num + "_" + "_工商_" + str(
+                    timestamp)
+                snapshot = path + ".png"
+                driver.save_screenshot(snapshot)
+                img = Image.open(path + ".png")
+                jpg = img.crop((265, 158, 420, 258))
+                jpg.save(path + "_thumb.bmp")
                 monitor_bc_dao = MonitorBcDao()
                 monitor_bc = MonitorBc(batch_num=batch_num,
                                        merchant_name=merchant_name,
                                        snapshot=snapshot,
-                                       is_normal='异常',
+                                       is_normal='正常',
                                        kinds='企业是否可查',
                                        level=0,
                                        outline='企查查没有查询到商户公司',

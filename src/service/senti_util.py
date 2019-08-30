@@ -28,6 +28,8 @@ class SentiUtil:
                 index = text.find(keyword.name)
                 monitor_third = MonitorThird()
                 monitor_third.website_name = website_name
+                monitor_third.merchant_num = merchant_num
+                monitor_third.merchant_name = merchant_name
                 monitor_third.batch_num = batch_num
                 monitor_third.url = href
                 monitor_third.type = platform
@@ -66,6 +68,8 @@ class SentiUtil:
             snapshot = SnapshotService.create_snapshot(driver, batch_num, merchant_name, merchant_num, '舆情')
             is_normal = "正常"
             monitor_third = MonitorThird()
+            monitor_third.merchant_num=merchant_num
+            monitor_third.merchant_name=merchant_name
             monitor_third.website_name = website_name
             monitor_third.batch_num = batch_num
             monitor_third.url = href

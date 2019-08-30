@@ -28,7 +28,7 @@ class MonitorZfzjService:
             search_text_blank.send_keys(Keys.RETURN)
             time.sleep(5)
             senti_util.snapshot_home("支付快讯", website_name, url,
-                                     batch_num, merchant_name, merchant_num)
+                                     batch_num, merchant_name, merchant_num, driver)
             soup = BeautifulSoup(source, 'html.parser')
             items = soup.find_all(attrs={'class': 'slst mtw'})
             if items.__len__() > 0:

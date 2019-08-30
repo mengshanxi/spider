@@ -40,7 +40,7 @@ class GatherCenter:
                                                     batch_num, entity.merchant_name, entity.merchant_num)
                 monitor_senti_service.monitor_senti(entity.merchant_name, entity.website_name, task_id,
                                                     batch_num, entity.merchant_name, entity.merchant_num)
-                logger.info("sentiment monitor done!websiteName : %s", entity.website_name)
+                logger.info("sentiment monitor done!merchant_name : %s", entity.merchant_name)
             else:
                 logger.info("website name is empty,with merchantName! ")
                 monitor_senti_service = MonitorSentiService()

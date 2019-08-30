@@ -20,9 +20,9 @@ class MonitorPaynewsService:
             url = "http://paynews.net/search.php?mod=forum"
             driver.get(url)
             search_text_blank = driver.find_element_by_id("scform_srchtxt")
-            search_text_blank.send_keys('京东')
+            search_text_blank.send_keys(keyword)
             search_text_blank.send_keys(Keys.RETURN)
-            senti_util.snapshot_home("支付产业网", website_name, merchant_name, url,
+            senti_util.snapshot_home("支付产业网", website_name, url,
                                      batch_num, merchant_name, merchant_num,
                                      driver)
             source = driver.page_source

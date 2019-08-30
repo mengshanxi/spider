@@ -2,6 +2,8 @@
 import threading
 
 import time
+
+import os
 from flask import Flask
 from flask import request
 from config.mylog import logger
@@ -20,7 +22,6 @@ gl.set_value('STATUS', True)
 ims_api = ImsApi()
 
 
-
 @app.route('/verify_cookie', methods=['POST'])
 def verify_cookie():
     monitor_bc_service = MonitorBcService()
@@ -35,6 +36,8 @@ def verify_cookie():
 
 @app.route('/spider/execute', methods=['POST'])
 def execute():
+    os.environ['browser'] = '172.17.161.230'
+    os.environ['port'] = '8911'
     gl.set_value('STATUS', True)
     try:
         batch_num = request.form['batchNum']

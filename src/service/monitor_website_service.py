@@ -13,6 +13,7 @@ class MonitorWebsiteService:
     @staticmethod
     def monitor_website(website, batch_num):
         #   首页监控
+        driver = WebDriver.get_chrome()
         monitor_website_dao = MonitorWebsiteDao
         service = TrafficService()
         access = AccessibleService()
@@ -36,7 +37,6 @@ class MonitorWebsiteService:
                 domain_name_rich = access.get_access_res(domain_name)
                 logger.info("domain_name: %s", domain_name)
                 logger.info("domain_name_rich: %s", domain_name_rich)
-                driver = WebDriver.get_chrome()
                 if domain_name_rich is not None:
                     logger.info("domain : %s", str(domain_name_rich))
                     monitor_website.access = '正常'
@@ -76,6 +76,5 @@ class MonitorWebsiteService:
             except Exception as e:
                 logger.info("check whether website available : %s ,there is exception", domain_name)
                 logger.info(e)
-                return
             finally:
                 driver.quit()
