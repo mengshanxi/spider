@@ -12,7 +12,8 @@ class SnapshotService:
     @staticmethod
     def create_snapshot(driver, batch_num, merchant_name, merchant_num, senti_type):
         timestamp = int(time.time())
-        snapshot = str(timestamp) + ".png"
+        snapshot = batch_num + "_" + merchant_name + "_" + merchant_num + "_" + senti_type + "_" + str(
+            timestamp) + ".png"
         path = base_filepath + "/" + batch_num + "_" + merchant_name + "_" + merchant_num + "_" + senti_type + "_" + str(
             timestamp)
         try:
