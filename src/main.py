@@ -62,9 +62,9 @@ def inspect(batch_num):
 @app.route('/spider/gather_urls', methods=['POST'])
 def gather_urls():
     try:
-        task_id = request.form['taskId']
+        # task_id = request.form['taskId']
         weburl_service = WeburlService()
-        weburl_service.gather_urls_by_task(task_id)
+        weburl_service.gather_urls_by_task(None)
         return 'SUCCESS'
     except KeyError as e:
         print(e)

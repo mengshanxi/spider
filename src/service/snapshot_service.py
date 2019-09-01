@@ -2,9 +2,11 @@ import time
 
 from PIL import Image
 
-from config.config_load import base_filepath
+from config.config_load import base_filepath, ims_rest_base
 from config.mylog import logger
 from urllib import request
+
+from service.webdriver_util import WebDriver
 
 
 class SnapshotService:
@@ -27,12 +29,15 @@ class SnapshotService:
         return snapshot
 
     @staticmethod
-    def simulation_404():
+    def simulation_404(url):
         timestamp = int(time.time())
         snapshot = str(timestamp) + ".png"
-        path = base_filepath + "/" + str(timestamp)
-        img_404 = base_filepath[:10] + "/template/404.png"
+        path = ims_rest_base + "system/404.jsp?url=" + str(url)
+        img_404 = base_filepath + "/snapshots/" + timestamp + ".png"
         try:
+            driver = WebDriver.get_chrome()
+            driver.get(path)
+            driver.save_screenshot(img_404)
             im = Image.open(img_404)
             im_resize = im.resize((641, 458))
             im_resize.save(path + ".png")

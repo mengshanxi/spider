@@ -172,7 +172,7 @@ class Weburl(Base):
     id = Column(Integer(), primary_key=True)
     title = Column(String(100))
     url = Column(String(100))
-    website_id = Column(String(100))
+    website_id = Column(Integer())
     website_name = Column(String(100))
     parent = Column(Text())
     type = Column(String(10))

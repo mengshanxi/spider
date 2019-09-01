@@ -19,7 +19,7 @@ class WebsiteDao(object):
 
     @staticmethod
     def get_by_merchant(merchant_name):
-        website = session.query(Website).filter(Website.website_name == merchant_name).one()
+        website = session.query(Website).filter(Website.merchant_name == merchant_name).one()
         return website
 
     @staticmethod
@@ -28,14 +28,14 @@ class WebsiteDao(object):
         websites = session.query(Website).all()
         strategy_service = StrategyService()
         strategy = strategy_service.get_strategy()
-        now = time.time()
-        overtime = now - strategy.cache_days * 24 * 60 * 1000
+        now = int(round(time.time() * 1000))
+        overtime = now - strategy.cache_days * 24 * 60 * 60 * 1000
         for website in websites:
             last_gather_time = website.last_gather_time
             if last_gather_time is None:
                 filterd.append(website)
                 continue
-            elif time.mktime(time.strptime(str(last_gather_time), "%Y-%m-%d %H:%M:%S")) > overtime:
+            elif int(round(time.mktime(time.strptime(str(last_gather_time), "%Y-%m-%d %H:%M:%S")) * 1000)) > overtime:
                 continue
             else:
                 filterd.append(website)

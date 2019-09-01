@@ -28,7 +28,7 @@ class MonitorPaynewsService:
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
             div_list = soup.find(attrs={'class': 'slst mtw'})
-            if div_list.__len__() > 0:
+            if div_list is not None and div_list.__len__() > 0:
                 news = div_list.find_all('li')
                 for new in news:
                     href = new.find_all('a')[0].get("href")

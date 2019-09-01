@@ -26,15 +26,15 @@ class GatherCenter:
             # 网站监控
             logger.info("gather data for website_name:%s", entity.website_name)
             service = MonitorWebsiteService()
-            logger.info("website monitor begin,website_name : %s", entity.website_name)
-            if entity.domain_name is not "":
+            logger.info("website monitor begin,domain_name : %s", entity.domain_name)
+            if entity.domain_name is not None:
                 service.monitor_website(entity, batch_num)
-                logger.info("website monitor done! website_name: %s ", entity.website_name)
+                logger.info("website monitor done! domain_name: %s ", entity.domain_name)
             else:
                 logger.info("website domain is empty,continue! ")
             # 舆情监控
             logger.info("sentiment monitor begin,merchant_name : %s", entity.merchant_name)
-            if entity.website_name is not "":
+            if entity.website_name is not None:
                 monitor_senti_service = MonitorSentiService()
                 monitor_senti_service.monitor_senti(entity.website_name, entity.website_name, task_id,
                                                     batch_num, entity.merchant_name, entity.merchant_num)
@@ -44,7 +44,7 @@ class GatherCenter:
             else:
                 logger.info("website name is empty,with merchantName! ")
                 monitor_senti_service = MonitorSentiService()
-                monitor_senti_service.monitor_senti(entity.merchant_name, task_id,
+                monitor_senti_service.monitor_senti(entity.merchant_name, entity.website_name, task_id,
                                                     batch_num, entity.merchant_name, entity.merchant_num)
                 logger.info("sentiment monitor done!merchantName : %s", entity.merchant_name)
 

@@ -16,7 +16,7 @@ class WeburlService:
 
     def gather_urls_by_task(self, task_id):
         ims_api = ImsApi()
-        if task_id != 'NONE':
+        if task_id is not None:
             inspect_service = InspectTaskService()
             websites = inspect_service.get_websites(task_id)
             for website in websites:

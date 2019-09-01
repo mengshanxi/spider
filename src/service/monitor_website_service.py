@@ -22,7 +22,7 @@ class MonitorWebsiteService:
         domain_name_list = domain_names.split(",")
         for domain_name in domain_name_list:
             try:
-                logger.info("check whether website available : %s", website.website_name)
+                logger.info("check whether website available,domain_name : %s", website.domain_name)
                 #  截图
                 monitor_website = MonitorWebsite()
                 monitor_website.website_name = website.website_name
@@ -34,7 +34,7 @@ class MonitorWebsiteService:
                 monitor_website.kinds = "首页是否可打开"
                 monitor_website.level = 0
                 monitor_website.snapshot = ""
-                domain_name_rich = access.get_access_res(domain_name)
+                domain_name_rich, current_url = access.get_access_res(domain_name)
                 logger.info("domain_name: %s", domain_name)
                 logger.info("domain_name_rich: %s", domain_name_rich)
                 if domain_name_rich is not None:
@@ -50,7 +50,7 @@ class MonitorWebsiteService:
                         snapshot = SnapshotService.create_snapshot(driver, batch_num, website.merchant_name,
                                                                    website.merchant_num, '网站')
                         monitor_website.snapshot = snapshot
-                        monitor_website_dao.add(monitor_website, batch_num)
+                        monitor_website_dao.add(monitor_website)
                     except Exception as e:
                         logger.info(e)
                         monitor_website.access = '异常'
@@ -58,7 +58,7 @@ class MonitorWebsiteService:
                         monitor_website.outline = '首页访问检测到异常'
                         monitor_website.level = 3
                         monitor_website.pageview = '-'
-                        monitor_website.snapshot = SnapshotService.simulation_404()
+                        monitor_website.snapshot = SnapshotService.simulation_404(domain_name_rich)
                         monitor_website.batch_num = batch_num
                         monitor_website_dao.add(monitor_website)
                 else:
@@ -68,7 +68,7 @@ class MonitorWebsiteService:
                     monitor_website.outline = '首页访问检测到异常'
                     monitor_website.level = 3
                     monitor_website.pageview = '-'
-                    monitor_website.snapshot = SnapshotService.simulation_404()
+                    monitor_website.snapshot = SnapshotService.simulation_404(domain_name_rich)
                     monitor_website.batch_num = batch_num
                     monitor_website_dao.add(monitor_website)
                     logger.info("website is not available : %s return!", domain_name)
