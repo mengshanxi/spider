@@ -36,16 +36,16 @@ class GatherCenter:
             logger.info("sentiment monitor begin,merchant_name : %s", entity.merchant_name)
             if entity.website_name is not "":
                 monitor_senti_service = MonitorSentiService()
-                monitor_senti_service.monitor_senti(entity.website_name, entity.merchant_name, task_id,
-                                                    batch_num)
-                monitor_senti_service.monitor_senti(entity.merchant_name, entity.merchant_name, task_id,
-                                                    batch_num)
-                logger.info("sentiment monitor done!websiteName : %s", entity.website_name)
+                monitor_senti_service.monitor_senti(entity.website_name, entity.website_name, task_id,
+                                                    batch_num, entity.merchant_name, entity.merchant_num)
+                monitor_senti_service.monitor_senti(entity.merchant_name, entity.website_name, task_id,
+                                                    batch_num, entity.merchant_name, entity.merchant_num)
+                logger.info("sentiment monitor done!merchant_name : %s", entity.merchant_name)
             else:
                 logger.info("website name is empty,with merchantName! ")
                 monitor_senti_service = MonitorSentiService()
-                monitor_senti_service.monitor_senti(entity.merchant_name, entity.merchant_name, task_id,
-                                                    batch_num)
+                monitor_senti_service.monitor_senti(entity.merchant_name, task_id,
+                                                    batch_num, entity.merchant_name, entity.merchant_num)
                 logger.info("sentiment monitor done!merchantName : %s", entity.merchant_name)
 
             # 工商监控
@@ -55,8 +55,7 @@ class GatherCenter:
             logger.info("get qichacha url  : %s", str(url))
             if url is not None:
                 try:
-                    service.inspect(str(batch_num), "https://www.qichacha.com" + url, entity.merchant_name,
-                                    entity.legal_person)
+                    service.inspect(str(batch_num), "https://www.qichacha.com" + url, entity)
                 except Exception as e:
                     logger.info(e)
                     pass

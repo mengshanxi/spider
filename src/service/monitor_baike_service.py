@@ -11,7 +11,8 @@ from config.mylog import logger
 
 class MonitorBaikeService:
     @staticmethod
-    def monitor(website_name, merchant_name, batch_num):
+    def monitor(keyword, website_name, batch_num, merchant_name,
+                merchant_num):
         """
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('--headless')
@@ -20,7 +21,7 @@ class MonitorBaikeService:
         """
         driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
-        url = 'https://baike.baidu.com/item/%s' % urllib.parse.quote(website_name.replace("(", "（").replace(")", "）"))
+        url = 'https://baike.baidu.com/item/%s' % urllib.parse.quote(keyword.replace("(", "（").replace(")", "）"))
         try:
             driver.get(url)
             source = driver.page_source
@@ -28,12 +29,13 @@ class MonitorBaikeService:
             check_exist = soup.find_all(name='p', attrs={'class': re.compile('sorryCont')})
             if check_exist.__len__() == 0:
                 description = soup.find(attrs={"name": "description"})['content']
-                senti_util.senti_process_text("百度百科", merchant_name, description, url,
-                                              batch_num)
+                senti_util.senti_process_text("百度百科", website_name, description, url,
+                                              batch_num, merchant_name,
+                                              merchant_num)
             else:
-                senti_util.snapshot_home("百度百科", merchant_name, url,
-                                         batch_num, driver)
-                logger.info("百度百科没有搜索到数据: %s", merchant_name)
+                senti_util.snapshot_home("百度百科", website_name, url,
+                                         batch_num, merchant_name, merchant_num, driver)
+                logger.info("百度百科没有搜索到数据: %s", keyword)
 
         except Exception as e:
             logger.error(e)

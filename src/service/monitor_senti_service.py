@@ -22,7 +22,7 @@ from service.monitor_zhifujie_service import MonitorZhifujieService
 class MonitorSentiService:
 
     @staticmethod
-    def monitor_senti(website_name, merchant_name, task_id, batch_num):
+    def monitor_senti(keyword, website_name, task_id, batch_num, merchant_name, merchant_num):
 
         inspect_task_service = InspectTaskService()
         platforms = inspect_task_service.get_inspect_platforms(task_id)
@@ -45,7 +45,8 @@ class MonitorSentiService:
             if platform == "百度贴吧":
                 logger.info("sentiment monitor with  : %s", platform)
                 tieba_service = MonitorTiebaService()
-                tieba_service.monitor(website_name, merchant_name, batch_num)
+                tieba_service.monitor(keyword, website_name, batch_num, merchant_name,
+                                      merchant_num)
                 continue
             if platform == "网贷之家":
                 logger.info("sentiment monitor with  : %s", platform)
@@ -58,37 +59,44 @@ class MonitorSentiService:
                 baidu_service.monitor(website_name, merchant_name, batch_num)
                 continue
             if platform == "百度百科":
-                logger.info("sentiment monitor with  : %s", platform)
+                logger.info(platform + " sentiment monitor with  : %s", platform)
                 baike_service = MonitorBaikeService()
-                baike_service.monitor(website_name, merchant_name, batch_num)
+                baike_service.monitor(keyword, website_name, batch_num, merchant_name,
+                                      merchant_num)
                 continue
             if platform == "支付圈":
-                logger.info("sentiment monitor with  : %s", platform)
+                logger.info(platform + " sentiment monitor with  : %s", platform)
                 paycircle_service = MonitorPaycircleService()
-                paycircle_service.monitor(website_name, merchant_name, batch_num)
+                paycircle_service.monitor(keyword, website_name, batch_num, merchant_name,
+                                          merchant_num)
                 continue
             if platform == "聚投诉":
-                logger.info("sentiment monitor with  : %s", platform)
+                logger.info(platform + " sentiment monitor with  : %s", platform)
                 ts_service = MonitorTsService()
-                ts_service.monitor(website_name, merchant_name, batch_num)
+                ts_service.monitor(keyword, website_name, batch_num, merchant_name,
+                                   merchant_num)
                 continue
             if platform == "黑猫投诉":
-                logger.info("sentiment monitor with  : %s", platform)
+                logger.info(platform + " sentiment monitor with  : %s", platform)
                 tousu_service = MonitorTousuService()
-                tousu_service.monitor(website_name, merchant_name, batch_num)
+                tousu_service.monitor(keyword, website_name, batch_num, merchant_name,
+                                      merchant_num)
                 continue
             if platform == "支付产业网":
-                logger.info("sentiment monitor with  : %s", platform)
+                logger.info(platform + " sentiment monitor with  : %s", platform)
                 paynews_service = MonitorPaynewsService()
-                paynews_service.monitor(website_name, merchant_name, batch_num)
+                paynews_service.monitor(keyword, website_name, batch_num, merchant_name,
+                                        merchant_num)
                 continue
             if platform == "支付界":
-                logger.info("sentiment monitor with  : %s", platform)
+                logger.info(platform + " sentiment monitor with  : %s", platform)
                 zhifujie_service = MonitorZhifujieService()
-                zhifujie_service.monitor(website_name, merchant_name, batch_num)
+                zhifujie_service.monitor(keyword, website_name, batch_num, merchant_name,
+                                         merchant_num)
                 continue
             if platform == "支付快讯":
-                logger.info("sentiment monitor with  : %s", platform)
+                logger.info(platform + " sentiment monitor with  : %s", platform)
                 zfzj_service = MonitorZfzjService()
-                zfzj_service.monitor(website_name, merchant_name, batch_num)
+                zfzj_service.monitor(keyword, website_name, batch_num, merchant_name,
+                                     merchant_num)
                 continue

@@ -14,15 +14,17 @@ from config.mylog import logger
 class MonitorPaycircleService:
 
     @staticmethod
-    def monitor(website_name, merchant_name, batch_num):
+    def monitor(keyword, website_name, batch_num, merchant_name, merchant_num):
         driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
         try:
-            url = "http://www.paycircle.cn/company/search.php?kw=" + urllib.parse.quote(website_name) + "&c=SearchList&"
+            url = "http://www.paycircle.cn/company/search.php?kw=" + urllib.parse.quote(
+                keyword) + "&c=SearchList&"
             driver.get(url)
             source = driver.page_source
-            senti_util.snapshot_home("支付圈", merchant_name, url,
-                                     batch_num, driver)
+            senti_util.snapshot_home("支付圈", website_name, url,
+                                     batch_num, merchant_name, merchant_num,
+                                     driver)
             soup = BeautifulSoup(source, 'html.parser')
             div_list = soup.find_all(attrs={'class': 'list'})
             if div_list.__len__() > 0:
@@ -30,11 +32,13 @@ class MonitorPaycircleService:
                 for new in news:
                     href = new.find_all('td')[2].find_all('a')[0].get("href")
                     content = new.find_all('td')[2].find_all('li')[1].get_text()
-                    if content.find(website_name) != -1:
-                        senti_util.senti_process_text("支付圈", merchant_name, content, href,
-                                                      batch_num)
+                    if content.find(keyword) != -1:
+                        senti_util.senti_process_text("支付圈", website_name, content, href,
+                                                      batch_num, merchant_name,
+                                                      merchant_num)
             else:
-                logger.info("支付圈没有搜索到数据: %s", merchant_name)
+                logger.info("支付圈没有搜索到数据: %s", keyword)
+
         except Exception as e:
             logger.error(e)
             return

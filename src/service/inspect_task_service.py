@@ -2,8 +2,8 @@
 import time
 
 from dao.db import session
-from dao.inspect_detail_dao import InspectDetailDao
 from dao.inspect_task_dao import InspectTaskDao
+from dao.third_platform_dao import ThirdPlatformDao
 from model.models import Website
 from service.strategy_service import StrategyService
 
@@ -11,12 +11,12 @@ from service.strategy_service import StrategyService
 class InspectTaskService(object):
     @staticmethod
     def get_inspect_platforms(task_id):
-        dao = InspectDetailDao()
-        inspect_details = dao.get_inspect_platform(task_id)
-        platforms = []
-        for inspect_detail in inspect_details:
-            platforms.append(inspect_detail.platform_name)
-        return platforms
+        dao = ThirdPlatformDao()
+        platforms = dao.get_all()
+        names = []
+        for platform in platforms:
+            names.append(platform.name)
+        return names
 
     @staticmethod
     def get_websites(task_id):

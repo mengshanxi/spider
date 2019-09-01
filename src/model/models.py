@@ -4,22 +4,19 @@ from sqlalchemy import Column, String, Integer, DateTime, Text
 from dao.db import Base
 
 
+class ThirdPlatform(Base):
+    __tablename__ = 'third_platform'
+    id = Column(Integer(), primary_key=True)
+    name = Column(String(255))
+    home = Column(String(255))
+
+
 class Strategy(Base):
     __tablename__ = 'strategy'
     id = Column(Integer(), primary_key=True)
     task_overtime = Column(Integer())
     cache_days = Column(Integer())
     gather_percent = Column(Integer())
-
-
-class InspectDetail(Base):
-    __tablename__ = 'inspect_detail'
-    id = Column(Integer(), primary_key=True)
-    tmpl_id = Column(Integer())
-    platform_name = Column(String(255))
-    website_name = Column(String(255))
-    checked = Column(Integer())
-    create_time = Column(DateTime())
 
 
 class TaskItem(Base):
@@ -47,23 +44,21 @@ class InspectTask(Base):
     cause = Column(String(255))
     website_is_open = Column(Integer())
     website_is_forward = Column(Integer())
-    website_is_deadlink = Column(Integer())
-    website_is_mislead = Column(Integer())
-    website_is_stock = Column(Integer())
     website_is_badwords = Column(Integer())
-    bc_is_dishonest = Column(Integer())
     bc_is_abn = Column(Integer())
     bc_is_logout = Column(Integer())
     bc_is_moveout = Column(Integer())
-    bc_name_chg = Column(Integer())
     bc_legalperson_chg = Column(Integer())
+    baike = Column(Integer())
+    paycircle = Column(Integer())
+    ts = Column(Integer())
+    tousu = Column(Integer())
+    paynews = Column(Integer())
+    zhifujie = Column(Integer())
+    zfzj = Column(Integer())
     freq = Column(Integer())
     points = Column(String(255))
-    source = Column(String(255))
-    industry = Column(String(255))
-    industry2 = Column(String(255))
     attention = Column(String(255))
-    filename = Column(String(255))
     start_time = Column(DateTime())
     end_time = Column(DateTime())
     last_update = Column(DateTime())
@@ -73,8 +68,11 @@ class MonitorThird(Base):
     __tablename__ = 'monitor_third'
     id = Column(Integer(), primary_key=True)
     batch_num = Column(String(255))
-    type = Column(String(100))
+    merchant_name = Column(String(255))
+    merchant_num = Column(String(255))
     website_name = Column(String(255))
+    saler = Column(String(255))
+    type = Column(String(100))
     url = Column(String(255))
     outline = Column(String(100))
     snapshot = Column(String(100))
@@ -88,12 +86,14 @@ class MonitorWebsite(Base):
     id = Column(Integer(), primary_key=True)
     batch_num = Column(String(255))
     merchant_name = Column(String(100))
+    merchant_num = Column(String(100))
+    saler = Column(String(100))
     website_name = Column(String(255))
     domain_name = Column(String(100))
     access = Column(String(255))
     pageview = Column(String(255))
     outline = Column(String(100))
-    snapshot = Column(String(100))
+    snapshot = Column(String(255))
     is_normal = Column(String(100))
     kinds = Column(String(100))
     level = Column(String(100))
@@ -191,7 +191,9 @@ class Website(Base):
     __tablename__ = 'website'
     id = Column(Integer(), primary_key=True)
     merchant_name = Column(String(100))
+    merchant_num = Column(String(100))
     website_name = Column(String(100))
+    saler = Column(String(100))
     domain_name = Column(String(100))
     legal_person = Column(String(100))
     industry = Column(String(100))
@@ -199,6 +201,8 @@ class Website(Base):
     attention = Column(String(100))
     username = Column(String(100))
     password = Column(String(100))
+    creator = Column(String(100))
+    visible = Column(Integer())
     last_gather_time = Column(DateTime())
     create_time = Column(DateTime())
     last_update = Column(DateTime())

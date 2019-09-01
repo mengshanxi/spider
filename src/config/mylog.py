@@ -22,7 +22,7 @@ def get_logger():
                                         interval=10,
                                         backupCount=4)
     file_log.setLevel(logging.INFO)
-    console_fmt = logging.Formatter('%(asctime)s -%(name)s- %(levelname)s :%(message)s')
+    console_fmt = logging.Formatter('%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
     file_fmt = logging.Formatter('%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
     console_log.setFormatter(console_fmt)
     file_log.setFormatter(file_fmt)
