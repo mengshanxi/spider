@@ -3,6 +3,7 @@
 from urllib import request, parse
 from config.mylog import logger
 from config.config_load import ims_rest_base
+import config.global_val as gl
 import socket
 
 
@@ -30,7 +31,8 @@ class ImsApi(object):
             hostname = socket.gethostname()
             ip = socket.gethostbyname(hostname)
             url = ims_rest_base + "open/api/v1/agent/heartbeat"
-            data_json = {"ip": ip}
+            status = gl.get_value('STATUS')
+            data_json = {"ip": ip, "status": status}
             data = bytes(parse.urlencode(data_json), encoding="utf8")
             new_url = request.Request(url, data)
             request.urlopen(new_url)
