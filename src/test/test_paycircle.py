@@ -1,4 +1,6 @@
 import time
+import urllib
+
 from bs4 import BeautifulSoup
 from selenium.webdriver import DesiredCapabilities
 from selenium import webdriver
@@ -9,7 +11,7 @@ from config.mylog import logger
 
 class TestMysql(object):
     if __name__ == "__main__":
-        url = "http://www.paycircle.cn/company/search.php?kw=sdf&c=SearchList&"
+        url = "http://www.paycircle.cn/company/search.php?kw=" + urllib.parse.quote('京东') + "&c=SearchList&"
         driver = webdriver.Remote(command_executor='http://172.17.161.230:8911/wd/hub',
                                   desired_capabilities=DesiredCapabilities.CHROME)
 
@@ -18,17 +20,16 @@ class TestMysql(object):
         driver.maximize_window()
     try:
         driver.get(url)
-        time.sleep(5)
-        driver.save_screenshot("D:/bb.jpg")
         source = driver.page_source
         soup = BeautifulSoup(source, 'html.parser')
-        news = soup.find_all(attrs={'class': 'result-t'})
-        if news.__len__() > 0:
+        div_list = soup.find_all(attrs={'class': 'list'})
+        if div_list.__len__() > 0:
+            news = div_list[0].find_all('tr')
             for new in news:
-                href = new.find_all('a')[0].get("href")
-                content = new.get_text()
+                href = new.find_all('td')[2].find_all('a')[0].get("href")
+                content = new.find_all('td')[2].find_all('li')[1].get_text()
         else:
-            logger.info("支付圈没有搜索到数据:")
+            logger.info("支付圈没有搜索到数据")
         driver.quit()
     except Exception as e:
         logger.error(e)

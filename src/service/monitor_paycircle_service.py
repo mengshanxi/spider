@@ -28,7 +28,7 @@ class MonitorPaycircleService:
             soup = BeautifulSoup(source, 'html.parser')
             div_list = soup.find_all(attrs={'class': 'list'})
             if div_list.__len__() > 0:
-                news = div_list.find_all('tr')
+                news = div_list[0].find_all('tr')
                 for new in news:
                     href = new.find_all('td')[2].find_all('a')[0].get("href")
                     content = new.find_all('td')[2].find_all('li')[1].get_text()

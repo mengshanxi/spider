@@ -110,7 +110,7 @@ class MonitorBcService:
             jpg.save(path + "_thumb.bmp")
 
             legalmans = soup.find_all(class_='seo font-20')
-            if str(website.legalman).strip() is "":
+            if str(website.legal_person).strip() is "":
                 monitor_bc.outline = '未检测到法人变更'
                 monitor_bc.snapshot = str(snapshot)
                 monitor_bc.is_normal = '正常'
@@ -121,7 +121,7 @@ class MonitorBcService:
                 monitor_bc_dao.add(monitor_bc)
             else:
                 if legalmans.__len__() > 0:
-                    if str(website.legalman).strip() == legalmans[0].get_text():
+                    if str(website.legal_person).strip() == legalmans[0].get_text():
                         monitor_bc.snapshot = str(snapshot)
                         monitor_bc.is_normal = '正常'
                         monitor_bc.kinds = '法人变更:' + legalmans[0].get_text()
