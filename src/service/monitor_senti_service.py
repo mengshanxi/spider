@@ -56,7 +56,8 @@ class MonitorSentiService:
             if platform == "百度搜索":
                 logger.info("sentiment monitor with  : %s", platform)
                 baidu_service = MonitorBaiduService()
-                baidu_service.monitor(website_name, merchant_name, batch_num)
+                baidu_service.monitor(keyword, website_name, batch_num, merchant_name,
+                                      merchant_num)
                 continue
             if platform == "百度百科":
                 logger.info(platform + " sentiment monitor with  : %s", platform)
