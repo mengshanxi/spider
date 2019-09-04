@@ -79,7 +79,7 @@ def stop():
 
 def heartbeat():
     ims_api.heartbeat()
-    timer = threading.Timer(5, heartbeat)
+    timer = threading.Timer(30, heartbeat)
     timer.start()
 
 
