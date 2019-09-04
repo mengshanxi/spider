@@ -21,6 +21,7 @@ class GatherCenter:
             monitor_weburl_service = MonitorWeburlService()
             monitor_weburl_service.monitor_website(entity, batch_num)
             task_pool_service.close_task(task_pool_id)
+            gl.set_value('STATUS', False)
             return
         elif type == "website":
             # 网站监控
@@ -61,3 +62,4 @@ class GatherCenter:
                     pass
             logger.info("qichacha monitor  done!merchantName : %s", entity.merchant_name)
             task_pool_service.close_task(task_pool_id)
+            gl.set_value('STATUS', False)

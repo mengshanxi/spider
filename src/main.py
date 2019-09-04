@@ -1,24 +1,22 @@
 # coding:utf-8
+import os
 import threading
 
-import time
-
-import os
 from flask import Flask
 from flask import request
+
+import config.global_val as gl
 from config.mylog import logger
 from manager.gather_center import GatherCenter
 from manager.ims_api import ImsApi
 from service.monitor_bc_service import MonitorBcService
-from service.webdriver_util import WebDriver
 from service.weburl_service import WeburlService
-import config.global_val as gl
 
 app = Flask(__name__)
 gl._init()
 
 # 定义跨模块全局变量
-gl.set_value('STATUS', True)
+gl.set_value('STATUS', False)
 ims_api = ImsApi()
 
 
@@ -63,8 +61,10 @@ def inspect(batch_num):
 def gather_urls():
     try:
         # task_id = request.form['taskId']
+        gl.set_value('STATUS', True)
         weburl_service = WeburlService()
         weburl_service.gather_urls_by_task(None)
+        gl.set_value('STATUS', False)
         return 'SUCCESS'
     except KeyError as e:
         print(e)
