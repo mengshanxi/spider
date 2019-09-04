@@ -42,26 +42,27 @@ class WeburlService:
             web_page = urllib.request.urlopen(req, timeout=10)
             html = web_page.read()
             soup = BeautifulSoup(html, 'html.parser', from_encoding="gb18030")
-            for k in soup.find_all('img'):
-                src = str(k.get('src'))
-                logger.info("origin src: %s", src)
-                if src.endswith(".jpg") or src.endswith(".jpeg") or src.endswith(".bmp") or src.endswith(
-                        ".png"):
-                    if src.startswith('http://') or src.startswith('https://'):
-                        pass
-                    elif src.startswith('/'):
-                        src = "http://" + domain_name + src
-                    else:
-                        src = uri + "/" + src
-                    weburl = Weburl(url=src.replace("//", "/").replace("/../", "/"),
-                                    website_id=website_id,
-                                    website_name=website_name,
-                                    title=soup.find('title').string,
-                                    type='pic',
-                                    parent=uri)
-                    weburl_service.add(weburl)
-                else:
-                    pass
+            # 不做图片的处理
+            # for k in soup.find_all('img'):
+            #     src = str(k.get('src'))
+            #     logger.info("origin src: %s", src)
+            #     if src.endswith(".jpg") or src.endswith(".jpeg") or src.endswith(".bmp") or src.endswith(
+            #             ".png"):
+            #         if src.startswith('http://') or src.startswith('https://'):
+            #             pass
+            #         elif src.startswith('/'):
+            #             src = "http://" + domain_name + src
+            #         else:
+            #             src = uri + "/" + src
+            #         weburl = Weburl(url=src.replace("//", "/").replace("/../", "/"),
+            #                         website_id=website_id,
+            #                         website_name=website_name,
+            #                         title=soup.find('title').string,
+            #                         type='pic',
+            #                         parent=uri)
+            #         weburl_service.add(weburl)
+            #     else:
+            #         pass
             for k in soup.find_all('a'):
                 href = str(k.get('href'))
                 logger.info("origin href: %s", href)
