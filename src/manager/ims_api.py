@@ -48,7 +48,7 @@ class ImsApi(object):
             data_json = {"websiteId": website.id}
             data = bytes(parse.urlencode(data_json), encoding="utf8")
             new_url = request.Request(url, data)
-            logger.info("done url gather: %s." % str(website.website_name))
+            logger.info("done url gather: %s" % str(website.domain_name))
             request.urlopen(new_url)
         except Exception as e:
             logger.info("register fail")

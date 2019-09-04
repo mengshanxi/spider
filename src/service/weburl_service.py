@@ -33,9 +33,9 @@ class WeburlService:
 
     def gather_urls(self, website_id, uri, website_name, domain_name, level):
         if level == 1:
-            logger.info("gather url just to 3 level: %s ", website_name)
+            logger.info("gather url just to 3 level: %s ", domain_name)
             return
-        logger.info("gather url for website: %s ", website_name)
+        logger.info("gather url for website: %s ", domain_name)
         weburl_service = WeburlDao()
         try:
             req = urllib.request.Request(uri)
