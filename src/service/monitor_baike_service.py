@@ -21,7 +21,7 @@ class MonitorBaikeService:
         """
         driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
-        url = 'https://baike.baidu.com/item/%s' % urllib.parse.quote(keyword.replace("(", "（").replace(")", "）"))
+        url = 'https://baike.baidu.com/item/%s' % urllib.parse.quote(keyword)
         try:
             driver.get(url)
             source = driver.page_source

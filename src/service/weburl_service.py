@@ -21,17 +21,19 @@ class WeburlService:
             websites = inspect_service.get_websites(task_id)
             for website in websites:
                 uri = 'http://' + website.domain_name
-                self.gather_urls(website.id, uri, website.website_name, website.domain_name, 0)
+                self.gather_urls(website.id, uri, website.website_name, website.domain_name, website.merchant_name,
+                                 website.merchant_num, 0)
                 ims_api.done_url_gather(website)
         else:
             website_dao = WebsiteDao()
             websites = website_dao.get_overtime()
             for website in websites:
                 uri = 'http://' + website.domain_name
-                self.gather_urls(website.id, uri, website.website_name, website.domain_name, 0)
+                self.gather_urls(website.id, uri, website.website_name, website.domain_name, website.merchant_name,
+                                 website.merchant_num, 0)
                 ims_api.done_url_gather(website)
 
-    def gather_urls(self, website_id, uri, website_name, domain_name, level):
+    def gather_urls(self, website_id, uri, website_name, domain_name, merchant_name, merchant_num, level):
         if level == 1:
             logger.info("gather url just to 3 level: %s ", domain_name)
             return
@@ -83,6 +85,8 @@ class WeburlService:
                 title = soup.find('title').string
                 weburl = Weburl(website_id=website_id,
                                 website_name=website_name,
+                                merchant_name=merchant_name,
+                                merchant_num=merchant_num,
                                 title=title,
                                 type='page',
                                 parent=uri,

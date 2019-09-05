@@ -15,13 +15,11 @@ class GatherCenter:
         task_pool_service = TaskPoolService()
         entity, task_id, type, task_pool_id = task_pool_service.get_pending_task(batch_num)
         if entity is None:
-            gl.set_value('STATUS', False)
             return
         if type == "weburl":
             monitor_weburl_service = MonitorWeburlService()
             monitor_weburl_service.monitor_website(entity, batch_num)
             task_pool_service.close_task(task_pool_id)
-            gl.set_value('STATUS', False)
             return
         elif type == "website":
             # 网站监控
@@ -35,20 +33,19 @@ class GatherCenter:
                 logger.info("website domain is empty,continue! ")
             # 舆情监控
             logger.info("sentiment monitor begin,merchant_name : %s", entity.merchant_name)
-            if entity.website_name is not None:
+            if not entity.website_name:
+                logger.info("website name is empty,with merchantName! ")
+                monitor_senti_service = MonitorSentiService()
+                monitor_senti_service.monitor_senti(entity.merchant_name, entity.website_name, task_id,
+                                                    batch_num, entity.merchant_name, entity.merchant_num)
+                logger.info("sentiment monitor done!merchantName : %s", entity.merchant_name)
+            else:
                 monitor_senti_service = MonitorSentiService()
                 monitor_senti_service.monitor_senti(entity.website_name, entity.website_name, task_id,
                                                     batch_num, entity.merchant_name, entity.merchant_num)
                 monitor_senti_service.monitor_senti(entity.merchant_name, entity.website_name, task_id,
                                                     batch_num, entity.merchant_name, entity.merchant_num)
                 logger.info("sentiment monitor done!merchant_name : %s", entity.merchant_name)
-            else:
-                logger.info("website name is empty,with merchantName! ")
-                monitor_senti_service = MonitorSentiService()
-                monitor_senti_service.monitor_senti(entity.merchant_name, entity.website_name, task_id,
-                                                    batch_num, entity.merchant_name, entity.merchant_num)
-                logger.info("sentiment monitor done!merchantName : %s", entity.merchant_name)
-
             # 工商监控
             logger.info("qichacha monitor  begin,merchantName : %s", entity.merchant_name)
             service = MonitorBcService()
@@ -62,4 +59,3 @@ class GatherCenter:
                     pass
             logger.info("qichacha monitor  done!merchantName : %s", entity.merchant_name)
             task_pool_service.close_task(task_pool_id)
-            gl.set_value('STATUS', False)

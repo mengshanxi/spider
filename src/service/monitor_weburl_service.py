@@ -41,7 +41,9 @@ class MonitorWeburlService:
         try:
             driver.get(weburl.url)
             snapshot = SnapshotService.create_snapshot(driver, batch_num, weburl.merchant_name,
-                                                       weburl.merchant_num, '内容')
+                                                       weburl.merchant_num, '网站内容')
+            print(snapshot)
+            print(monitor_weburl)
             monitor_weburl.outline = '网页打开正常'
             monitor_weburl.is_normal = '正常'
             monitor_weburl.level = 0
@@ -51,7 +53,6 @@ class MonitorWeburlService:
 
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
-            logger.info("检测是否含敏感词 : %s", weburl.url)
             # 监测页面敏感词
             for keyword in keywords:
                 index = soup.find(keyword.name)

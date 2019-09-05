@@ -16,16 +16,16 @@ class TestWangdaitianyan(object):
         url = 'https://baike.baidu.com/item/%s' % urllib.parse.quote("猫小贷")
         """
         dcap = dict(DesiredCapabilities.PHANTOMJS)
-        driver = webdriver.Remote(command_executor="http://172.17.161.230:8913/wd/hub",
+        driver = webdriver.Remote(command_executor="http://172.17.161.230:8912/wd/hub",
                 desired_capabilities=DesiredCapabilities.CHROME)
         driver.set_page_load_timeout(5)
         driver.set_script_timeout(5)
         driver.maximize_window()
-        url = "https://www.p2peye.com/search.php?mod=zonghe&srchtxt=" + urllib.parse.quote('上海菁厘信息科技有限公司')
+        url = 'https://baike.baidu.com/item/%s' % urllib.parse.quote("京东")
         #driver.get('https://baike.baidu.com/item/%s' % urllib.parse.quote("京东"))
         driver.get(url)
         time.sleep(3)
-        driver.save_screenshot("ff.png")
+        driver.save_screenshot("D:/ff.png")
 
         driver.quit()
         # SnapshotService.create_snapshot(driver)

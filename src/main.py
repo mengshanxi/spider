@@ -37,6 +37,7 @@ def execute():
     os.environ['browser'] = '172.17.161.230'
     os.environ['port'] = '8911'
     gl.set_value('STATUS', True)
+    ims_api.heartbeat()
     try:
         batch_num = request.form['batchNum']
         logger.info("spider begin batchNum: %s" % str(batch_num))
@@ -74,6 +75,7 @@ def gather_urls():
 @app.route('/spider/stop', methods=['POST'])
 def stop():
     gl.set_value('STATUS', False)
+    ims_api.heartbeat()
     return 'SUCCESS'
 
 
