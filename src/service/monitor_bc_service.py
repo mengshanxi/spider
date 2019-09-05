@@ -35,6 +35,7 @@ class MonitorBcService:
             logger.info("企查查检测受益人 : %s", website.merchant_name)
             rest_url = url + "#base"
             driver.get(rest_url)
+            driver.implicitly_wait(5)
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
             shou_yi_rens = soup.find_all(name='section', id=re.compile('partnerslist'))
@@ -71,6 +72,7 @@ class MonitorBcService:
             logger.info("企查查检测股东成员 : %s", website.merchant_name)
             # 2.股东成员
             driver.get(url)
+            driver.implicitly_wait(5)
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
             chengyuans = soup.find_all(name='section', id=re.compile('Mainmember'))
@@ -258,6 +260,7 @@ class MonitorBcService:
         driver.set_window_size(1920, 1080)
         try:
             driver.get(url)
+            driver.implicitly_wait(5)
             driver.find_element_by_id("searchkey").send_keys(merchant_name)
             driver.find_element_by_id("V3_Search_bt").click()
             source = driver.page_source
