@@ -20,6 +20,7 @@ class MonitorTsService:
         try:
             url = "http://ts.21cn.com/home/search?keyword=" + urllib.parse.quote(keyword)
             driver.get(url)
+            driver.implicitly_wait(3)
             source = driver.page_source
             senti_util.snapshot_home("聚投诉", website_name, url,
                                      batch_num, merchant_name, merchant_num,
