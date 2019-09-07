@@ -47,9 +47,17 @@ class MonitorWebsiteService:
                     monitor_website.pageview = pageview.reach_rank[0]
                     try:
                         driver.get(domain_name_rich)
+                        title = driver.title
                         snapshot = SnapshotService.create_snapshot(driver, batch_num, website.merchant_name,
                                                                    website.merchant_num, '网站')
                         monitor_website.snapshot = snapshot
+                        if title == '没有找到站点' or title == '未备案提示':
+                            monitor_website.access = '异常'
+                            monitor_website.is_normal = '异常'
+                            monitor_website.outline = title
+                            monitor_website.level = 3
+                            monitor_website.pageview = '-'
+                            monitor_website.batch_num = batch_num
                         monitor_website_dao.add(monitor_website)
                     except Exception as e:
                         logger.info(e)
