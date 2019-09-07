@@ -32,7 +32,7 @@ class MonitorWebsiteService:
                 monitor_website.domain_name = domain_name
                 monitor_website.batch_num = batch_num
                 monitor_website.kinds = "首页是否可打开"
-                monitor_website.level = 0
+                monitor_website.level = '-'
                 monitor_website.snapshot = ""
                 domain_name_rich, current_url = access.get_access_res(domain_name)
                 logger.info("domain_name: %s", domain_name)
@@ -42,7 +42,7 @@ class MonitorWebsiteService:
                     monitor_website.access = '正常'
                     monitor_website.is_normal = '正常'
                     monitor_website.outline = '正常'
-                    monitor_website.level = 0
+                    monitor_website.level = '-'
                     pageview = service.get_traffic(domain_name=domain_name_rich)
                     monitor_website.pageview = pageview.reach_rank[0]
                     try:

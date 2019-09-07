@@ -46,7 +46,7 @@ class MonitorWeburlService:
             print(monitor_weburl)
             monitor_weburl.outline = '网页打开正常'
             monitor_weburl.is_normal = '正常'
-            monitor_weburl.level = 0
+            monitor_weburl.level = '-'
             monitor_weburl.snapshot = snapshot
             monitor_weburl.kinds = '是否能打开'
             monitor_weburl_dao.add(monitor_weburl)

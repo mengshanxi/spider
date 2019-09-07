@@ -119,7 +119,7 @@ class MonitorBcService:
                 monitor_bc.kinds = '法人变更'
                 if legalmans.__len__() > 0:
                     monitor_bc.kinds = '法人变更:' + legalmans[0].get_text()
-                monitor_bc.level = 0
+                monitor_bc.level = '-'
                 monitor_bc_dao.add(monitor_bc)
             else:
                 if legalmans.__len__() > 0:
@@ -128,7 +128,7 @@ class MonitorBcService:
                         monitor_bc.is_normal = '正常'
                         monitor_bc.kinds = '法人变更:' + legalmans[0].get_text()
                         monitor_bc.outline = '未检测到法人变更'
-                        monitor_bc.level = 0
+                        monitor_bc.level = '-'
                         monitor_bc = MonitorBc(batch_num=batch_num,
                                                merchant_name=website.merchant_name,
                                                outline='未检测到法人变更',
