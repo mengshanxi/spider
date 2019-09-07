@@ -1,9 +1,9 @@
 # -*- coding:utf-8 -*-
+import socket
 
+import config.global_val as gl
 from dao.db import session
 from model.models import Website, TaskItem, Weburl
-import config.global_val as gl
-import os
 
 
 class TaskPoolService:
@@ -26,5 +26,7 @@ class TaskPoolService:
 
     @staticmethod
     def close_task(task_pool_id):
-        browser = os.environ['browser']
-        session.query(TaskItem).filter(TaskItem.id == task_pool_id).update({"status": "done", "processor": browser})
+        hostname = socket.gethostname()
+        ip = socket.gethostbyname(hostname)
+        session.query(TaskItem).filter(TaskItem.id == task_pool_id).update(
+            {"status": "done", "processor": ip})

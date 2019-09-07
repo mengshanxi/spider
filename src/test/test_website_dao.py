@@ -17,11 +17,11 @@ class TestMysql(object):
         dcap = dict(DesiredCapabilities.PHANTOMJS)
         #dcap["phantomjs.page.settings.userAgent"] = user_agent
         # url = "https://www.qichacha.com/search?key=" + urllib.parse.quote("京东")
-        url = "https://www.qichacha.com/"
+        url = "https://www.baidu.com/"
         # driver = webdriver.PhantomJS(executable_path=phantomjs_path,
         #                              desired_capabilities=dcap,
         #                              service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'])
-        driver = webdriver.Remote(command_executor='http://172.17.161.230:8913/wd/hub',
+        driver = webdriver.Remote(command_executor='http://172.17.161.230:8003/wd/hub',
                                   desired_capabilities=DesiredCapabilities.CHROME)
 
         driver.set_page_load_timeout(10)
@@ -29,23 +29,24 @@ class TestMysql(object):
         driver.maximize_window()
     try:
         driver.get(url)
-        driver.save_screenshot("bb.jpg")
+        driver.save_screenshot("D:/dd.png")
         driver.quit()
     except Exception as e:
         logger.error(e)
-    driver.find_element_by_id("searchkey").send_keys("京东")
-    driver.find_element_by_id("V3_Search_bt").click()
-    source = driver.page_source
-    soup = BeautifulSoup(source, 'html.parser')
+        driver.quit()
+    # driver.find_element_by_id("searchkey").send_keys("京东")
+    # driver.find_element_by_id("V3_Search_bt").click()
+    # source = driver.page_source
+    # soup = BeautifulSoup(source, 'html.parser')
 
-    title = soup.find(name="title").get_text()
-    logger.info("qichacha res title :%s", str(title))
-    tbodys = soup.find_all(id="search-result")
-    trs = tbodys[0].find_all('tr')
-    tds = trs[0].find_all('td')
-    a = tds[2].find_all('a')
-    name = a[0].get_text().strip()
-    print(name)
+    # title = soup.find(name="title").get_text()
+    # logger.info("qichacha res title :%s", str(title))
+    # tbodys = soup.find_all(id="search-result")
+    # trs = tbodys[0].find_all('tr')
+    # tds = trs[0].find_all('td')
+    # a = tds[2].find_all('a')
+    # name = a[0].get_text().strip()
+    # print(name)
     # driver.set_page_load_timeout(10)
     # driver.set_script_timeout(10)
     # driver.maximize_window()

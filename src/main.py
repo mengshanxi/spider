@@ -1,5 +1,4 @@
 # coding:utf-8
-import os
 import threading
 
 from flask import Flask
@@ -34,8 +33,8 @@ def verify_cookie():
 
 @app.route('/spider/execute', methods=['POST'])
 def execute():
-    os.environ['browser'] = '172.17.161.230'
-    os.environ['port'] = '8911'
+    #os.environ['browser'] = '172.17.161.230'
+    #os.environ['port'] = '8911'
     gl.set_value('STATUS', True)
     ims_api.heartbeat()
     try:
