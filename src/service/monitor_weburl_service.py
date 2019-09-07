@@ -31,7 +31,7 @@ class MonitorWeburlService:
             logger.info("检测到误404 : %s", weburl.url)
             monitor_weburl.outline = '检测到误404'
             monitor_weburl.is_normal = '异常'
-            monitor_weburl.level = 2
+            monitor_weburl.level = '高'
             monitor_weburl.snapshot = ''
             monitor_weburl.kinds = '死链接'
             monitor_weburl_dao.add(monitor_weburl)
@@ -60,7 +60,7 @@ class MonitorWeburlService:
                     logger.info("senti url alert,there is : %s", str(keyword.name))
                     monitor_weburl.outline = '检测到敏感词:' + str(keyword.name)
                     monitor_weburl.is_normal = '异常'
-                    monitor_weburl.level = 2
+                    monitor_weburl.level = '低'
                     monitor_weburl.snapshot = snapshot
                     monitor_weburl.kinds = '命中敏感词'
 
@@ -71,7 +71,7 @@ class MonitorWeburlService:
                 logger.info("senti url alert,there is : %s", str("充值"))
                 monitor_weburl.outline = '检测到包含充值、提现、钱包功能'
                 monitor_weburl.is_normal = '异常'
-                monitor_weburl.level = 2
+                monitor_weburl.level = '低'
                 monitor_weburl.snapshot = snapshot
                 monitor_weburl.kinds = '非法功能'
 
@@ -82,7 +82,7 @@ class MonitorWeburlService:
             if mislead1 is not None or mislead2 is not None:
                 monitor_weburl.outline = '检测到误导宣传'
                 monitor_weburl.is_normal = '异常'
-                monitor_weburl.level = 2
+                monitor_weburl.level = '中'
                 monitor_weburl.snapshot = snapshot
                 monitor_weburl.kinds = '误导宣传'
 

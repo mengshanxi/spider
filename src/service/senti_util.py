@@ -36,7 +36,7 @@ class SentiUtil:
                 if index != -1:
                     is_normal = "异常"
                     monitor_third.is_normal = is_normal
-                    monitor_third.level = 3
+                    monitor_third.level = '高'
                     monitor_third.outline = '检测到敏感词：' + str(keyword.name)
                     monitor_third.snapshot = snapshot
 
@@ -45,7 +45,7 @@ class SentiUtil:
                     pass
             if is_normal == "正常":
                 if platform == "百度百科":
-                    monitor_third.level = 0
+                    monitor_third.level = '-'
                     monitor_third.outline = '首页截图'
                     monitor_third.is_normal = is_normal
                     monitor_third.snapshot = snapshot
@@ -74,7 +74,7 @@ class SentiUtil:
             monitor_third.batch_num = batch_num
             monitor_third.url = href
             monitor_third.type = platform
-            monitor_third.level = 0
+            monitor_third.level = '-'
             monitor_third.outline = '首页截图'
             monitor_third.is_normal = is_normal
             monitor_third.snapshot = snapshot

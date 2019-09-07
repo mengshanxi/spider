@@ -55,7 +55,7 @@ class MonitorWebsiteService:
                             monitor_website.access = '异常'
                             monitor_website.is_normal = '异常'
                             monitor_website.outline = title
-                            monitor_website.level = 3
+                            monitor_website.level = '高'
                             monitor_website.pageview = '-'
                             monitor_website.batch_num = batch_num
                         monitor_website_dao.add(monitor_website)
@@ -64,7 +64,7 @@ class MonitorWebsiteService:
                         monitor_website.access = '异常'
                         monitor_website.is_normal = '异常'
                         monitor_website.outline = '首页访问检测到异常'
-                        monitor_website.level = 3
+                        monitor_website.level = '高'
                         monitor_website.pageview = '-'
                         monitor_website.snapshot = SnapshotService.simulation_404(domain_name_rich)
                         monitor_website.batch_num = batch_num
@@ -74,7 +74,7 @@ class MonitorWebsiteService:
                     monitor_website.access = '异常'
                     monitor_website.is_normal = '异常'
                     monitor_website.outline = '首页访问检测到异常'
-                    monitor_website.level = 3
+                    monitor_website.level = '高'
                     monitor_website.pageview = '-'
                     monitor_website.snapshot = SnapshotService.simulation_404(domain_name_rich)
                     monitor_website.batch_num = batch_num

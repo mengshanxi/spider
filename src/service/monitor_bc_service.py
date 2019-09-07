@@ -135,7 +135,7 @@ class MonitorBcService:
                                                snapshot=str(snapshot),
                                                is_normal='正常',
                                                kinds='法人变更:' + legalmans[0].get_text(),
-                                               level=0)
+                                               level='-')
                     else:
                         monitor_bc = MonitorBc(batch_num=batch_num,
                                                merchant_name=website.merchant_name,
@@ -143,7 +143,7 @@ class MonitorBcService:
                                                snapshot=str(snapshot),
                                                is_normal='异常',
                                                kinds='法人变更:' + legalmans[0].get_text(),
-                                               level=1)
+                                               level='低')
                     monitor_bc_dao.add(monitor_bc)
 
             #  4.经营状态：注销 迁出
@@ -162,7 +162,7 @@ class MonitorBcService:
                                        snapshot=str(snapshot),
                                        is_normal='异常',
                                        kinds='经营状态',
-                                       level=3)
+                                       level='高')
             else:
                 monitor_bc = MonitorBc(batch_num=batch_num,
                                        merchant_name=website.merchant_name,
@@ -170,7 +170,7 @@ class MonitorBcService:
                                        snapshot=str(snapshot),
                                        is_normal='正常',
                                        kinds='经营状态',
-                                       level=0)
+                                       level='-')
             monitor_bc_dao.add(monitor_bc)
             # 6.经营状态-迁出
             logger.info("企查查检测经营状态-迁出 : %s", website.merchant_name)
@@ -181,7 +181,7 @@ class MonitorBcService:
                                        snapshot=str(snapshot),
                                        is_normal='异常',
                                        kinds='经营状态',
-                                       level=1)
+                                       level='高')
             else:
                 monitor_bc = MonitorBc(batch_num=batch_num,
                                        merchant_name=website.merchant_name,
@@ -189,7 +189,7 @@ class MonitorBcService:
                                        snapshot=str(snapshot),
                                        is_normal='正常',
                                        kinds='经营状态',
-                                       level=0)
+                                       level='-')
             monitor_bc_dao.add(monitor_bc)
 
             # 7.严重违法
@@ -219,7 +219,7 @@ class MonitorBcService:
                                        snapshot=str(snapshot),
                                        is_normal='异常',
                                        kinds='经营异常',
-                                       level=2)
+                                       level='高')
             else:
                 monitor_bc = MonitorBc(batch_num=batch_num,
                                        merchant_name=website.merchant_name,
@@ -227,7 +227,7 @@ class MonitorBcService:
                                        snapshot=str(snapshot),
                                        is_normal='正常',
                                        kinds='经营异常',
-                                       level=0)
+                                       level='-')
             monitor_bc_dao.add(monitor_bc)
             # 8.严重违法
             if int(serious_illegal) > 0:
@@ -237,7 +237,7 @@ class MonitorBcService:
                                        snapshot=str(snapshot),
                                        is_normal='异常',
                                        kinds='严重违法',
-                                       level=2)
+                                       level='高')
             else:
                 monitor_bc = MonitorBc(batch_num=batch_num,
                                        merchant_name=website.merchant_name,
@@ -245,7 +245,7 @@ class MonitorBcService:
                                        snapshot=str(snapshot),
                                        is_normal='正常',
                                        kinds='严重违法',
-                                       level=0)
+                                       level='-')
             monitor_bc_dao.add(monitor_bc)
         except Exception as e:
             logger.info(e)
@@ -292,7 +292,7 @@ class MonitorBcService:
                                        snapshot=snapshot,
                                        is_normal='正常',
                                        kinds='企业是否可查',
-                                       level=0,
+                                       level='-',
                                        outline='企查查没有查询到商户公司',
                                        create_time=datetime.datetime.now())
                 monitor_bc_dao.add(monitor_bc)

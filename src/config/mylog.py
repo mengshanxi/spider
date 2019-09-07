@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import logging.config
+import socket
 from logging.handlers import TimedRotatingFileHandler
 import os
 import time
@@ -8,15 +9,16 @@ import time
 # logging初始化工作
 logging.basicConfig(level=logging.INFO)
 curPath = os.path.abspath(os.path.dirname(__file__))
-rootPath = curPath[:curPath.find("spider") + len("spider")]
+rootPath = '/home/seluser/logs/'
 
 
 def get_logger():
+    hostname = socket.gethostname()
     loggers = logging.getLogger("Log")
     console_log = logging.StreamHandler()
     console_log.setLevel(logging.DEBUG)
     data_format = time.strftime('%Y-%m-%d', time.localtime(time.time()))
-    log_file_path = rootPath + os.sep + "src" + os.sep + "logs" + os.sep + "spider_" + data_format + '.log'
+    log_file_path = rootPath + str(hostname) + "_spider_" + data_format + '.log'
     file_log = TimedRotatingFileHandler(log_file_path,
                                         when="S",
                                         interval=10,
@@ -28,7 +30,7 @@ def get_logger():
     file_log.setFormatter(file_fmt)
 
     loggers.addHandler(console_log)
-    #loggers.addHandler(file_log)
+    # loggers.addHandler(file_log)
     return loggers
 
 
