@@ -22,5 +22,6 @@ class AccessibleService:
                 return http_url, driver.current_url
         except Exception as e:
             logger.error(e)
+            return None, None
         finally:
             driver.quit()
