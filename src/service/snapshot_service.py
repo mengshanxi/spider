@@ -30,19 +30,17 @@ class SnapshotService:
 
     @staticmethod
     def simulation_404(url):
-        timestamp = int(time.time())
-        snapshot = str(timestamp) + ".png"
-        path = ims_rest_base + "system/404.jsp?url=" + str(url)
-        img_404 = base_filepath + "/snapshots/" + timestamp + ".png"
+        timestamp = str(time.time())
+        snapshot = timestamp + ".png"
+        path = ims_rest_base + "/views/system/404.jsp?url=" + str(url)
+        img_404 = base_filepath + "/" + timestamp
         try:
             driver = WebDriver.get_chrome()
             driver.get(path)
-            driver.save_screenshot(img_404)
-            im = Image.open(img_404)
-            im_resize = im.resize((641, 458))
-            im_resize.save(path + ".png")
+            driver.save_screenshot(img_404 + ".png")
+            im = Image.open(img_404 + ".png")
             im_resize = im.resize((50, 50), Image.ANTIALIAS)
-            im_resize.save(path + "_thumb.bmp")
+            im_resize.save(img_404 + "_thumb.bmp")
         except Exception as e:
             logger.info(e)
             return snapshot

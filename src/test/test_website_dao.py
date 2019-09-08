@@ -5,6 +5,7 @@ from selenium import webdriver
 from dao.monitor_website_dao import MonitorWebsiteDao
 from model.models import Website, MonitorWebsite
 from service.accessible_service import AccessibleService
+from service.snapshot_service import SnapshotService
 from service.traffic_service import TrafficService
 
 
@@ -47,44 +48,16 @@ class TestMysql(object):
                 monitor_website.kinds = "首页是否可打开"
                 monitor_website.level = '-'
                 monitor_website.snapshot = ""
-                domain_name_rich, current_url = access.get_access_res(domain_name)
+                domain_name_rich = None
                 if domain_name_rich is not None:
-                    monitor_website.access = '正常'
-                    monitor_website.is_normal = '正常'
-                    monitor_website.outline = '正常'
-                    monitor_website.level = '-'
-                    monitor_website.pageview = '-'
-                    monitor_website.batch_num = batch_num
-                    pageview = service.get_traffic(domain_name=domain_name_rich)
-                    monitor_website.pageview = pageview.reach_rank[0]
-                    try:
-                        driver.get(domain_name_rich)
-                        title = driver.title
-                        snapshot = ''
-                        monitor_website.snapshot = snapshot
-                        if title == '没有找到站点' or title == '未备案提示':
-                            monitor_website.access = '异常'
-                            monitor_website.is_normal = '异常'
-                            monitor_website.outline = title
-                            monitor_website.level = '高'
-                            monitor_website_dao.add(monitor_website)
-                        else:
-                            monitor_website_dao.add(monitor_website)
-                    except Exception as e:
-                        monitor_website.access = '异常'
-                        monitor_website.is_normal = '异常'
-                        monitor_website.outline = '首页访问检测到异常'
-                        monitor_website.level = '高'
-                        monitor_website.pageview = '-'
-                        monitor_website.snapshot = ''
-                        monitor_website.batch_num = batch_num
+                    print(domain_name_rich)
                 else:
                     monitor_website.access = '异常'
                     monitor_website.is_normal = '异常'
                     monitor_website.outline = '首页访问检测到异常'
                     monitor_website.level = '高'
                     monitor_website.pageview = '-'
-                    monitor_website.snapshot = ''
+                    monitor_website.snapshot = SnapshotService.simulation_404(domain_name)
                     monitor_website.batch_num = batch_num
             except Exception as e:
                 print(e)

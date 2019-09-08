@@ -68,7 +68,7 @@ class MonitorWebsiteService:
                         monitor_website.outline = '首页访问检测到异常'
                         monitor_website.level = '高'
                         monitor_website.pageview = '-'
-                        monitor_website.snapshot = SnapshotService.simulation_404(domain_name_rich)
+                        monitor_website.snapshot = SnapshotService.simulation_404(domain_name)
                         monitor_website.batch_num = batch_num
                         monitor_website_dao.add(monitor_website)
                 else:
@@ -78,7 +78,7 @@ class MonitorWebsiteService:
                     monitor_website.outline = '首页访问检测到异常'
                     monitor_website.level = '高'
                     monitor_website.pageview = '-'
-                    monitor_website.snapshot = SnapshotService.simulation_404(domain_name_rich)
+                    monitor_website.snapshot = SnapshotService.simulation_404(domain_name)
                     monitor_website.batch_num = batch_num
                     monitor_website_dao.add(monitor_website)
                     logger.info("website is not available : %s return!", domain_name)
