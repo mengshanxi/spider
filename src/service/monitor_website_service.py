@@ -43,6 +43,8 @@ class MonitorWebsiteService:
                     monitor_website.is_normal = '正常'
                     monitor_website.outline = '正常'
                     monitor_website.level = '-'
+                    monitor_website.pageview = '-'
+                    monitor_website.batch_num = batch_num
                     pageview = service.get_traffic(domain_name=domain_name_rich)
                     monitor_website.pageview = pageview.reach_rank[0]
                     try:
@@ -56,9 +58,9 @@ class MonitorWebsiteService:
                             monitor_website.is_normal = '异常'
                             monitor_website.outline = title
                             monitor_website.level = '高'
-                            monitor_website.pageview = '-'
-                            monitor_website.batch_num = batch_num
-                        monitor_website_dao.add(monitor_website)
+                            monitor_website_dao.add(monitor_website)
+                        else:
+                            monitor_website_dao.add(monitor_website)
                     except Exception as e:
                         logger.info(e)
                         monitor_website.access = '异常'
