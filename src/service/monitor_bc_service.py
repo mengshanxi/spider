@@ -113,7 +113,7 @@ class MonitorBcService:
 
             legalmans = soup.find_all(class_='seo font-20')
             if str(website.legal_person).strip() is "":
-                monitor_bc.outline = '未检测到法人变更'
+                monitor_bc.outline = '商户未维护法人信息，不作对比'
                 monitor_bc.snapshot = str(snapshot)
                 monitor_bc.is_normal = '正常'
                 monitor_bc.kinds = '法人变更'

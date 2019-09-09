@@ -1,12 +1,6 @@
-from bs4 import BeautifulSoup
 from selenium.webdriver import DesiredCapabilities
-from selenium import webdriver
 
-from dao.monitor_website_dao import MonitorWebsiteDao
-from model.models import Website, MonitorWebsite
-from service.accessible_service import AccessibleService
-from service.snapshot_service import SnapshotService
-from service.traffic_service import TrafficService
+from service.task_pool_service import TaskPoolService
 
 
 class TestMysql(object):
@@ -22,47 +16,14 @@ class TestMysql(object):
         # dcap["phantomjs.page.settings.userAgent"] = user_agent
         # url = "https://www.qichacha.com/search?key=" + urllib.parse.quote("京东")
         url = "https://www.baidu.com/"
-        driver = webdriver.Remote(command_executor='http://172.17.161.230:8911/wd/hub',
-                                  desired_capabilities=DesiredCapabilities.CHROME)
-        website = Website(website_name='',domain_name='hauxidyy.cn',merchant_name='内蒙古宇航人高技术产业有限责任公司')
-        batch_num = '1'
-        driver.set_page_load_timeout(10)
-        driver.set_script_timeout(10)
-        driver.maximize_window()
-        monitor_website_dao = MonitorWebsiteDao
-        service = TrafficService()
-        access = AccessibleService()
+        #driver = webdriver.Remote(command_executor='http://172.17.161.230:8911/wd/hub',
+        #                          desired_capabilities=DesiredCapabilities.CHROME)
+        #website = Website(website_name='',domain_name='hauxidyy.cn',merchant_name='内蒙古宇航人高技术产业有限责任公司')
+        task_pool_service = TaskPoolService()
+        entity, task_id, type, task_pool_id = task_pool_service.get_pending_task('20190908214723A')
+        print(1)
+        #if str(entity.legal_person).strip() is "":
 
-        domain_names = str(website.domain_name)
-        domain_name_list = domain_names.split(",")
-        for domain_name in domain_name_list:
-            try:
-                #  截图
-                monitor_website = MonitorWebsite()
-                monitor_website.website_name = website.website_name
-                monitor_website.merchant_name = website.merchant_name
-                monitor_website.merchant_num = website.merchant_num
-                monitor_website.saler = website.saler
-                monitor_website.domain_name = domain_name
-                monitor_website.batch_num = batch_num
-                monitor_website.kinds = "首页是否可打开"
-                monitor_website.level = '-'
-                monitor_website.snapshot = ""
-                domain_name_rich = None
-                if domain_name_rich is not None:
-                    print(domain_name_rich)
-                else:
-                    monitor_website.access = '异常'
-                    monitor_website.is_normal = '异常'
-                    monitor_website.outline = '首页访问检测到异常'
-                    monitor_website.level = '高'
-                    monitor_website.pageview = '-'
-                    monitor_website.snapshot = SnapshotService.simulation_404(domain_name)
-                    monitor_website.batch_num = batch_num
-            except Exception as e:
-                print(e)
-            finally:
-                driver.quit()
 
     # driver.find_element_by_id("searchkey").send_keys("京东")
     # driver.find_element_by_id("V3_Search_bt").click()
