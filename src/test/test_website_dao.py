@@ -1,3 +1,4 @@
+from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 
 from service.task_pool_service import TaskPoolService
@@ -16,12 +17,16 @@ class TestMysql(object):
         # dcap["phantomjs.page.settings.userAgent"] = user_agent
         # url = "https://www.qichacha.com/search?key=" + urllib.parse.quote("京东")
         url = "https://www.baidu.com/"
-        #driver = webdriver.Remote(command_executor='http://172.17.161.230:8911/wd/hub',
-        #                          desired_capabilities=DesiredCapabilities.CHROME)
+        driver = webdriver.Remote(command_executor='http://172.17.161.230:8912/wd/hub',
+                                  desired_capabilities=DesiredCapabilities.CHROME)
+        try:
+            driver.get(url)
+            title = driver.title
+            print(title)
+        except Exception as e:
+            print(e)
         #website = Website(website_name='',domain_name='hauxidyy.cn',merchant_name='内蒙古宇航人高技术产业有限责任公司')
-        task_pool_service = TaskPoolService()
-        entity, task_id, type, task_pool_id = task_pool_service.get_pending_task('20190908214723A')
-        print(1)
+
         #if str(entity.legal_person).strip() is "":
 
 
