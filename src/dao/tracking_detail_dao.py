@@ -19,6 +19,7 @@ class TrackingDetailDao(object):
              TrackingDetail.start_time: tracking_detail.start_time,
              TrackingDetail.end_time: tracking_detail.end_time,
              TrackingDetail.url: tracking_detail.url,
+             TrackingDetail.des: tracking_detail.des,
              TrackingDetail.snapshot: tracking_detail.snapshot,
              TrackingDetail.result: tracking_detail.result,
              TrackingDetail.retry: tracking_detail.retry + 1})

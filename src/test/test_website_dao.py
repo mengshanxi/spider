@@ -1,30 +1,14 @@
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 
+from service.monitor_tracking_service import MonitorTrackingService
 from service.task_pool_service import TaskPoolService
 
 
 class TestMysql(object):
     if __name__ == "__main__":
-        # chrome_options = webdriver.ChromeOptions()
-        # chrome_options.add_argument('--headless')
-        # driver = webdriver.Chrome(chrome_options=chrome_options,
-        #                           executable_path=chromedriver_path)
-        user_agent = (
-            "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.96 Safari/537.36"
-        )
-        dcap = dict(DesiredCapabilities.PHANTOMJS)
-        # dcap["phantomjs.page.settings.userAgent"] = user_agent
-        # url = "https://www.qichacha.com/search?key=" + urllib.parse.quote("京东")
-        url = "https://www.baidu.com/"
-        driver = webdriver.Remote(command_executor='http://172.17.161.230:8912/wd/hub',
-                                  desired_capabilities=DesiredCapabilities.CHROME)
-        try:
-            driver.get(url)
-            title = driver.title
-            print(title)
-        except Exception as e:
-            print(e)
+        tracking_Service =MonitorTrackingService
+        tracking_Service.monitor(1,'pending')
         #website = Website(website_name='',domain_name='hauxidyy.cn',merchant_name='内蒙古宇航人高技术产业有限责任公司')
 
         #if str(entity.legal_person).strip() is "":

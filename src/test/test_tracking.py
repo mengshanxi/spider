@@ -22,13 +22,14 @@ class TestMysql(object):
         driver.set_script_timeout(10)
         driver.maximize_window()
         try:
-            driver.get("http://www.trackingmore.com/zto-tracking/cn.html?number=75168858039903")
-            #source = driver.page_source
-            #soup = BeautifulSoup(source, 'html.parser')
-            #exist = soup.find_all("li", attrs={'class': 's-packStatst'})
-            #print(exist[0].get_text())
+            driver.get("https://www.trackingmore.com/cn/75168858039903")
+            driver.find_element_by_link_text("中通快递").click()
+            source = driver.page_source
+            soup = BeautifulSoup(source, 'html.parser')
+            exist = soup.find_all("li", attrs={'class': 's-packStatst'})
+            print(exist[0].get_text())
             #Not Found
-            driver.save_screenshot("D:/ddd.png")
+            #driver.save_screenshot("D:/ddd.png")
         except Exception as e:
             print(e)
         finally:

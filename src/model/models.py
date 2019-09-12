@@ -15,7 +15,7 @@ class TrackingDetail(Base):
     snapshot = Column(String(255))
     result = Column(String(255))
     des = Column(String(255))
-    retry = Column(String(255))
+    retry = Column(Integer())
     start_time = Column(DateTime())
     end_time = Column(DateTime())
 
