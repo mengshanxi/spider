@@ -29,6 +29,22 @@ class SnapshotService:
         return snapshot
 
     @staticmethod
+    def snapshot_tracking(driver, tracking_detail):
+        timestamp = int(time.time())
+        path = base_filepath + "/" + tracking_detail.tracking_num + "_" + str(
+            timestamp)
+        snapshot = tracking_detail.tracking_num + "_" + str(timestamp) + ".png"
+        try:
+            driver.save_screenshot(path + ".png")
+            im = Image.open(path + ".png")
+            im_resize = im.resize((50, 50), Image.ANTIALIAS)
+            im_resize.save(path + "_thumb.bmp")
+        except Exception as e:
+            logger.info(e)
+            return snapshot
+        return snapshot
+
+    @staticmethod
     def simulation_404(url):
         timestamp = str(time.time())
         snapshot = timestamp + ".png"

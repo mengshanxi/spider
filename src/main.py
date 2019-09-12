@@ -9,6 +9,7 @@ from config.mylog import logger
 from manager.gather_center import GatherCenter
 from manager.ims_api import ImsApi
 from service.monitor_bc_service import MonitorBcService
+from service.monitor_tracking_service import MonitorTrackingService
 from service.weburl_service import WeburlService
 
 app = Flask(__name__)
@@ -33,8 +34,6 @@ def verify_cookie():
 
 @app.route('/spider/execute', methods=['POST'])
 def execute():
-    #os.environ['browser'] = '172.17.161.230'
-    #os.environ['port'] = '8911'
     gl.set_value('STATUS', True)
     ims_api.heartbeat()
     try:
@@ -46,6 +45,31 @@ def execute():
         return 'OK'
     except Exception as e:
         logger.error(e)
+
+
+@app.route('/tracking/execute', methods=['POST'])
+def tracking_execute():
+    gl.set_value('STATUS', True)
+    ims_api.heartbeat()
+    try:
+        task_id = request.form['taskId']
+        status = request.form['status']
+        logger.info("tracking begin task_id: %s,status:%s" % str(task_id), status)
+        t = threading.Thread(target=inspect_tracking, args=(task_id, status))
+        t.setDaemon(True)
+        t.start()
+        return 'OK'
+    except Exception as e:
+        logger.error(e)
+
+
+def inspect_tracking(task_id, status):
+    tracking_service = MonitorTrackingService()
+    while gl.get_value('STATUS'):
+        logger.info("tracking task start!  task_id:%s" % str(task_id))
+        tracking_service.monitor(task_id, status)
+        logger.info("tracking task end!  task_id:%s" % str(task_id))
+    logger.info("tracking task end!  task_id:%s" % str(task_id))
 
 
 def inspect(batch_num):

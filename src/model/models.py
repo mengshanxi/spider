@@ -4,6 +4,22 @@ from sqlalchemy import Column, String, Integer, DateTime, Text
 from dao.db import Base
 
 
+class TrackingDetail(Base):
+    __tablename__ = 'tracking_detail'
+    id = Column(Integer(), primary_key=True)
+    task_id = Column(Integer())
+    tracking_num = Column(String(255))
+    tracking_name = Column(String(255))
+    url = Column(String(255))
+    status = Column(String(255))
+    snapshot = Column(String(255))
+    result = Column(String(255))
+    des = Column(String(255))
+    retry = Column(String(255))
+    start_time = Column(DateTime())
+    end_time = Column(DateTime())
+
+
 class ThirdPlatform(Base):
     __tablename__ = 'third_platform'
     id = Column(Integer(), primary_key=True)
