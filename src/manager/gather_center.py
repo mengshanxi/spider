@@ -46,7 +46,7 @@ class GatherCenter:
             # 工商监控
             logger.info("qichacha monitor  begin,merchantName : %s", entity.merchant_name)
             service = MonitorBcService()
-            url = service.get_merchant_url(str(batch_num), merchant_name=entity.merchant_name)
+            url = service.get_merchant_url(str(batch_num), entity)
             logger.info("get qichacha url  : %s", str(url))
             if url is not None:
                 try:

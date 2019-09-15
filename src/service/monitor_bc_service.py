@@ -132,21 +132,12 @@ class MonitorBcService:
                         monitor_bc.kinds = '法人变更:' + legalmans[0].get_text()
                         monitor_bc.outline = '未检测到法人变更'
                         monitor_bc.level = '-'
-                        monitor_bc = MonitorBc(batch_num=batch_num,
-                                               merchant_name=website.merchant_name,
-                                               outline='未检测到法人变更',
-                                               snapshot=str(snapshot),
-                                               is_normal='正常',
-                                               kinds='法人变更:' + legalmans[0].get_text(),
-                                               level='-')
                     else:
-                        monitor_bc = MonitorBc(batch_num=batch_num,
-                                               merchant_name=website.merchant_name,
-                                               outline='检测到法人变更，变更为:' + legalmans[0].get_text(),
-                                               snapshot=str(snapshot),
-                                               is_normal='异常',
-                                               kinds='法人变更:' + legalmans[0].get_text(),
-                                               level='低')
+                        monitor_bc.snapshot = str(snapshot)
+                        monitor_bc.is_normal = '异常'
+                        monitor_bc.kinds = '法人变更:' + legalmans[0].get_text()
+                        monitor_bc.outline = '检测到法人变更，变更为:' + legalmans[0].get_text()
+                        monitor_bc.level = '低'
                     monitor_bc_dao.add(monitor_bc)
 
             #  4.经营状态：注销 迁出
@@ -159,40 +150,32 @@ class MonitorBcService:
             # 5.经营状态-注销
             logger.info("企查查检测经营状态-注销 : %s", website.merchant_name)
             if str(manage_state).find("注销") >= 0:
-                monitor_bc = MonitorBc(batch_num=batch_num,
-                                       merchant_name=website.merchant_name,
-                                       outline='检测到经营状态异常：注销',
-                                       snapshot=str(snapshot),
-                                       is_normal='异常',
-                                       kinds='经营状态',
-                                       level='高')
+                monitor_bc.snapshot = str(snapshot)
+                monitor_bc.is_normal = '异常'
+                monitor_bc.kinds = '经营状态'
+                monitor_bc.outline = '检测到经营状态异常：注销',
+                monitor_bc.level = '高'
             else:
-                monitor_bc = MonitorBc(batch_num=batch_num,
-                                       merchant_name=website.merchant_name,
-                                       outline='经营状态正常，无注销',
-                                       snapshot=str(snapshot),
-                                       is_normal='正常',
-                                       kinds='经营状态',
-                                       level='-')
+                monitor_bc.snapshot = str(snapshot)
+                monitor_bc.is_normal = '正常'
+                monitor_bc.kinds = '经营状态'
+                monitor_bc.outline = '经营状态正常，无注销',
+                monitor_bc.level = '-'
             monitor_bc_dao.add(monitor_bc)
             # 6.经营状态-迁出
             logger.info("企查查检测经营状态-迁出 : %s", website.merchant_name)
             if str(manage_state).find("迁出") >= 0:
-                monitor_bc = MonitorBc(batch_num=batch_num,
-                                       merchant_name=website.merchant_name,
-                                       outline='检测到经营状态异常：迁出',
-                                       snapshot=str(snapshot),
-                                       is_normal='异常',
-                                       kinds='经营状态',
-                                       level='高')
+                monitor_bc.snapshot = str(snapshot)
+                monitor_bc.is_normal = '异常'
+                monitor_bc.kinds = '经营状态'
+                monitor_bc.outline = '检测到经营状态异常：迁出',
+                monitor_bc.level = '高'
             else:
-                monitor_bc = MonitorBc(batch_num=batch_num,
-                                       merchant_name=website.merchant_name,
-                                       outline='经营状态正常，无 迁出',
-                                       snapshot=str(snapshot),
-                                       is_normal='正常',
-                                       kinds='经营状态',
-                                       level='-')
+                monitor_bc.snapshot = str(snapshot)
+                monitor_bc.is_normal = '正常'
+                monitor_bc.kinds = '经营状态'
+                monitor_bc.outline = '经营状态正常，无 迁出',
+                monitor_bc.level = '-'
             monitor_bc_dao.add(monitor_bc)
 
             # 7.严重违法
@@ -216,39 +199,31 @@ class MonitorBcService:
             logger.info("manage_abn:%s", str(manage_abn))
             logger.info("serious_illegal:%s", str(serious_illegal))
             if int(manage_abn) > 0:
-                monitor_bc = MonitorBc(batch_num=batch_num,
-                                       merchant_name=website.merchant_name,
-                                       outline='检测到经营异常风险',
-                                       snapshot=str(snapshot),
-                                       is_normal='异常',
-                                       kinds='经营异常',
-                                       level='高')
+                monitor_bc.snapshot = str(snapshot)
+                monitor_bc.is_normal = '异常'
+                monitor_bc.kinds = '经营状态'
+                monitor_bc.outline = '检测到经营异常风险',
+                monitor_bc.level = '高'
             else:
-                monitor_bc = MonitorBc(batch_num=batch_num,
-                                       merchant_name=website.merchant_name,
-                                       outline='未检测到经营异常风险',
-                                       snapshot=str(snapshot),
-                                       is_normal='正常',
-                                       kinds='经营异常',
-                                       level='-')
+                monitor_bc.snapshot = str(snapshot)
+                monitor_bc.is_normal = '正常'
+                monitor_bc.kinds = '经营状态'
+                monitor_bc.outline = '未检测到经营异常风险',
+                monitor_bc.level = '-'
             monitor_bc_dao.add(monitor_bc)
             # 8.严重违法
             if int(serious_illegal) > 0:
-                monitor_bc = MonitorBc(batch_num=batch_num,
-                                       merchant_name=website.merchant_name,
-                                       outline='检测到严重违法风险',
-                                       snapshot=str(snapshot),
-                                       is_normal='异常',
-                                       kinds='严重违法',
-                                       level='高')
+                monitor_bc.snapshot = str(snapshot)
+                monitor_bc.is_normal = '异常'
+                monitor_bc.kinds = '严重违法'
+                monitor_bc.outline = '检测到严重违法风险',
+                monitor_bc.level = '高'
             else:
-                monitor_bc = MonitorBc(batch_num=batch_num,
-                                       merchant_name=website.merchant_name,
-                                       outline='未检测到严重违法风险',
-                                       snapshot=str(snapshot),
-                                       is_normal='正常',
-                                       kinds='严重违法',
-                                       level='-')
+                monitor_bc.snapshot = str(snapshot)
+                monitor_bc.is_normal = '正常'
+                monitor_bc.kinds = '严重违法'
+                monitor_bc.outline = '未检测到严重违法风险',
+                monitor_bc.level = '-'
             monitor_bc_dao.add(monitor_bc)
         except Exception as e:
             logger.info(e)
@@ -256,7 +231,7 @@ class MonitorBcService:
             driver.quit()
 
     @staticmethod
-    def get_merchant_url(batch_num, merchant_name):
+    def get_merchant_url(batch_num, website):
         webdriver = WebDriver()
         url = "https://www.qichacha.com"
         driver = webdriver.get_chrome()
@@ -264,7 +239,7 @@ class MonitorBcService:
         try:
             driver.get(url)
             driver.implicitly_wait(5)
-            driver.find_element_by_id("searchkey").send_keys(merchant_name)
+            driver.find_element_by_id("searchkey").send_keys(website.merchant_name)
             driver.find_element_by_id("V3_Search_bt").click()
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
@@ -278,7 +253,7 @@ class MonitorBcService:
             a = tds[2].find_all('a')
             name = a[0].get_text().strip()
             href = a[0].get('href')
-            if name == merchant_name.strip() and str(href) is not None:
+            if name == website.merchant_name.strip() and str(href) is not None:
                 return href.strip()
             else:
                 timestamp = int(time.time())
@@ -291,7 +266,11 @@ class MonitorBcService:
                 jpg.save(path + "_thumb.bmp")
                 monitor_bc_dao = MonitorBcDao()
                 monitor_bc = MonitorBc(batch_num=batch_num,
-                                       merchant_name=merchant_name,
+                                       merchant_name=website.merchant_name,
+                                       merchant_num=website.merchant_num,
+                                       website_name=website.website_name,
+                                       domain_name=website.domain_name,
+                                       saler=website.saler,
                                        snapshot=snapshot,
                                        is_normal='正常',
                                        kinds='企业是否可查',
