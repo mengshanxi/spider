@@ -28,6 +28,9 @@ class MonitorBcService:
         monitor_bc_dao = MonitorBcDao()
         monitor_bc = MonitorBc()
         monitor_bc.batch_num = batch_num
+        monitor_bc.domain_name = website.domain_name
+        monitor_bc.merchant_num = website.merchant_num
+        monitor_bc.website_name = website.website_name
         monitor_bc.merchant_name = website.merchant_name
         try:
             driver = WebDriver.get_chrome()

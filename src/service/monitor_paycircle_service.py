@@ -14,7 +14,7 @@ from config.mylog import logger
 class MonitorPaycircleService:
 
     @staticmethod
-    def monitor(keyword, website_name, batch_num, merchant_name, merchant_num):
+    def monitor(keyword, batch_num, website):
         driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
         try:
@@ -22,8 +22,8 @@ class MonitorPaycircleService:
                 keyword) + "&c=SearchList&"
             driver.get(url)
             source = driver.page_source
-            senti_util.snapshot_home("支付圈", website_name, url,
-                                     batch_num, merchant_name, merchant_num,
+            senti_util.snapshot_home("支付圈", url,
+                                     batch_num, website,
                                      driver)
             soup = BeautifulSoup(source, 'html.parser')
             div_list = soup.find_all(attrs={'class': 'list'})
@@ -33,9 +33,8 @@ class MonitorPaycircleService:
                     href = new.find_all('td')[2].find_all('a')[0].get("href")
                     content = new.find_all('td')[2].find_all('li')[1].get_text()
                     if content.find(keyword) != -1:
-                        senti_util.senti_process_text("支付圈", website_name, content, href,
-                                                      batch_num, merchant_name,
-                                                      merchant_num)
+                        senti_util.senti_process_text("支付圈", content, href,
+                                                      batch_num, website)
             else:
                 logger.info("支付圈没有搜索到数据: %s", keyword)
 

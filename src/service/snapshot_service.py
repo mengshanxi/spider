@@ -12,11 +12,11 @@ from service.webdriver_util import WebDriver
 class SnapshotService:
 
     @staticmethod
-    def create_snapshot(driver, batch_num, merchant_name, merchant_num, senti_type):
+    def create_snapshot(driver, batch_num, website, senti_type):
         timestamp = int(time.time())
-        snapshot = batch_num + "_" + merchant_name + "_" + merchant_num + "_" + senti_type + "_" + str(
+        snapshot = batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_" + senti_type + "_" + str(
             timestamp) + ".png"
-        path = base_filepath + "/" + batch_num + "_" + merchant_name + "_" + merchant_num + "_" + senti_type + "_" + str(
+        path = base_filepath + "/" + batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_" + senti_type + "_" + str(
             timestamp)
         try:
             driver.save_screenshot(path + ".png")

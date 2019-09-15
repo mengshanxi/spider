@@ -16,7 +16,7 @@ from service.webdriver_util import WebDriver
 class MonitorZfzjService:
 
     @staticmethod
-    def monitor(keyword, website_name, batch_num, merchant_name, merchant_num):
+    def monitor(keyword, batch_num, website):
         driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
         try:
@@ -27,8 +27,8 @@ class MonitorZfzjService:
             search_text_blank.send_keys(keyword)
             search_text_blank.send_keys(Keys.RETURN)
             time.sleep(5)
-            senti_util.snapshot_home("支付快讯", website_name, url,
-                                     batch_num, merchant_name, merchant_num, driver)
+            senti_util.snapshot_home("支付快讯", url,
+                                     batch_num, website, driver)
             soup = BeautifulSoup(source, 'html.parser')
             items = soup.find_all(attrs={'class': 'slst mtw'})
             if items.__len__() > 0:
@@ -36,9 +36,9 @@ class MonitorZfzjService:
                     href = item.find_all('a')[0].get("href")
                     content = item.find_all('a')[0].get_text()
                     if content.find(keyword) != -1:
-                        senti_util.senti_process_text("支付快讯", website_name, content,
+                        senti_util.senti_process_text("支付快讯", content,
                                                       "http://www.paycircle.cn" + href[1:],
-                                                      batch_num, merchant_name, merchant_num)
+                                                      batch_num, website)
             else:
                 logger.info("支付快讯没有搜索到数据: %s", keyword)
         except Exception as e:

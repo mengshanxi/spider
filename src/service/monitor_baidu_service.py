@@ -15,8 +15,7 @@ import time
 class MonitorBaiduService(IMonitor):
 
     @staticmethod
-    def monitor(keyword, website_name, batch_num, merchant_name,
-                merchant_num):
+    def monitor(keyword, batch_num, website):
         driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
         try:
@@ -27,17 +26,15 @@ class MonitorBaiduService(IMonitor):
             search_text_blank.send_keys(Keys.RETURN)
             time.sleep(5)
             # driver.find_element_by_xpath('//input[@name="wd"]').send_keys(website_name)
-            senti_util.snapshot_home("百度搜索", website_name, url,
-                                     batch_num, merchant_name, merchant_num,
-                                     driver)
+            senti_util.snapshot_home("百度搜索", url, batch_num, website, driver)
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
             for result_table in soup.find_all('h3', class_='t'):
                 a_click = result_table.find("a")
                 title = a_click.get_text()
                 if title.find(keyword) != -1:
-                    senti_util.senti_process_text("百度搜索", website_name, title, str(a_click.get("href")),
-                                                  batch_num, merchant_name, merchant_num)
+                    senti_util.senti_process_text("百度搜索", title, str(a_click.get("href")),
+                                                  batch_num, website)
         except Exception as e:
             logger.error(e)
             return

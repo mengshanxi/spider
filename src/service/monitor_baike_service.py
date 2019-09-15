@@ -11,8 +11,7 @@ from config.mylog import logger
 
 class MonitorBaikeService:
     @staticmethod
-    def monitor(keyword, website_name, batch_num, merchant_name,
-                merchant_num):
+    def monitor(keyword, batch_num, website):
         """
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('--headless')
@@ -29,12 +28,11 @@ class MonitorBaikeService:
             check_exist = soup.find_all(name='p', attrs={'class': re.compile('sorryCont')})
             if check_exist.__len__() == 0:
                 description = soup.find(attrs={"name": "description"})['content']
-                senti_util.senti_process_text("百度百科", website_name, description, url,
-                                              batch_num, merchant_name,
-                                              merchant_num)
+                senti_util.senti_process_text("百度百科", description, url,
+                                              batch_num, website)
             else:
-                senti_util.snapshot_home("百度百科", website_name, url,
-                                         batch_num, merchant_name, merchant_num, driver)
+                senti_util.snapshot_home("百度百科", url,
+                                         batch_num, website, driver)
                 logger.info("百度百科没有搜索到数据: %s", keyword)
 
         except Exception as e:

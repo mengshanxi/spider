@@ -14,7 +14,7 @@ from service.webdriver_util import WebDriver
 class MonitorTsService:
 
     @staticmethod
-    def monitor(keyword, website_name, batch_num, merchant_name, merchant_num):
+    def monitor(keyword, batch_num, website):
         driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
         try:
@@ -22,8 +22,8 @@ class MonitorTsService:
             driver.get(url)
             driver.implicitly_wait(3)
             source = driver.page_source
-            senti_util.snapshot_home("聚投诉", website_name, url,
-                                     batch_num, merchant_name, merchant_num,
+            senti_util.snapshot_home("聚投诉", url,
+                                     batch_num, website,
                                      driver)
             soup = BeautifulSoup(source, 'html.parser')
             items = soup.find_all(attrs={'class': 'complain-item'})
@@ -32,10 +32,9 @@ class MonitorTsService:
                     href = item.find_all('a')[1].get("href")
                     content = item.find_all('a')[1].get_text()
                     if content.find(keyword) != -1:
-                        senti_util.senti_process_text("聚投诉", website_name, content,
+                        senti_util.senti_process_text("聚投诉", content,
                                                       "http://www.paycircle.cn" + href[1:],
-                                                      batch_num, merchant_name,
-                                                      merchant_num)
+                                                      batch_num, website)
             else:
                 logger.info("聚投诉没有搜索到数据: %s", keyword)
         except Exception as e:
