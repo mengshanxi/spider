@@ -26,11 +26,8 @@ class GatherCenter:
             logger.info("gather data for website_name:%s", entity.website_name)
             service = MonitorWebsiteService()
             logger.info("website monitor begin,domain_name : %s", entity.domain_name)
-            if entity.domain_name is not None:
-                service.monitor_website(entity, batch_num)
-                logger.info("website monitor done! domain_name: %s ", entity.domain_name)
-            else:
-                logger.info("website domain is empty,continue! ")
+            service.monitor_website(entity, batch_num)
+            logger.info("website domain is empty,continue! ")
             # 舆情监控
             logger.info("sentiment monitor begin,merchant_name : %s", entity.merchant_name)
             if not entity.website_name:

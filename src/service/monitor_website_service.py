@@ -12,9 +12,29 @@ from service.webdriver_util import WebDriver
 class MonitorWebsiteService:
     @staticmethod
     def monitor_website(website, batch_num):
-        #   首页监控
-        driver = WebDriver.get_chrome()
         monitor_website_dao = MonitorWebsiteDao
+        if website.domain_name is None:
+            logger.info("website_domain is None! merchant_name: %s ", website.merchant_name)
+            monitor_website = MonitorWebsite()
+            monitor_website.website_name = website.website_name
+            monitor_website.merchant_name = website.merchant_name
+            monitor_website.merchant_num = website.merchant_num
+            monitor_website.domain_name = website.domain_name
+            monitor_website.saler = website.saler
+            monitor_website.batch_num = batch_num
+            monitor_website.kinds = "首页是否可打开"
+            monitor_website.level = '-'
+            monitor_website.access = '异常'
+            monitor_website.is_normal = '异常'
+            monitor_website.outline = '商户域名为空。'
+            monitor_website.level = '-'
+            monitor_website.pageview = '-'
+            monitor_website_dao.add(monitor_website)
+            return
+        else:
+            pass
+        # 首页监控
+        driver = WebDriver.get_chrome()
         service = TrafficService()
         access = AccessibleService()
 
