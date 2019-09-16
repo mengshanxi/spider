@@ -70,8 +70,7 @@ class MonitorWebsiteService:
                     try:
                         driver.get(domain_name_rich)
                         title = driver.title
-                        snapshot = SnapshotService.create_snapshot(driver, batch_num, website.merchant_name,
-                                                                   website.merchant_num, '网站')
+                        snapshot = SnapshotService.create_snapshot(driver, batch_num, website, '网站')
                         monitor_website.snapshot = snapshot
                         if title == '没有找到站点' or title == '未备案提示':
                             monitor_website.access = '异常'

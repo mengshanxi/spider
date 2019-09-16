@@ -12,8 +12,8 @@ from dao.bc_person_dao import BcPersonDao
 from dao.monitor_bc_dao import MonitorBcDao
 from model.models import BcPerson, BcBenefit
 from model.models import MonitorBc
-from service.snapshot_service import SnapshotService
 from service.webdriver_util import WebDriver
+from selenium.webdriver.common.keys import Keys
 
 """
 企查查监控服务
@@ -99,132 +99,137 @@ class MonitorBcService:
                         bc_person.job = job.strip()
 
                         bc_person_dao.add(bc_person)
-
+            try:
                 # 3.法人变更
-            timestamp = int(time.time())
-            snapshot = batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
-                timestamp) + ".png"
-            path = base_filepath + "/" + batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
-                timestamp)
-            from selenium.webdriver.common.keys import Keys
-            driver.find_element_by_link_text("工商信息").send_keys(Keys.RETURN)
-            logger.info("企查查检测法人变更 : %s", website.merchant_name)
-            driver.save_screenshot(path + ".png")
-            img = Image.open(path + ".png")
-            jpg = img.crop((265, 158, 420, 258))
-            jpg.save(path + "_thumb.bmp")
+                timestamp = int(time.time())
+                snapshot = batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
+                    timestamp) + ".png"
+                path = base_filepath + "/" + batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
+                    timestamp)
+                driver.find_element_by_link_text("工商信息").send_keys(Keys.RETURN)
+                logger.info("企查查检测法人变更 : %s", website.merchant_name)
+                driver.save_screenshot(path + ".png")
+                img = Image.open(path + ".png")
+                jpg = img.crop((265, 158, 420, 258))
+                jpg.save(path + "_thumb.bmp")
 
-            legalmans = soup.find_all(class_='seo font-20')
-            if str(website.legal_person).strip() is "":
-                monitor_bc.outline = '商户未维护法人信息，不作对比'
-                monitor_bc.snapshot = str(snapshot)
-                monitor_bc.is_normal = '正常'
-                monitor_bc.kinds = '法人变更'
-                if legalmans.__len__() > 0:
-                    monitor_bc.kinds = '法人变更:' + legalmans[0].get_text()
-                monitor_bc.level = '-'
-                monitor_bc_dao.add(monitor_bc)
-            else:
-                if legalmans.__len__() > 0:
-                    if str(website.legal_person).strip() == legalmans[0].get_text():
-                        monitor_bc.snapshot = str(snapshot)
-                        monitor_bc.is_normal = '正常'
+                legalmans = soup.find_all(class_='seo font-20')
+                if str(website.legal_person).strip() is "":
+                    monitor_bc.outline = '商户未维护法人信息，不作对比'
+                    monitor_bc.snapshot = str(snapshot)
+                    monitor_bc.is_normal = '正常'
+                    monitor_bc.kinds = '法人变更'
+                    if legalmans.__len__() > 0:
                         monitor_bc.kinds = '法人变更:' + legalmans[0].get_text()
-                        monitor_bc.outline = '未检测到法人变更'
-                        monitor_bc.level = '-'
-                    else:
-                        monitor_bc.snapshot = str(snapshot)
-                        monitor_bc.is_normal = '异常'
-                        monitor_bc.kinds = '法人变更:' + legalmans[0].get_text()
-                        monitor_bc.outline = '检测到法人变更，变更为:' + legalmans[0].get_text()
-                        monitor_bc.level = '低'
+                    monitor_bc.level = '-'
                     monitor_bc_dao.add(monitor_bc)
-
-            #  4.经营状态：注销 迁出
-            logger.info("企查查检测经营状态：注销 迁出 : %s", website.merchant_name)
-            cminfo = soup.find_all(name='section', id=re.compile('Cominfo'))
-            tables = cminfo[0].find_all(name='table', class_='ntable')
-            trs = tables[0].find_all(name='tr')
-            tds = trs[2].find_all(name='td')
-            manage_state = tds[1].get_text().strip()
-            # 5.经营状态-注销
-            logger.info("企查查检测经营状态-注销 : %s", website.merchant_name)
-            if str(manage_state).find("注销") >= 0:
-                monitor_bc.snapshot = str(snapshot)
-                monitor_bc.is_normal = '异常'
-                monitor_bc.kinds = '经营状态'
-                monitor_bc.outline = '检测到经营状态异常：注销',
-                monitor_bc.level = '高'
-            else:
-                monitor_bc.snapshot = str(snapshot)
-                monitor_bc.is_normal = '正常'
-                monitor_bc.kinds = '经营状态'
-                monitor_bc.outline = '经营状态正常，无注销',
-                monitor_bc.level = '-'
-            monitor_bc_dao.add(monitor_bc)
-            # 6.经营状态-迁出
-            logger.info("企查查检测经营状态-迁出 : %s", website.merchant_name)
-            if str(manage_state).find("迁出") >= 0:
-                monitor_bc.snapshot = str(snapshot)
-                monitor_bc.is_normal = '异常'
-                monitor_bc.kinds = '经营状态'
-                monitor_bc.outline = '检测到经营状态异常：迁出',
-                monitor_bc.level = '高'
-            else:
-                monitor_bc.snapshot = str(snapshot)
-                monitor_bc.is_normal = '正常'
-                monitor_bc.kinds = '经营状态'
-                monitor_bc.outline = '经营状态正常，无 迁出',
-                monitor_bc.level = '-'
-            monitor_bc_dao.add(monitor_bc)
-
-            # 7.严重违法
-            logger.info("企查查检测严重违法 : %s", website.merchant_name)
-            timestamp = int(time.time())
-            snapshot = batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
-                timestamp) + ".png"
-            path = base_filepath + "/" + batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
-                timestamp)
-            driver.find_element_by_partial_link_text("经营风险").send_keys(Keys.RETURN)
-            driver.save_screenshot(path + ".png")
-            img = Image.open(path + ".png")
-            jpg = img.crop((91, 572, 191, 672))
-            jpg.save(path + "_thumb.bmp")
-            source = driver.page_source
-            soup = BeautifulSoup(source, 'html.parser')
-            companys = soup.find_all(name='div', class_='company-nav-tab')
-            risks = companys[3].find_all(name='span')
-            manage_abn = risks[2].get_text()
-            serious_illegal = risks[4].get_text()
-            logger.info("manage_abn:%s", str(manage_abn))
-            logger.info("serious_illegal:%s", str(serious_illegal))
-            if int(manage_abn) > 0:
-                monitor_bc.snapshot = str(snapshot)
-                monitor_bc.is_normal = '异常'
-                monitor_bc.kinds = '经营状态'
-                monitor_bc.outline = '检测到经营异常风险',
-                monitor_bc.level = '高'
-            else:
-                monitor_bc.snapshot = str(snapshot)
-                monitor_bc.is_normal = '正常'
-                monitor_bc.kinds = '经营状态'
-                monitor_bc.outline = '未检测到经营异常风险',
-                monitor_bc.level = '-'
-            monitor_bc_dao.add(monitor_bc)
-            # 8.严重违法
-            if int(serious_illegal) > 0:
-                monitor_bc.snapshot = str(snapshot)
-                monitor_bc.is_normal = '异常'
-                monitor_bc.kinds = '严重违法'
-                monitor_bc.outline = '检测到严重违法风险',
-                monitor_bc.level = '高'
-            else:
-                monitor_bc.snapshot = str(snapshot)
-                monitor_bc.is_normal = '正常'
-                monitor_bc.kinds = '严重违法'
-                monitor_bc.outline = '未检测到严重违法风险',
-                monitor_bc.level = '-'
-            monitor_bc_dao.add(monitor_bc)
+                else:
+                    if legalmans.__len__() > 0:
+                        if str(website.legal_person).strip() == legalmans[0].get_text():
+                            monitor_bc.snapshot = str(snapshot)
+                            monitor_bc.is_normal = '正常'
+                            monitor_bc.kinds = '法人变更:' + legalmans[0].get_text()
+                            monitor_bc.outline = '未检测到法人变更'
+                            monitor_bc.level = '-'
+                        else:
+                            monitor_bc.snapshot = str(snapshot)
+                            monitor_bc.is_normal = '异常'
+                            monitor_bc.kinds = '法人变更:' + legalmans[0].get_text()
+                            monitor_bc.outline = '检测到法人变更，变更为:' + legalmans[0].get_text()
+                            monitor_bc.level = '低'
+                        monitor_bc_dao.add(monitor_bc)
+            except Exception as e:
+                logger.info(e)
+            try:
+                #  4.经营状态：注销 迁出
+                logger.info("企查查检测经营状态：注销 迁出 : %s", website.merchant_name)
+                cminfo = soup.find_all(name='section', id=re.compile('Cominfo'))
+                tables = cminfo[0].find_all(name='table', class_='ntable')
+                trs = tables[0].find_all(name='tr')
+                tds = trs[2].find_all(name='td')
+                manage_state = tds[1].get_text().strip()
+                # 5.经营状态-注销
+                logger.info("企查查检测经营状态-注销 : %s", website.merchant_name)
+                if str(manage_state).find("注销") >= 0:
+                    monitor_bc.snapshot = str(snapshot)
+                    monitor_bc.is_normal = '异常'
+                    monitor_bc.kinds = '经营状态'
+                    monitor_bc.outline = '检测到经营状态异常：注销',
+                    monitor_bc.level = '高'
+                else:
+                    monitor_bc.snapshot = str(snapshot)
+                    monitor_bc.is_normal = '正常'
+                    monitor_bc.kinds = '经营状态'
+                    monitor_bc.outline = '经营状态正常，无注销',
+                    monitor_bc.level = '-'
+                monitor_bc_dao.add(monitor_bc)
+                # 6.经营状态-迁出
+                logger.info("企查查检测经营状态-迁出 : %s", website.merchant_name)
+                if str(manage_state).find("迁出") >= 0:
+                    monitor_bc.snapshot = str(snapshot)
+                    monitor_bc.is_normal = '异常'
+                    monitor_bc.kinds = '经营状态'
+                    monitor_bc.outline = '检测到经营状态异常：迁出',
+                    monitor_bc.level = '高'
+                else:
+                    monitor_bc.snapshot = str(snapshot)
+                    monitor_bc.is_normal = '正常'
+                    monitor_bc.kinds = '经营状态'
+                    monitor_bc.outline = '经营状态正常，无 迁出',
+                    monitor_bc.level = '-'
+                monitor_bc_dao.add(monitor_bc)
+            except Exception as e:
+                logger.info(e)
+            try:
+                # 7.严重违法
+                logger.info("企查查检测严重违法 : %s", website.merchant_name)
+                timestamp = int(time.time())
+                snapshot = batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
+                    timestamp) + ".png"
+                path = base_filepath + "/" + batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
+                    timestamp)
+                driver.find_element_by_partial_link_text("经营风险").send_keys(Keys.RETURN)
+                driver.save_screenshot(path + ".png")
+                img = Image.open(path + ".png")
+                jpg = img.crop((91, 572, 191, 672))
+                jpg.save(path + "_thumb.bmp")
+                source = driver.page_source
+                soup = BeautifulSoup(source, 'html.parser')
+                companys = soup.find_all(name='div', class_='company-nav-tab')
+                risks = companys[3].find_all(name='span')
+                manage_abn = risks[2].get_text()
+                serious_illegal = risks[4].get_text()
+                logger.info("manage_abn:%s", str(manage_abn))
+                logger.info("serious_illegal:%s", str(serious_illegal))
+                if int(manage_abn) > 0:
+                    monitor_bc.snapshot = str(snapshot)
+                    monitor_bc.is_normal = '异常'
+                    monitor_bc.kinds = '经营状态'
+                    monitor_bc.outline = '检测到经营异常风险',
+                    monitor_bc.level = '高'
+                else:
+                    monitor_bc.snapshot = str(snapshot)
+                    monitor_bc.is_normal = '正常'
+                    monitor_bc.kinds = '经营状态'
+                    monitor_bc.outline = '未检测到经营异常风险',
+                    monitor_bc.level = '-'
+                monitor_bc_dao.add(monitor_bc)
+                # 8.严重违法
+                if int(serious_illegal) > 0:
+                    monitor_bc.snapshot = str(snapshot)
+                    monitor_bc.is_normal = '异常'
+                    monitor_bc.kinds = '严重违法'
+                    monitor_bc.outline = '检测到严重违法风险',
+                    monitor_bc.level = '高'
+                else:
+                    monitor_bc.snapshot = str(snapshot)
+                    monitor_bc.is_normal = '正常'
+                    monitor_bc.kinds = '严重违法'
+                    monitor_bc.outline = '未检测到严重违法风险',
+                    monitor_bc.level = '-'
+                monitor_bc_dao.add(monitor_bc)
+            except Exception as e:
+                logger.info(e)
         except Exception as e:
             logger.info(e)
         finally:
