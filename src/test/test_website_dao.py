@@ -7,12 +7,8 @@ from service.task_pool_service import TaskPoolService
 
 class TestMysql(object):
     if __name__ == "__main__":
-        tracking_Service =MonitorTrackingService
-        tracking_Service.monitor(1,'pending')
-        #website = Website(website_name='',domain_name='hauxidyy.cn',merchant_name='内蒙古宇航人高技术产业有限责任公司')
-
-        #if str(entity.legal_person).strip() is "":
-
+        TaskPoolService = TaskPoolService()
+        TaskPoolService.get_pending_task("20190917143423A")
 
     # driver.find_element_by_id("searchkey").send_keys("京东")
     # driver.find_element_by_id("V3_Search_bt").click()

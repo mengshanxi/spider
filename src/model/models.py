@@ -46,6 +46,7 @@ class TaskItem(Base):
     website_name = Column(String(255))
     merchant_name = Column(String(255))
     type = Column(String(255))
+    check_item = Column(String(255))
     status = Column(String(255))
     processor = Column(String(255))
     create_time = Column(DateTime())

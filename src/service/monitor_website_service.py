@@ -34,7 +34,7 @@ class MonitorWebsiteService:
         else:
             pass
         # 首页监控
-        driver = WebDriver.get_chrome()
+        driver = WebDriver.get_chrome_for_access()
         service = TrafficService()
         access = AccessibleService()
 
