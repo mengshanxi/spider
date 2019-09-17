@@ -10,6 +10,7 @@ class TestMysql(object):
         TaskPoolService = TaskPoolService()
         TaskPoolService.get_pending_task("20190917143423A")
 
+
     # driver.find_element_by_id("searchkey").send_keys("京东")
     # driver.find_element_by_id("V3_Search_bt").click()
     # source = driver.page_source

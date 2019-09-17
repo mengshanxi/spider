@@ -32,7 +32,7 @@ class MonitorWebsiteService:
             monitor_website_dao.add(monitor_website)
             return
         else:
-            pass
+            logger.info("website_domain is not None! merchant_name: %s ", website.domain_name)
         # 首页监控
         driver = WebDriver.get_chrome_for_access()
         service = TrafficService()
