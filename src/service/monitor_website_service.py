@@ -13,7 +13,7 @@ class MonitorWebsiteService:
     @staticmethod
     def monitor_website(website, batch_num):
         monitor_website_dao = MonitorWebsiteDao
-        if website.domain_name is None:
+        if len(website.domain_name) == 0:
             logger.info("website_domain is None! merchant_name: %s ", website.merchant_name)
             monitor_website = MonitorWebsite()
             monitor_website.website_name = website.website_name

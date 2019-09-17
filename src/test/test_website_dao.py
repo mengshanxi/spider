@@ -1,3 +1,5 @@
+import json
+
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 
@@ -7,9 +9,19 @@ from service.task_pool_service import TaskPoolService
 
 class TestMysql(object):
     if __name__ == "__main__":
-        TaskPoolService = TaskPoolService()
-        TaskPoolService.get_pending_task("20190917143423A")
-
+        task_pool_service = TaskPoolService()
+        entity, task_pool = task_pool_service.get_pending_task("11111")
+        if entity is None:
+            print()
+        check_item = json.loads(task_pool.check_item)
+        if task_pool.type == "weburl" and check_item["websiteIsBadwords"] is 1:
+            print()
+        elif task_pool.type == "website":
+            if check_item["websiteIsForward"] is 1 or check_item["websiteIsOpen"] is 1:
+                # 网站监控
+                print()
+            else:
+                print()
 
     # driver.find_element_by_id("searchkey").send_keys("京东")
     # driver.find_element_by_id("V3_Search_bt").click()
