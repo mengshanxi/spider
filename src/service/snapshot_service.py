@@ -28,6 +28,22 @@ class SnapshotService:
             return snapshot
         return snapshot
 
+    def snapshot_weburl(driver, batch_num, weburl, senti_type):
+        timestamp = int(time.time())
+        snapshot = batch_num + "_" + weburl.merchant_name + "_" + weburl.merchant_num + "_" + senti_type + "_" + str(
+            timestamp) + ".png"
+        path = base_filepath + "/" + batch_num + "_" + weburl.merchant_name + "_" + weburl.merchant_num + "_" + senti_type + "_" + str(
+            timestamp)
+        try:
+            driver.save_screenshot(path + ".png")
+            im = Image.open(path + ".png")
+            im_resize = im.resize((50, 50), Image.ANTIALIAS)
+            im_resize.save(path + "_thumb.bmp")
+        except Exception as e:
+            logger.info(e)
+            return snapshot
+        return snapshot
+
     @staticmethod
     def snapshot_tracking(driver, tracking_detail):
         timestamp = int(time.time())
