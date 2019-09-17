@@ -22,7 +22,7 @@ class GatherCenter:
         if task_pool.type == "weburl" and check_item["websiteIsBadwords"] is 1:
             monitor_weburl_service = MonitorWeburlService()
             monitor_weburl_service.monitor_website(entity, batch_num)
-            task_pool_service.close_task(task_pool.task_pool_id)
+            task_pool_service.close_task(task_pool.id)
             return
         elif task_pool.type == "website":
             if check_item["websiteIsForward"] is 1 or check_item["websiteIsOpen"] is 1:
@@ -33,28 +33,22 @@ class GatherCenter:
                 service.monitor_website(entity, batch_num)
                 logger.info("website domain is empty,continue! ")
             else:
-                pass
-            if check_item["zfzj"] is 1 \
-                    or check_item["baidu"] is 1 \
-                    or check_item["baike"] is 1 \
-                    or check_item["tousu"] is 1 \
-                    or check_item["paynews"] is 1 \
-                    or check_item["zhifujie"] is 1 \
-                    or check_item["paycircle"] is 1:
-                # 舆情监控
-                logger.info("sentiment monitor begin,merchant_name : %s", entity.merchant_name)
-                if not entity.website_name:
-                    logger.info("website name is empty,with merchantName! ")
-                    monitor_senti_service = MonitorSentiService()
-                    monitor_senti_service.monitor_senti(entity.merchant_name, task_pool.task_id, batch_num, entity)
-                    logger.info("sentiment monitor done!merchantName : %s", entity.merchant_name)
-                else:
-                    monitor_senti_service = MonitorSentiService()
-                    monitor_senti_service.monitor_senti(entity.website_name, task_pool.task_id, batch_num, entity)
-                    monitor_senti_service.monitor_senti(entity.merchant_name, task_pool.task_id, batch_num, entity)
-                    logger.info("sentiment monitor done!merchant_name : %s", entity.merchant_name)
-            else:
-                pass
+                logger.info("%s 跳过网站监控", entity.merchant_name)
+            # 舆情监控
+            logger.info("sentiment monitor begin,merchant_name : %s", entity.merchant_name)
+            monitor_senti_service = MonitorSentiService()
+            monitor_senti_service.monitor_senti(entity.merchant_name, task_pool, batch_num, entity)
+            logger.info("sentiment monitor done!merchantName : %s", entity.merchant_name)
+                # if not entity.website_name:
+                #     logger.info("website name is empty,with merchantName! ")
+                #     monitor_senti_service = MonitorSentiService()
+                #     monitor_senti_service.monitor_senti(entity.merchant_name, task_pool.task_id, batch_num, entity)
+                #     logger.info("sentiment monitor done!merchantName : %s", entity.merchant_name)
+                # else:
+                #     monitor_senti_service = MonitorSentiService()
+                #     monitor_senti_service.monitor_senti(entity.website_name, task_pool.task_id, batch_num, entity)
+                #     monitor_senti_service.monitor_senti(entity.merchant_name, task_pool.task_id, batch_num, entity)
+                #     logger.info("sentiment monitor done!merchant_name : %s", entity.merchant_name)
             if check_item["bcIsMoveout"] is 1 or check_item["bcIsLogout"] is 1 or check_item["bcLegalpersonChg"] is 1:
                 # 工商监控
                 logger.info("qichacha monitor  begin,merchantName : %s", entity.merchant_name)
@@ -69,5 +63,5 @@ class GatherCenter:
                         pass
                 logger.info("qichacha monitor  done!merchantName : %s", entity.merchant_name)
             else:
-                pass
-            task_pool_service.close_task(task_pool.task_pool_id)
+                logger.info("%s 跳过工商监控", entity.merchant_name)
+            task_pool_service.close_task(task_pool.id)

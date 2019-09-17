@@ -1,3 +1,5 @@
+import json
+
 from config.mylog import logger
 from service.inspect_task_service import InspectTaskService
 from service.monitor_baidu_service import MonitorBaiduService
@@ -22,10 +24,10 @@ from service.monitor_zhifujie_service import MonitorZhifujieService
 class MonitorSentiService:
 
     @staticmethod
-    def monitor_senti(keyword, task_id, batch_num, website):
-
+    def monitor_senti(keyword, task_pool, batch_num, website):
+        check_item = json.loads(task_pool.check_item)
         inspect_task_service = InspectTaskService()
-        platforms = inspect_task_service.get_inspect_platforms(task_id)
+        platforms = inspect_task_service.get_inspect_platforms(task_pool.task_id)
         for platform in platforms:
             if platform == "网贷天眼":
                 logger.info("sentiment monitor with  : %s", platform)
@@ -52,42 +54,42 @@ class MonitorSentiService:
                 # wdzj_service = MonitorWdzjService()
                 # wdzj_service.monitor(website_name, merchant_name, batch_num)
                 continue
-            if platform == "百度搜索":
+            if platform == "百度搜索" and check_item["baidu"] is 1:
                 logger.info("sentiment monitor with  : %s", platform)
                 baidu_service = MonitorBaiduService()
                 baidu_service.monitor(keyword, batch_num, website)
                 continue
-            if platform == "百度百科":
+            if platform == "百度百科" and check_item["baike"] is 1:
                 logger.info(platform + " sentiment monitor with  : %s", platform)
                 baike_service = MonitorBaikeService()
                 baike_service.monitor(keyword, batch_num, website)
                 continue
-            if platform == "支付圈":
+            if platform == "支付圈" and check_item["paycircle"] is 1:
                 logger.info(platform + " sentiment monitor with  : %s", platform)
                 paycircle_service = MonitorPaycircleService()
                 paycircle_service.monitor(keyword, batch_num, website)
                 continue
-            if platform == "聚投诉":
+            if platform == "聚投诉" and check_item["ts"] is 1:
                 logger.info(platform + " sentiment monitor with  : %s", platform)
                 ts_service = MonitorTsService()
                 ts_service.monitor(keyword, batch_num, website)
                 continue
-            if platform == "黑猫投诉":
+            if platform == "黑猫投诉" and check_item["tousu"] is 1:
                 logger.info(platform + " sentiment monitor with  : %s", platform)
                 tousu_service = MonitorTousuService()
                 tousu_service.monitor(keyword, batch_num, website)
                 continue
-            if platform == "支付产业网":
+            if platform == "支付产业网" and check_item["paynews"] is 1:
                 logger.info(platform + " sentiment monitor with  : %s", platform)
                 paynews_service = MonitorPaynewsService()
                 paynews_service.monitor(keyword, batch_num, website)
                 continue
-            if platform == "支付界":
+            if platform == "支付界" and check_item["zhifujie"] is 1:
                 logger.info(platform + " sentiment monitor with  : %s", platform)
                 zhifujie_service = MonitorZhifujieService()
                 zhifujie_service.monitor(keyword, batch_num, website)
                 continue
-            if platform == "支付快讯":
+            if platform == "支付快讯" and check_item["zfzj"] is 1:
                 logger.info(platform + " sentiment monitor with  : %s", platform)
                 zfzj_service = MonitorZfzjService()
                 zfzj_service.monitor(keyword, batch_num, website)
