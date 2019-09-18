@@ -1,5 +1,7 @@
 import json
+import urllib
 
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 
@@ -11,11 +13,20 @@ from service.task_pool_service import TaskPoolService
 
 class TestMysql(object):
     if __name__ == "__main__":
-        task_pools = session.query(TaskItem).filter(TaskItem.batch_num == '11').filter(
-            TaskItem.status == 'pending')
-        if task_pools is None:
-            print()
-        #task_pool_service = TaskPoolService()
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
+        req = urllib.request.Request("http://www.melaleuca.com.cn", headers=headers )
+        web_page = urllib.request.urlopen(req, timeout=10)
+        html = web_page.read()
+        soup = BeautifulSoup(html, 'html.parser', from_encoding="gb18030")
+        for k in soup.find_all('a'):
+            href = str(k.get('href'))
+            print(href)
+        # task_pools = session.query(TaskItem).filter(TaskItem.batch_num == '11').filter(
+        #     TaskItem.status == 'pending')
+        # if task_pools is None:
+        #     print()
+        # task_pool_service = TaskPoolService()
         # entity, task_pool = task_pool_service.get_pending_task("11111")
         # if entity is None:
         #     print()
