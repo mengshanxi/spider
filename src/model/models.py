@@ -33,6 +33,7 @@ class Strategy(Base):
     task_overtime = Column(Integer())
     cache_days = Column(Integer())
     gather_percent = Column(Integer())
+    proxy_ip = Column(String(100))
 
 
 class TaskItem(Base):
