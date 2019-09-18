@@ -10,7 +10,7 @@ import time
 logging.basicConfig(level=logging.INFO)
 curPath = os.path.abspath(os.path.dirname(__file__))
 rootPath = '/home/seluser/logs/'
-#rootPath = 'D:/logs/'
+##rootPath = 'D:/logs/'
 
 
 def get_logger():

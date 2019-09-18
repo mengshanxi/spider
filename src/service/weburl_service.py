@@ -28,20 +28,35 @@ class WeburlService:
             website_dao = WebsiteDao()
             websites = website_dao.get_overtime()
             for website in websites:
-                uri = 'http://' + website.domain_name
-                self.gather_urls(website.id, uri, website.website_name, website.domain_name, website.merchant_name,
-                                 website.merchant_num, 0)
-                ims_api.done_url_gather(website)
+                if len(website.domain_name) == 0 or website.domain_name is None:
+                    logger.info("gather url for %s,but website.domain_name is None ", website.merchant_name)
+                else:
+                    if str(website.domain_name).startswith('http'):
+                        uri = website.domain_name
+                        self.gather_urls(website.id, uri, website.website_name, website.domain_name,
+                                         website.merchant_name,
+                                         website.merchant_num, 0)
+                        ims_api.done_url_gather(website)
+                    else:
+                        uri = 'http://' + website.domain_name
+                        self.gather_urls(website.id, uri, website.website_name, website.domain_name,
+                                         website.merchant_name,
+                                         website.merchant_num, 0)
+                        uri = 'https://' + website.domain_name
+                        self.gather_urls(website.id, uri, website.website_name, website.domain_name,
+                                         website.merchant_name,
+                                         website.merchant_num, 0)
+                        ims_api.done_url_gather(website)
 
     def gather_urls(self, website_id, uri, website_name, domain_name, merchant_name, merchant_num, level):
         if level == 1:
             logger.info("gather url just to 3 level: %s ", domain_name)
             return
-        logger.info("gather url for website: %s ", domain_name)
+        logger.info("gather url for website: %s ", uri)
         weburl_service = WeburlDao()
         try:
             req = urllib.request.Request(uri)
-            web_page = urllib.request.urlopen(req, timeout=10)
+            web_page = urllib.request.urlopen(req, timeout=30)
             html = web_page.read()
             soup = BeautifulSoup(html, 'html.parser', from_encoding="gb18030")
             # 不做图片的处理

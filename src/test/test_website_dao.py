@@ -3,25 +3,31 @@ import json
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 
+from dao.db import session
+from model.models import TaskItem
 from service.monitor_tracking_service import MonitorTrackingService
 from service.task_pool_service import TaskPoolService
 
 
 class TestMysql(object):
     if __name__ == "__main__":
-        task_pool_service = TaskPoolService()
-        entity, task_pool = task_pool_service.get_pending_task("11111")
-        if entity is None:
+        task_pools = session.query(TaskItem).filter(TaskItem.batch_num == '11').filter(
+            TaskItem.status == 'pending')
+        if task_pools is None:
             print()
-        check_item = json.loads(task_pool.check_item)
-        if task_pool.type == "weburl" and check_item["websiteIsBadwords"] is 1:
-            print()
-        elif task_pool.type == "website":
-            if check_item["websiteIsForward"] is 1 or check_item["websiteIsOpen"] is 1:
-                # 网站监控
-                print()
-            else:
-                print()
+        #task_pool_service = TaskPoolService()
+        # entity, task_pool = task_pool_service.get_pending_task("11111")
+        # if entity is None:
+        #     print()
+        # check_item = json.loads(task_pool.check_item)
+        # if task_pool.type == "weburl" and check_item["websiteIsBadwords"] is 1:
+        #     print()
+        # elif task_pool.type == "website":
+        #     if check_item["websiteIsForward"] is 1 or check_item["websiteIsOpen"] is 1:
+        #         # 网站监控
+        #         print()
+        #     else:
+        #         print()
 
     # driver.find_element_by_id("searchkey").send_keys("京东")
     # driver.find_element_by_id("V3_Search_bt").click()
