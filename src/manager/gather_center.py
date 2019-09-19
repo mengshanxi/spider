@@ -37,16 +37,6 @@ class GatherCenter:
             monitor_senti_service = MonitorSentiService()
             monitor_senti_service.monitor_senti(entity.merchant_name, task_pool, batch_num, entity)
             logger.info("sentiment monitor done!merchantName : %s", entity.merchant_name)
-            # if not entity.website_name:
-            #     logger.info("website name is empty,with merchantName! ")
-            #     monitor_senti_service = MonitorSentiService()
-            #     monitor_senti_service.monitor_senti(entity.merchant_name, task_pool.task_id, batch_num, entity)
-            #     logger.info("sentiment monitor done!merchantName : %s", entity.merchant_name)
-            # else:
-            #     monitor_senti_service = MonitorSentiService()
-            #     monitor_senti_service.monitor_senti(entity.website_name, task_pool.task_id, batch_num, entity)
-            #     monitor_senti_service.monitor_senti(entity.merchant_name, task_pool.task_id, batch_num, entity)
-            #     logger.info("sentiment monitor done!merchant_name : %s", entity.merchant_name)
             if check_item["bcIsMoveout"] is 1 or check_item["bcIsLogout"] is 1 or check_item["bcLegalpersonChg"] is 1:
                 # 工商监控
                 logger.info("qichacha monitor  begin,merchantName : %s", entity.merchant_name)

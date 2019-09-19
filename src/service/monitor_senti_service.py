@@ -13,6 +13,7 @@ from service.monitor_tieba_service import MonitorTiebaService
 from service.monitor_tousu_service import MonitorTousuService
 from service.monitor_ts_service import MonitorTsService
 from service.monitor_wdzj_service import MonitorWdzjService
+from service.monitor_wenshu_service import MonitorWenshuService
 from service.monitor_zfzj_service import MonitorZfzjService
 from service.monitor_zhifujie_service import MonitorZhifujieService
 
@@ -93,4 +94,9 @@ class MonitorSentiService:
                 logger.info(platform + " sentiment monitor with  : %s", platform)
                 zfzj_service = MonitorZfzjService()
                 zfzj_service.monitor(keyword, batch_num, website)
+                continue
+            if platform == "裁判文书网" and check_item["wenshu"] is 1:
+                logger.info(platform + " sentiment monitor with  : %s", platform)
+                wenshu_service = MonitorWenshuService()
+                wenshu_service.monitor(keyword, batch_num, website)
                 continue
