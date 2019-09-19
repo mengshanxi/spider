@@ -4,6 +4,7 @@ import urllib
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 
 from dao.db import session
@@ -11,31 +12,23 @@ from model.models import TaskItem
 from service.monitor_tracking_service import MonitorTrackingService
 from service.task_pool_service import TaskPoolService
 
-
+#https://www.xicidaili.com/nt/
 class TestMysql(object):
     if __name__ == "__main__":
-        url = "http://wenshu.court.gov.cn/"
+        chrome_options = Options()
+        chrome_options.add_argument("--proxy-server=https://115.200.251.158:8118")
+        # 禁止图片和css加载
+        prefs = {"profile.managed_default_content_settings.images": 2, 'permissions.default.stylesheet': 2}
+        chrome_options.add_experimental_option("prefs", prefs)
         driver = webdriver.Remote(command_executor='http://172.17.161.230:8911/wd/hub',
-                                  desired_capabilities=DesiredCapabilities.CHROME)
+                                  desired_capabilities=DesiredCapabilities.CHROME,
+                                  options=chrome_options)
 
-        driver.set_page_load_timeout(10)
+        driver.set_page_load_timeout(30)
         driver.set_script_timeout(10)
         driver.maximize_window()
-    try:
-        driver.get(url)
-        a = driver.find_element_by_link_text("工商信息")
-        source = driver.page_source
-        soup = BeautifulSoup(source, 'html.parser')
-        for a_tag in soup.find_all('a', class_='caseName'):
-            href = a_tag.get("href")
-            title = a_tag.get_text()
-            print("http://wenshu.court.gov.cn/website/wenshu"+href[2:])
-            print(title)
-        driver.save_screenshot("D:/111.png")
-        driver.quit()
-    except Exception as e:
-        driver.quit()
-
+        driver.get("https://www.qichacha.com/firm_b40ecf6c3e7e4e0414c501f6ce53dd37.html#fengxian")
+        driver.save_screenshot("D:/cc.jpg")
         # headers = {
         #     'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
         # req = urllib.request.Request("http://www.melaleuca.com.cn", headers=headers )
