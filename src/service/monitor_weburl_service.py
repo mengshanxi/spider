@@ -27,7 +27,14 @@ class MonitorWeburlService:
         monitor_weburl.batch_num = batch_num
         monitor_weburl.title = weburl.title
         # 监测死链接
-        reachable = access.get_access_res(weburl.url)
+        reachable, current_url = access.get_access_res(weburl.url)
+        use_proxy = False
+        if reachable is None:
+            logger.info("使用代理重试访问： %s", weburl.url)
+            reachable, current_url = access.get_proxy_access_res(weburl.url)
+        else:
+            use_proxy = True
+            logger.info("使用代理可以访问: %s", weburl.url)
         if reachable is None:
             logger.info("检测到误404 : %s", weburl.url)
             monitor_weburl.outline = '检测到误404'
@@ -38,7 +45,10 @@ class MonitorWeburlService:
             monitor_weburl_dao.add(monitor_weburl)
             return
             #  截图
-        driver = WebDriver.get_chrome()
+        if use_proxy:
+            driver = WebDriver.get_proxy_chrome()
+        else:
+            driver = WebDriver.get_chrome()
         try:
             driver.get(weburl.url)
             snapshot = SnapshotService.snapshot_weburl(driver, batch_num, weburl, '网站内容')

@@ -140,6 +140,17 @@ class MonitorBcService:
                         monitor_bc_dao.add(monitor_bc)
             except Exception as e:
                 logger.info(e)
+                logger.info("html没有解析到[工商信息]..")
+                driver.save_screenshot(path + ".png")
+                img = Image.open(path + ".png")
+                jpg = img.crop((265, 158, 420, 258))
+                jpg.save(path + "_thumb.bmp")
+                monitor_bc.snapshot = str(snapshot)
+                monitor_bc.is_normal = '正常'
+                monitor_bc.kinds = '法人变更'
+                monitor_bc.outline = '页面没有解析到工商信息。'
+                monitor_bc.level = '-'
+                monitor_bc_dao.add(monitor_bc)
             try:
                 #  4.经营状态：注销 迁出
                 logger.info("企查查检测经营状态：注销 迁出 : %s", website.merchant_name)
@@ -180,6 +191,17 @@ class MonitorBcService:
                 monitor_bc_dao.add(monitor_bc)
             except Exception as e:
                 logger.info(e)
+                logger.info("html没有解析到[经营状态]..")
+                driver.save_screenshot(path + ".png")
+                img = Image.open(path + ".png")
+                jpg = img.crop((265, 158, 420, 258))
+                jpg.save(path + "_thumb.bmp")
+                monitor_bc.snapshot = str(snapshot)
+                monitor_bc.is_normal = '正常'
+                monitor_bc.kinds = '经营状态'
+                monitor_bc.outline = '页面没有解析到经营状态信息。'
+                monitor_bc.level = '-'
+                monitor_bc_dao.add(monitor_bc)
             try:
                 # 7.严重违法
                 logger.info("企查查检测严重违法 : %s", website.merchant_name)
@@ -230,6 +252,17 @@ class MonitorBcService:
                 monitor_bc_dao.add(monitor_bc)
             except Exception as e:
                 logger.info(e)
+                logger.info("html没有解析到[经营风险]..")
+                driver.save_screenshot(path + ".png")
+                img = Image.open(path + ".png")
+                jpg = img.crop((265, 158, 420, 258))
+                jpg.save(path + "_thumb.bmp")
+                monitor_bc.snapshot = str(snapshot)
+                monitor_bc.is_normal = '正常'
+                monitor_bc.kinds = '严重违法'
+                monitor_bc.outline = '页面没有解析到经营风险信息。'
+                monitor_bc.level = '-'
+                monitor_bc_dao.add(monitor_bc)
         except Exception as e:
             logger.info(e)
         finally:

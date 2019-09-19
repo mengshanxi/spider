@@ -4,6 +4,7 @@ import urllib
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
+from selenium.webdriver.common.keys import Keys
 
 from dao.db import session
 from model.models import TaskItem
@@ -13,15 +14,37 @@ from service.task_pool_service import TaskPoolService
 
 class TestMysql(object):
     if __name__ == "__main__":
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
-        req = urllib.request.Request("http://www.melaleuca.com.cn", headers=headers )
-        web_page = urllib.request.urlopen(req, timeout=10)
-        html = web_page.read()
-        soup = BeautifulSoup(html, 'html.parser', from_encoding="gb18030")
-        for k in soup.find_all('a'):
-            href = str(k.get('href'))
-            print(href)
+        url = "http://wenshu.court.gov.cn/"
+        driver = webdriver.Remote(command_executor='http://172.17.161.230:8911/wd/hub',
+                                  desired_capabilities=DesiredCapabilities.CHROME)
+
+        driver.set_page_load_timeout(10)
+        driver.set_script_timeout(10)
+        driver.maximize_window()
+    try:
+        driver.get(url)
+        a = driver.find_element_by_link_text("工商信息")
+        source = driver.page_source
+        soup = BeautifulSoup(source, 'html.parser')
+        for a_tag in soup.find_all('a', class_='caseName'):
+            href = a_tag.get("href")
+            title = a_tag.get_text()
+            print("http://wenshu.court.gov.cn/website/wenshu"+href[2:])
+            print(title)
+        driver.save_screenshot("D:/111.png")
+        driver.quit()
+    except Exception as e:
+        driver.quit()
+
+        # headers = {
+        #     'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
+        # req = urllib.request.Request("http://www.melaleuca.com.cn", headers=headers )
+        # web_page = urllib.request.urlopen(req, timeout=10)
+        # html = web_page.read()
+        # soup = BeautifulSoup(html, 'html.parser', from_encoding="gb18030")
+        # for k in soup.find_all('a'):
+        #     href = str(k.get('href'))
+        #     print(href)
         # task_pools = session.query(TaskItem).filter(TaskItem.batch_num == '11').filter(
         #     TaskItem.status == 'pending')
         # if task_pools is None:

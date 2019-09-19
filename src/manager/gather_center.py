@@ -6,7 +6,6 @@ from service.monitor_senti_service import MonitorSentiService
 from service.monitor_website_service import MonitorWebsiteService
 from service.monitor_weburl_service import MonitorWeburlService
 from service.task_pool_service import TaskPoolService
-import config.global_val as gl
 
 
 class GatherCenter:

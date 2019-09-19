@@ -13,9 +13,6 @@ class MonitorWebsiteService:
     @staticmethod
     def monitor_website(website, batch_num):
         monitor_website_dao = MonitorWebsiteDao
-        logger.info("****: %s ", (len(website.domain_name) == 0))
-        logger.info("****: %s ", (website.domain_name is None))
-        logger.info("****: %s ", (website.domain_name ==''))
         if len(website.domain_name) == 0:
             logger.info("website_domain is None! merchant_name: %s ", website.merchant_name)
             monitor_website = MonitorWebsite()
@@ -60,6 +57,12 @@ class MonitorWebsiteService:
                 domain_name_rich, current_url = access.get_access_res(domain_name)
                 logger.info("domain_name: %s", domain_name)
                 logger.info("domain_name_rich: %s", domain_name_rich)
+                # 使用代理再查一遍
+                if domain_name_rich is None:
+                    logger.info("使用代理重试访问： %s", domain_name_rich)
+                    domain_name_rich, current_url = access.get_proxy_access_res(domain_name)
+                else:
+                    logger.info("使用代理可以访问: %s", domain_name_rich)
                 if domain_name_rich is not None:
                     logger.info("domain : %s", str(domain_name_rich))
                     monitor_website.access = '正常'
