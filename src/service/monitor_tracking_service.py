@@ -75,12 +75,11 @@ class MonitorTrackingService:
                         tracking_detail.snapshot = snapshot
                     tracking_dao.update(tracking_detail)
             else:
-                pass
-                # gl.set_value('STATUS', False)
-                # logger.info("单号任务没有需要检索的单号，任务id：%s，单号状态: %s", task_id, status)
+                gl.set_value('STATUS', False)
+                logger.info("单号任务没有需要检索的单号，任务id：%s，单号状态: %s", task_id, status)
         except Exception as e:
             logger.error(e)
             return
         finally:
-            # gl.set_value('STATUS', False)
+            gl.set_value('STATUS', False)
             driver.quit()
