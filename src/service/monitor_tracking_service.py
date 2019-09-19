@@ -23,7 +23,7 @@ class MonitorTrackingService:
             tracking_details = tracking_dao.get_by_task(task_id, status)
             if tracking_details.__len__() > 0:
                 for tracking_detail in tracking_details:
-                    # logger.info("检索单号:%s", tracking_detail.tracking_num)
+                    logger.info("检索单号:%s", tracking_detail.tracking_num)
                     tracking_detail.start_time = datetime.datetime.now()
                     tracking_detail.status = "done"
                     url = "https://www.trackingmore.com/cn/" + tracking_detail.tracking_num
@@ -49,6 +49,7 @@ class MonitorTrackingService:
                                     tracking_detail.url = url
                                     tracking_detail.snapshot = snapshot
                                 except Exception as e:
+                                    print(e)
                                     # 正常
                                     tracking_detail.result = "true"
                                     tracking_detail.des = "物流正常"
