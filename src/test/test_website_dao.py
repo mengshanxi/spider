@@ -9,6 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 
 from dao.db import session
+from dao.tracking_task_dao import TrackingTaskDao
 from model.models import TaskItem
 from service.monitor_tracking_service import MonitorTrackingService
 from service.strategy_service import StrategyService
@@ -17,14 +18,16 @@ from service.task_pool_service import TaskPoolService
 #https://www.xicidaili.com/nt/
 class TestMysql(object):
     if __name__ == "__main__":
-        chrome_options = Options()
-        strategy_service = StrategyService()
-        strategy = strategy_service.get_strategy()
-        if strategy.proxy_server is None or strategy.proxy_server == '':
-            print()
-        else:
-            proxy_servers = strategy.proxy_server.split(",")
-            print(str(choice(proxy_servers)))
+        task_dao = TrackingTaskDao()
+        task_dao.close_task(65)
+        # chrome_options = Options()
+        # strategy_service = StrategyService()
+        # strategy = strategy_service.get_strategy()
+        # if strategy.proxy_server is None or strategy.proxy_server == '':
+        #     print()
+        # else:
+        #     proxy_servers = strategy.proxy_server.split(",")
+        #     print(str(choice(proxy_servers)))
         # chrome_options = Options()
         # chrome_options.add_argument("--proxy-server=https://115.200.251.158:8118")
         # # 禁止图片和css加载

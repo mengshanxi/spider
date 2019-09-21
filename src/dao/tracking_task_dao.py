@@ -9,9 +9,9 @@ class TrackingTaskDao(object):
 
     @staticmethod
     def close_task(task_id):
-        end_time = datetime.datetime.now
+        current_time = datetime.datetime.now()
         session.query(TrackingTask).filter(TrackingTask.id == task_id).update(
             {TrackingTask.status: 'done',
-             TrackingTask.end_time: end_time,
-             TrackingTask.last_update: end_time
+             TrackingTask.end_time: current_time,
+             TrackingTask.last_update: current_time
              })
