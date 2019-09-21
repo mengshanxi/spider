@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+from random import choice
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -35,7 +36,8 @@ class WebDriver:
             return None
 
         else:
-            chrome_options.add_argument("--proxy-server=" + strategy.proxy_server)
+            proxy_servers = strategy.proxy_server.split(",")
+            chrome_options.add_argument("--proxy-server=" + choice(proxy_servers))
             # 禁止图片和css加载
             prefs = {"profile.managed_default_content_settings.images": 2, 'permissions.default.stylesheet': 2}
             chrome_options.add_experimental_option("prefs", prefs)

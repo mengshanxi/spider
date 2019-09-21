@@ -6,6 +6,7 @@ from flask import request
 
 import config.global_val as gl
 from config.mylog import logger
+from dao.tracking_task_dao import TrackingTaskDao
 from manager.gather_center import GatherCenter
 from manager.ims_api import ImsApi
 from service.monitor_bc_service import MonitorBcService
@@ -54,7 +55,7 @@ def tracking_execute():
     try:
         task_id = request.form['taskId']
         status = request.form['status']
-        logger.info("tracking begin task_id: %s,status:%s" % str(task_id), status)
+        logger.info("tracking begin task_id: %s,status: %s" % (str(task_id), str(status)))
         t = threading.Thread(target=inspect_tracking, args=(task_id, status))
         t.setDaemon(True)
         t.start()
@@ -69,6 +70,8 @@ def inspect_tracking(task_id, status):
         logger.info("tracking task start!  task_id:%s" % str(task_id))
         tracking_service.monitor(task_id, status)
         logger.info("tracking task end!  task_id:%s" % str(task_id))
+    task_dao = TrackingTaskDao()
+    task_dao.close_task(task_id)
     logger.info("tracking task end!  task_id:%s" % str(task_id))
 
 

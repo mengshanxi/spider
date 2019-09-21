@@ -4,6 +4,18 @@ from sqlalchemy import Column, String, Integer, DateTime, Text
 from dao.db import Base
 
 
+class TrackingTask(Base):
+    __tablename__ = 'tracking_task'
+    id = Column(Integer(), primary_key=True)
+    filepath = Column(String(255))
+    filename = Column(String(255))
+    des = Column(String(255))
+    count = Column(Integer())
+    status = Column(String(255))
+    end_time = Column(DateTime())
+    last_update = Column(DateTime())
+
+
 class TrackingDetail(Base):
     __tablename__ = 'tracking_detail'
     id = Column(Integer(), primary_key=True)
@@ -33,7 +45,7 @@ class Strategy(Base):
     task_overtime = Column(Integer())
     cache_days = Column(Integer())
     gather_percent = Column(Integer())
-    proxy_ip = Column(String(100))
+    proxy_server = Column(Text)
 
 
 class TaskItem(Base):

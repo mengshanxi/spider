@@ -1,5 +1,6 @@
 import json
 import urllib
+from random import choice
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -10,25 +11,34 @@ from selenium.webdriver.common.keys import Keys
 from dao.db import session
 from model.models import TaskItem
 from service.monitor_tracking_service import MonitorTrackingService
+from service.strategy_service import StrategyService
 from service.task_pool_service import TaskPoolService
 
 #https://www.xicidaili.com/nt/
 class TestMysql(object):
     if __name__ == "__main__":
         chrome_options = Options()
-        chrome_options.add_argument("--proxy-server=https://115.200.251.158:8118")
-        # 禁止图片和css加载
-        prefs = {"profile.managed_default_content_settings.images": 2, 'permissions.default.stylesheet': 2}
-        chrome_options.add_experimental_option("prefs", prefs)
-        driver = webdriver.Remote(command_executor='http://172.17.161.230:8911/wd/hub',
-                                  desired_capabilities=DesiredCapabilities.CHROME,
-                                  options=chrome_options)
-
-        driver.set_page_load_timeout(30)
-        driver.set_script_timeout(10)
-        driver.maximize_window()
-        driver.get("https://www.qichacha.com/firm_b40ecf6c3e7e4e0414c501f6ce53dd37.html#fengxian")
-        driver.save_screenshot("D:/cc.jpg")
+        strategy_service = StrategyService()
+        strategy = strategy_service.get_strategy()
+        if strategy.proxy_server is None or strategy.proxy_server == '':
+            print()
+        else:
+            proxy_servers = strategy.proxy_server.split(",")
+            print(str(choice(proxy_servers)))
+        # chrome_options = Options()
+        # chrome_options.add_argument("--proxy-server=https://115.200.251.158:8118")
+        # # 禁止图片和css加载
+        # prefs = {"profile.managed_default_content_settings.images": 2, 'permissions.default.stylesheet': 2}
+        # chrome_options.add_experimental_option("prefs", prefs)
+        # driver = webdriver.Remote(command_executor='http://172.17.161.230:8911/wd/hub',
+        #                           desired_capabilities=DesiredCapabilities.CHROME,
+        #                           options=chrome_options)
+        #
+        # driver.set_page_load_timeout(30)
+        # driver.set_script_timeout(10)
+        # driver.maximize_window()
+        # driver.get("https://www.qichacha.com/firm_b40ecf6c3e7e4e0414c501f6ce53dd37.html#fengxian")
+        # driver.save_screenshot("D:/cc.jpg")
         # headers = {
         #     'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
         # req = urllib.request.Request("http://www.melaleuca.com.cn", headers=headers )
