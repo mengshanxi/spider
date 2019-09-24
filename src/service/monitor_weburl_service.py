@@ -23,6 +23,9 @@ class MonitorWeburlService:
         monitor_weburl = MonitorUrl()
         monitor_weburl.website_name = weburl.website_name
         monitor_weburl.domain_name = weburl.domain_name
+        monitor_weburl.merchant_name = weburl.merchant_name
+        monitor_weburl.merchant_num = weburl.merchant_num
+        monitor_weburl.saler = weburl.saler
         monitor_weburl.url = weburl.url
         monitor_weburl.batch_num = batch_num
         monitor_weburl.title = weburl.title
