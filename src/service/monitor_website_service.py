@@ -62,7 +62,7 @@ class MonitorWebsiteService:
                     logger.info("使用代理重试访问： %s", domain_name_rich)
                     domain_name_rich, current_url = access.get_proxy_access_res(domain_name)
                 else:
-                    logger.info("使用代理可以访问: %s", domain_name_rich)
+                    logger.info("不使用代理可以访问: %s", domain_name_rich)
                 if domain_name_rich is not None:
                     logger.info("domain : %s", str(domain_name_rich))
                     monitor_website.access = '正常'

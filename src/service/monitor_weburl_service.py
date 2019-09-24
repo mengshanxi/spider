@@ -32,18 +32,21 @@ class MonitorWeburlService:
         if reachable is None:
             logger.info("使用代理重试访问： %s", weburl.url)
             reachable, current_url = access.get_proxy_access_res(weburl.url)
-        else:
             use_proxy = True
-            logger.info("使用代理可以访问: %s", weburl.url)
+        else:
+            logger.info("不使用代理可以访问: %s", weburl.url)
         if reachable is None:
             logger.info("检测到误404 : %s", weburl.url)
             monitor_weburl.outline = '检测到误404'
             monitor_weburl.is_normal = '异常'
             monitor_weburl.level = '高'
-            monitor_weburl.snapshot = ''
+            snapshot = SnapshotService.simulation_404(weburl.url)
+            monitor_weburl.snapshot = snapshot
             monitor_weburl.kinds = '死链接'
             monitor_weburl_dao.add(monitor_weburl)
             return
+        else:
+            logger.info("url可以访问: %s", weburl.url)
             #  截图
         if use_proxy:
             driver = WebDriver.get_proxy_chrome()
