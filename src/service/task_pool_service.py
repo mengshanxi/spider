@@ -21,7 +21,7 @@ class TaskPoolService:
             gl.set_value('STATUS', False)
             return None, None
         else:
-            logger.info("准备执行巡检子任务...")
+            logger.info("准备执行巡检子任务,倒数第：%s 个...", str(task_pools.count()))
         task_pool = task_pools.first()
         session.query(TaskItem).filter(TaskItem.id == task_pool.id).update({"status": "processing"})
         if task_pool.type == "website":

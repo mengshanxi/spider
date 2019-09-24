@@ -37,7 +37,7 @@ class GatherCenter:
             monitor_senti_service = MonitorSentiService()
             monitor_senti_service.monitor_senti(entity.merchant_name, task_pool, batch_num, entity)
             logger.info("sentiment monitor done!merchantName : %s", entity.merchant_name)
-            if check_item["bcIsMoveout"] is 1 or check_item["bcIsLogout"] is 1 or check_item["bcLegalpersonChg"] is 1:
+            if check_item["bcIsAbn"] is 1 or check_item["bcIsMoveout"] is 1 or check_item["bcIsLogout"] is 1 or check_item["bcLegalpersonChg"] is 1:
                 # 工商监控
                 logger.info("qichacha monitor  begin,merchantName : %s", entity.merchant_name)
                 service = MonitorBcService()

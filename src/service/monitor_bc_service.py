@@ -221,8 +221,8 @@ class MonitorBcService:
                 risks = companys[3].find_all(name='span')
                 manage_abn = risks[2].get_text()
                 serious_illegal = risks[4].get_text()
-                logger.info("manage_abn:%s", str(manage_abn))
-                logger.info("serious_illegal:%s", str(serious_illegal))
+                logger.info("经营状态异常数: %s", str(manage_abn))
+                logger.info("严重风险数: %s", str(serious_illegal))
                 if int(manage_abn) > 0:
                     monitor_bc.snapshot = str(snapshot)
                     monitor_bc.is_normal = '异常'
@@ -295,10 +295,11 @@ class MonitorBcService:
                 return href.strip()
             else:
                 timestamp = int(time.time())
-                path = base_filepath + "/" + batch_num + "_" + "_工商_" + str(
+                snapshot = batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
+                    timestamp) + ".png"
+                path = base_filepath + "/" + batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
                     timestamp)
-                snapshot = path + ".png"
-                driver.save_screenshot(snapshot)
+                driver.save_screenshot(path + ".png")
                 img = Image.open(path + ".png")
                 jpg = img.crop((265, 158, 420, 258))
                 jpg.save(path + "_thumb.bmp")
