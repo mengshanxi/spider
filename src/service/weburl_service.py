@@ -9,6 +9,7 @@ from dao.weburl_dao import WeburlDao
 from manager.ims_api import ImsApi
 from model.models import Weburl
 from service.inspect_task_service import InspectTaskService
+from service.webdriver_util import WebDriver
 
 
 class WeburlService:
@@ -29,24 +30,19 @@ class WeburlService:
             websites = website_dao.get_overtime()
             for website in websites:
                 if len(website.domain_name) == 0 or website.domain_name is None:
-                    logger.info("gather url for %s,but website.domain_name is None ", website.merchant_name)
+                    logger.info("gather url for %s,but website.domain_name is None,ignored! ", website.merchant_name)
                 else:
                     if str(website.domain_name).startswith('http'):
                         uri = website.domain_name
                         self.gather_urls(website.id, uri, website.website_name, website.domain_name,
                                          website.merchant_name,
                                          website.merchant_num, 0)
-                        ims_api.done_url_gather(website)
                     else:
                         uri = 'http://' + website.domain_name
                         self.gather_urls(website.id, uri, website.website_name, website.domain_name,
                                          website.merchant_name,
                                          website.merchant_num, 0)
-                        uri = 'https://' + website.domain_name
-                        self.gather_urls(website.id, uri, website.website_name, website.domain_name,
-                                         website.merchant_name,
-                                         website.merchant_num, 0)
-                        ims_api.done_url_gather(website)
+                    ims_api.done_url_gather(website)
 
     def gather_urls(self, website_id, uri, website_name, domain_name, merchant_name, merchant_num, level):
         if level == 1:
@@ -55,33 +51,10 @@ class WeburlService:
         logger.info("gather url for website: %s ", uri)
         weburl_service = WeburlDao()
         try:
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
-            req = urllib.request.Request(uri, headers=headers)
-            web_page = urllib.request.urlopen(req, timeout=10)
-            html = web_page.read()
-            soup = BeautifulSoup(html, 'html.parser', from_encoding="gb18030")
-            # 不做图片的处理
-            # for k in soup.find_all('img'):
-            #     src = str(k.get('src'))
-            #     logger.info("origin src: %s", src)
-            #     if src.endswith(".jpg") or src.endswith(".jpeg") or src.endswith(".bmp") or src.endswith(
-            #             ".png"):
-            #         if src.startswith('http://') or src.startswith('https://'):
-            #             pass
-            #         elif src.startswith('/'):
-            #             src = "http://" + domain_name + src
-            #         else:
-            #             src = uri + "/" + src
-            #         weburl = Weburl(url=src.replace("//", "/").replace("/../", "/"),
-            #                         website_id=website_id,
-            #                         website_name=website_name,
-            #                         title=soup.find('title').string,
-            #                         type='pic',
-            #                         parent=uri)
-            #         weburl_service.add(weburl)
-            #     else:
-            #         pass
+            driver = WebDriver.get_chrome_for_access()
+            driver.get(uri)
+            source = driver.page_source
+            soup = BeautifulSoup(source, 'html.parser')
             for k in soup.find_all('a'):
                 href = str(k.get('href'))
                 logger.info("origin href: %s", href)
@@ -110,6 +83,5 @@ class WeburlService:
                                 url=href.replace("//", "/").replace("/../", "/"))
                 weburl_service.add(weburl)
                 # self.gather_urls(website_id, href, website_name, domain_name, level + 1)
-
         except Exception as e:
             logger.error(e)

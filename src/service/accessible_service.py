@@ -8,7 +8,7 @@ from service.webdriver_util import WebDriver
 class AccessibleService:
     @staticmethod
     def get_access_res(url):
-        driver = WebDriver.get_chrome()
+        driver = WebDriver.get_chrome_for_access()
         try:
             if str(url).startswith("http"):
                 http_url = str(url)

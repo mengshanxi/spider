@@ -1,4 +1,5 @@
 import datetime
+from time import sleep
 
 from bs4 import BeautifulSoup
 
@@ -6,6 +7,7 @@ import config.global_val as gl
 from config.mylog import logger
 from dao.tracking_detail_dao import TrackingDetailDao
 from service.snapshot_service import SnapshotService
+from service.strategy_service import StrategyService
 from service.webdriver_util import WebDriver
 
 """
@@ -20,10 +22,16 @@ class MonitorTrackingService:
         driver = WebDriver.get_chrome()
         try:
             tracking_dao = TrackingDetailDao()
+            strategy_service = StrategyService()
+            strategy = strategy_service.get_strategy()
             tracking_details = tracking_dao.get_by_task(task_id, status)
             if tracking_details.__len__() > 0:
                 for tracking_detail in tracking_details:
-                    logger.info("检索单号:%s", tracking_detail.tracking_num)
+                    if strategy.frequency == 0 or strategy.frequency is None:
+                        logger.info("未设置爬取频率限制,继续执行任务..")
+                    else:
+                        logger.info("爬取频率限制为:%s 秒", strategy.frequency)
+                        sleep(strategy.frequency)
                     tracking_detail.start_time = datetime.datetime.now()
                     tracking_detail.status = "done"
                     url = "https://www.trackingmore.com/cn/" + tracking_detail.tracking_num

@@ -1,26 +1,31 @@
 import time
 
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
-
 
 if __name__ == "__main__":
     driver = webdriver.Remote(command_executor='http://172.17.161.230:8911/wd/hub',
                               desired_capabilities=DesiredCapabilities.CHROME)
     driver.set_page_load_timeout(30)
     driver.set_script_timeout(10)
-    url = "http://www.jixiangshxl.com/"
-    try:
-        if str(url).startswith("http"):
-            http_url = str(url)
+    url = "http://xueshu.baidu.com/"
+    driver.get(url)
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    for k in soup.find_all('a'):
+        href = str(k.get('href'))
+        #print("origin href: %s", href)
+        if href.endswith(".jpg") or href.endswith(".jpeg") or href.endswith(".bmp") or href.endswith(
+                ".png") or href.endswith(
+            ".swf") or href == '/' or href == 'http://' or href == '#' or href.startswith(
+            'javascript') or href == 'None' or href.startswith('tencent://'):
+            continue
+        elif href.startswith('http://') or href.startswith('https://'):
+            href = href
+        elif href.startswith('/'):
+            href = "http://" + "www.baidu.com" + href
+        elif href.startswith('./'):
+            href = url + href[1:]
         else:
-            http_url = "http://" + str(url)
-        driver.get(http_url)
-        title = driver.title
-        if title is '没有找到站点':
-            print(title)
-    except Exception as e:
-        print(e)
-    finally:
-        driver.quit()
-
+            href = url + "/" + href
+        print(href.replace("//", "/").replace("/../", "/"))

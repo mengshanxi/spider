@@ -46,6 +46,7 @@ class Strategy(Base):
     cache_days = Column(Integer())
     gather_percent = Column(Integer())
     proxy_server = Column(Text)
+    frequency = Column(Integer())
 
 
 class TaskItem(Base):
