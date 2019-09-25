@@ -24,12 +24,12 @@ class TaskPoolService:
             logger.info("准备执行巡检子任务,倒数第：%s 个...", str(task_pools.count()))
         task_pool = task_pools.first()
         session.query(TaskItem).filter(TaskItem.id == task_pool.id).update({"status": "processing"})
-        if task_pool.type == "website":
-            website = session.query(Website).filter(Website.id == task_pool.website_id).one()
-            return website, task_pool
-        elif task_pool.type == "weburl":
+        if task_pool.type == "weburl":
             weburl = session.query(Weburl).filter(Weburl.url == task_pool.url).one()
             return weburl, task_pool
+        else:
+            website = session.query(Website).filter(Website.id == task_pool.website_id).one()
+            return website, task_pool
 
     @staticmethod
     def close_task(task_pool_id):

@@ -33,7 +33,7 @@ class MonitorBcService:
         monitor_bc.website_name = website.website_name
         monitor_bc.merchant_name = website.merchant_name
         try:
-            driver = WebDriver.get_chrome()
+            driver = WebDriver.get_chrome_with_cookie()
             # 1.受益人
             logger.info("企查查检测受益人 : %s", website.merchant_name)
             rest_url = url + "#base"
@@ -270,9 +270,8 @@ class MonitorBcService:
 
     @staticmethod
     def get_merchant_url(batch_num, website):
-        webdriver = WebDriver()
         url = "https://www.qichacha.com"
-        driver = webdriver.get_chrome()
+        driver = WebDriver.get_chrome_with_cookie()
         driver.set_window_size(1920, 1080)
         try:
             driver.get(url)
