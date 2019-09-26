@@ -1,5 +1,4 @@
 import json
-from time import sleep
 
 from config.mylog import logger
 from service.monitor_bc_service import MonitorBcService
@@ -58,9 +57,10 @@ class GatherCenter:
                 logger.info("qichacha monitor  begin,merchantName : %s", entity.merchant_name)
                 service = MonitorBcService()
                 # 控制频度
-                sleep(3)
+                # crawler_protect = random.randint(3, 10)
+                # logger.info("加入保护间隔 : %s seconds", crawler_protect)
+                # time.sleep(crawler_protect)
                 url = service.get_merchant_url(str(batch_num), entity)
-                sleep(3)
                 logger.info("get qichacha url  : %s", str(url))
                 if url is not None:
                     try:
@@ -68,6 +68,8 @@ class GatherCenter:
                     except Exception as e:
                         logger.info(e)
                         pass
+                else:
+                    logger.info("没有获取到商户企查查信息!merchantName : %s", entity.merchant_name)
                 logger.info("qichacha monitor  done!merchantName : %s", entity.merchant_name)
 
             else:

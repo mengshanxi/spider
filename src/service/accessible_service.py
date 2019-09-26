@@ -19,7 +19,8 @@ class AccessibleService:
             title = driver.title
             if title.__contains__('404') or driver.page_source.__contains__(
                     'ERR_NAME_NOT_RESOLVED') or driver.page_source.__contains__(
-                'ERR_CONNECTION_REFUSED') or driver.page_source.__contains__('ERR_CONNECTION_TIMED_OUT'):
+                'ERR_CONNECTION_REFUSED') or driver.page_source.__contains__(
+                'ERR_CONNECTION_TIMED_OUT') or driver.page_source.__contains__('ERR_NAME_NOT_RESOLVED'):
                 return None, None
             else:
                 return http_url, driver.current_url

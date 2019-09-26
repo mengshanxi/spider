@@ -17,7 +17,7 @@ if __name__ == "__main__":
         'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"}
     for key, value in headers.items():
         dcap['phantomjs.page.customHeaders.{}'.format(key)] = value
-    driver = webdriver.PhantomJS(executable_path="D:/software/phantomjs-2.1.1-windows/bin/phantomjs.exe",
+    driver = webdriver.PhantomJS(executable_path="D:develop/phantomjs-2.1.1-windows/bin/phantomjs.exe",
                                  desired_capabilities=dcap,
                                  service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any',
                                                '--load-images=false'],

@@ -4,6 +4,7 @@ import time
 
 from PIL import Image
 from bs4 import BeautifulSoup
+from selenium.webdriver.common.keys import Keys
 
 from config.config_load import base_filepath
 from config.mylog import logger
@@ -13,7 +14,6 @@ from dao.monitor_bc_dao import MonitorBcDao
 from model.models import BcPerson, BcBenefit
 from model.models import MonitorBc
 from service.webdriver_util import WebDriver
-from selenium.webdriver.common.keys import Keys
 
 """
 企查查监控服务
