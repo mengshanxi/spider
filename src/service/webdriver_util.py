@@ -48,7 +48,7 @@ class WebDriver:
     @staticmethod
     def get_chrome_with_cookie():
         logger.info("get_chrome_with_cookie...")
-        dcap = dict(DesiredCapabilities.PHANTOMJS.copy())
+        dcap = dict(DesiredCapabilities.PHANTOMJS)
         third_config_dao = ThirdConfigDao()
         cookie = third_config_dao.get_by_name("qichacha")
         logger.info("cookie: %s", cookie)
