@@ -169,11 +169,12 @@ class MonitorBcService:
                 risks = companys[3].find_all(name='span')
                 manage_abn = risks[2].get_text()
                 serious_illegal = risks[4].get_text()
-                #经营状态异常数: 严重违法 0
-                #严重风险数: 股权出质 0
+                # 经营状态异常数: 严重违法 0
+                # 严重风险数: 股权出质 0
                 logger.info("经营状态异常数: %s", str(manage_abn))
                 logger.info("严重风险数: %s", str(serious_illegal))
-                if int(manage_abn) > 0:
+                if (len(str(manage_abn).split()) == 1 and int(manage_abn) > 0) or (
+                        len(str(manage_abn).split()) == 2 and int(str(manage_abn).split()[1]) > 0):
                     monitor_bc.snapshot = str(snapshot)
                     monitor_bc.is_normal = '异常'
                     monitor_bc.kinds = '经营状态'
@@ -187,7 +188,8 @@ class MonitorBcService:
                     monitor_bc.level = '-'
                 monitor_bc_dao.add(monitor_bc)
                 # 8.严重违法
-                if int(serious_illegal) > 0:
+                if (len(str(serious_illegal).split()) == 1 and int(serious_illegal) > 0) or (
+                        len(str(serious_illegal).split()) == 2 and int(str(serious_illegal).split()[1]) > 0):
                     monitor_bc.snapshot = str(snapshot)
                     monitor_bc.is_normal = '异常'
                     monitor_bc.kinds = '严重违法'
