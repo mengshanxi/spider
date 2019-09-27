@@ -277,7 +277,7 @@ class MonitorBcService:
         driver.maximize_window()
         try:
             driver.get(url)
-            time.sleep(random.randint(10, 20))
+            time.sleep(random.randint(20, 30))
             driver.find_element_by_id("searchkey").send_keys(website.merchant_name)
             driver.find_element_by_id("V3_Search_bt").click()
             source = driver.page_source
