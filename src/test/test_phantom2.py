@@ -20,14 +20,14 @@ if __name__ == "__main__":
     driver.maximize_window()
     try:
 
-        driver.get("https://www.qichacha.com/firm_b40ecf6c3e7e4e0414c501f6ce53dd37.html")
+        driver.get("https://www.qichacha.com/firm_b40ecf6c3e7e4e0414c501f6ce53dd37.html#base")
         source = driver.page_source
         soup = BeautifulSoup(source, 'html.parser')
         legalmans = soup.find_all(class_='seo font-20')
         print(legalmans)
         if legalmans.__len__() > 0:
             print(legalmans[0].get_text())
-        driver.save_screenshot("/home/seluser/logs/111.png")
+        driver.save_screenshot("/home/seluser/logs/222.png")
         driver.quit()
     except Exception as e:
         print(e)

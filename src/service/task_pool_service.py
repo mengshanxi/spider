@@ -1,6 +1,8 @@
 # -*- coding:utf-8 -*-
 import socket
 
+import os
+
 import config.global_val as gl
 from config.mylog import logger
 from dao.db import session
@@ -11,8 +13,13 @@ class TaskPoolService:
 
     @staticmethod
     def get_pending_task(batch_num):
-        task_pools = session.query(TaskItem).filter(TaskItem.batch_num == batch_num).filter(
-            TaskItem.status == 'pending')
+        job = os.environ['job']
+        if job == "bc":
+            task_pools = session.query(TaskItem).filter(TaskItem.batch_num == batch_num).filter(
+                TaskItem.status == 'pending', TaskItem.type == 'bc')
+        else:
+            task_pools = session.query(TaskItem).filter(TaskItem.batch_num == batch_num).filter(
+                TaskItem.status == 'pending')
         if task_pools.count() == 0:
             hostname = socket.gethostname()
             ip = socket.gethostbyname(hostname)

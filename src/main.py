@@ -1,6 +1,7 @@
 # coding:utf-8
 import threading
 
+import os
 from flask import Flask
 from flask import request
 
@@ -35,33 +36,43 @@ def verify_cookie():
 
 @app.route('/spider/execute', methods=['POST'])
 def execute():
-    gl.set_value('STATUS', True)
-    ims_api.heartbeat()
-    try:
-        batch_num = request.form['batchNum']
-        logger.info("spider begin batchNum: %s" % str(batch_num))
-        t = threading.Thread(target=inspect, args=(batch_num,))
-        t.setDaemon(True)
-        t.start()
-        return 'OK'
-    except Exception as e:
-        logger.error(e)
+    job = os.environ['job']
+    logger.info(job)
+    logger.info(job is "bc" or job is "other")
+    if job == "bc" or job == "other":
+        gl.set_value('STATUS', True)
+        ims_api.heartbeat()
+        try:
+            batch_num = request.form['batchNum']
+            logger.info("spider begin batchNum: %s" % str(batch_num))
+            t = threading.Thread(target=inspect, args=(batch_num,))
+            t.setDaemon(True)
+            t.start()
+            return 'OK'
+        except Exception as e:
+            logger.error(e)
+    else:
+        logger.info("spider is not my job!")
 
 
 @app.route('/tracking/execute', methods=['POST'])
 def tracking_execute():
-    gl.set_value('STATUS', True)
-    ims_api.heartbeat()
-    try:
-        task_id = request.form['taskId']
-        status = request.form['status']
-        logger.info("tracking begin task_id: %s,status: %s" % (str(task_id), str(status)))
-        t = threading.Thread(target=inspect_tracking, args=(task_id, status))
-        t.setDaemon(True)
-        t.start()
-        return 'OK'
-    except Exception as e:
-        logger.error(e)
+    job = os.environ['job']
+    if job == "tracking":
+        gl.set_value('STATUS', True)
+        ims_api.heartbeat()
+        try:
+            task_id = request.form['taskId']
+            status = request.form['status']
+            logger.info("tracking begin task_id: %s,status: %s" % (str(task_id), str(status)))
+            t = threading.Thread(target=inspect_tracking, args=(task_id, status))
+            t.setDaemon(True)
+            t.start()
+            return 'OK'
+        except Exception as e:
+            logger.error(e)
+    else:
+        logger.info("Tracking is not my job!")
 
 
 def inspect_tracking(task_id, status):
@@ -86,23 +97,31 @@ def inspect(batch_num):
 
 @app.route('/spider/gather_urls', methods=['POST'])
 def gather_urls():
-    try:
-        # task_id = request.form['taskId']
-        gl.set_value('STATUS', True)
-        weburl_service = WeburlService()
-        weburl_service.gather_urls_by_task(None)
-        gl.set_value('STATUS', False)
-        return 'SUCCESS'
-    except KeyError as e:
-        print(e)
-        return 'ERROR'
+    job = os.environ['job']
+    if job == "gather":
+        try:
+            # task_id = request.form['taskId']
+            gl.set_value('STATUS', True)
+            weburl_service = WeburlService()
+            weburl_service.gather_urls_by_task(None)
+            gl.set_value('STATUS', False)
+            return 'SUCCESS'
+        except KeyError as e:
+            print(e)
+            return 'ERROR'
+    else:
+        logger.info("Gather is not my job!")
 
 
 @app.route('/spider/stop', methods=['POST'])
 def stop():
-    gl.set_value('STATUS', False)
-    ims_api.heartbeat()
-    return 'SUCCESS'
+    job = os.environ['job']
+    if job == "gather":
+        logger.info("My Job is gather,ignore the order!")
+    else:
+        gl.set_value('STATUS', False)
+        ims_api.heartbeat()
+        return 'SUCCESS'
 
 
 def heartbeat():

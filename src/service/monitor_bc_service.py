@@ -5,6 +5,8 @@ import time
 
 from PIL import Image
 from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 
 from config.config_load import base_filepath
@@ -12,9 +14,10 @@ from config.mylog import logger
 from dao.bc_benefit_dao import BcBenefitDao
 from dao.bc_person_dao import BcPersonDao
 from dao.monitor_bc_dao import MonitorBcDao
+from dao.third_config_dao import ThirdConfigDao
 from model.models import BcPerson, BcBenefit
 from model.models import MonitorBc
-from service.webdriver_util import WebDriver
+from service.snapshot_service import SnapshotService
 
 """
 企查查监控服务
@@ -34,49 +37,20 @@ class MonitorBcService:
         monitor_bc.website_name = website.website_name
         monitor_bc.merchant_name = website.merchant_name
         try:
-            driver = WebDriver.get_chrome_with_cookie()
-            # 1.受益人
-            logger.info("企查查检测受益人 : %s", website.merchant_name)
-            rest_url = url + "#base"
-            driver.get(rest_url)
             time.sleep(random.randint(10, 20))
-            source = driver.page_source
-            soup = BeautifulSoup(source, 'html.parser')
-            shou_yi_rens = soup.find_all(name='section', id=re.compile('partnerslist'))
-            if shou_yi_rens.__len__() > 0:
-                shouyiren = shou_yi_rens[0]
-                tables = shouyiren.find_all('table')
-                trs = tables[0].find_all('tr')
-                num = 0
-
-                bc_benefit_dao = BcBenefitDao()
-
-                for tr in trs:
-                    num += 1
-                    if num != 1:
-                        tds = tr.find_all('td')
-                        if tds.__len__() >= 3:
-                            fullname = tds[1].find_all(name='a')[0].get_text()
-                            shouyirens = tds[1].find_all(name='span', class_=re.compile('ntag sm text-primary click'))
-                            if shouyirens.__len__() >= 1:
-                                is_shouyiren = shouyirens[
-                                                   0].get_text().find('受益人') > 0
-                                if is_shouyiren:
-                                    proportion = tds[2].get_text().strip()
-                                    invest_train = '-'
-
-                                    bc_benefit = BcBenefit()
-                                    bc_benefit.batch_num = batch_num
-                                    bc_benefit.merchant_name = website.merchant_name.strip()
-                                    bc_benefit.fullname = fullname.strip()
-                                    bc_benefit.proportion = proportion.strip()
-                                    bc_benefit.invest_train = invest_train.strip()
-                                    bc_benefit_dao.add(bc_benefit)
-
+            driver, snapshot = SnapshotService.snapshot_qichacha(batch_num, url, website)
+            if driver is None:
+                monitor_bc.snapshot = str(snapshot)
+                monitor_bc.is_normal = '异常'
+                monitor_bc.kinds = '经营状态'
+                monitor_bc.outline = '检测到经营异常风险',
+                monitor_bc.level = '高'
+                return
+            else:
+                logger.info("企查查完成截图 : %s", website.merchant_name)
             logger.info("企查查检测股东成员 : %s", website.merchant_name)
             # 2.股东成员
             driver.get(url)
-            time.sleep(random.randint(10, 20))
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
             chengyuans = soup.find_all(name='section', id=re.compile('Mainmember'))
@@ -102,18 +76,8 @@ class MonitorBcService:
                         bc_person_dao.add(bc_person)
             try:
                 # 3.法人变更
-                timestamp = int(time.time())
-                snapshot = batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
-                    timestamp) + ".png"
-                path = base_filepath + "/" + batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
-                    timestamp)
                 driver.find_element_by_link_text("工商信息").send_keys(Keys.RETURN)
                 logger.info("企查查检测法人变更 : %s", website.merchant_name)
-                driver.save_screenshot(path + ".png")
-                img = Image.open(path + ".png")
-                jpg = img.crop((265, 158, 420, 258))
-                jpg.save(path + "_thumb.bmp")
-
                 legalmans = soup.find_all(class_='seo font-20')
                 if str(website.legal_person).strip() is "":
                     monitor_bc.outline = '商户未维护法人信息，不作对比'
@@ -142,10 +106,6 @@ class MonitorBcService:
             except Exception as e:
                 logger.info(e)
                 logger.info("html没有解析到[工商信息]..")
-                driver.save_screenshot(path + ".png")
-                img = Image.open(path + ".png")
-                jpg = img.crop((265, 158, 420, 258))
-                jpg.save(path + "_thumb.bmp")
                 monitor_bc.snapshot = str(snapshot)
                 monitor_bc.is_normal = '正常'
                 monitor_bc.kinds = '法人变更'
@@ -193,10 +153,6 @@ class MonitorBcService:
             except Exception as e:
                 logger.info(e)
                 logger.info("html没有解析到[经营状态]..")
-                driver.save_screenshot(path + ".png")
-                img = Image.open(path + ".png")
-                jpg = img.crop((265, 158, 420, 258))
-                jpg.save(path + "_thumb.bmp")
                 monitor_bc.snapshot = str(snapshot)
                 monitor_bc.is_normal = '正常'
                 monitor_bc.kinds = '经营状态'
@@ -206,25 +162,19 @@ class MonitorBcService:
             try:
                 # 7.严重违法
                 logger.info("企查查检测严重违法 : %s", website.merchant_name)
-                timestamp = int(time.time())
-                snapshot = batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
-                    timestamp) + ".png"
-                path = base_filepath + "/" + batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
-                    timestamp)
                 driver.find_element_by_partial_link_text("经营风险").send_keys(Keys.RETURN)
-                driver.save_screenshot(path + ".png")
-                img = Image.open(path + ".png")
-                jpg = img.crop((91, 572, 191, 672))
-                jpg.save(path + "_thumb.bmp")
                 source = driver.page_source
                 soup = BeautifulSoup(source, 'html.parser')
                 companys = soup.find_all(name='div', class_='company-nav-tab')
                 risks = companys[3].find_all(name='span')
                 manage_abn = risks[2].get_text()
                 serious_illegal = risks[4].get_text()
+                # 经营状态异常数: 严重违法 0
+                # 严重风险数: 股权出质 0
                 logger.info("经营状态异常数: %s", str(manage_abn))
                 logger.info("严重风险数: %s", str(serious_illegal))
-                if int(manage_abn) > 0:
+                if (len(str(manage_abn).split()) == 1 and int(manage_abn) > 0) or (
+                        len(str(manage_abn).split()) == 2 and int(str(manage_abn).split()[1]) > 0):
                     monitor_bc.snapshot = str(snapshot)
                     monitor_bc.is_normal = '异常'
                     monitor_bc.kinds = '经营状态'
@@ -238,7 +188,8 @@ class MonitorBcService:
                     monitor_bc.level = '-'
                 monitor_bc_dao.add(monitor_bc)
                 # 8.严重违法
-                if int(serious_illegal) > 0:
+                if (len(str(serious_illegal).split()) == 1 and int(serious_illegal) > 0) or (
+                        len(str(serious_illegal).split()) == 2 and int(str(serious_illegal).split()[1]) > 0):
                     monitor_bc.snapshot = str(snapshot)
                     monitor_bc.is_normal = '异常'
                     monitor_bc.kinds = '严重违法'
@@ -254,16 +205,52 @@ class MonitorBcService:
             except Exception as e:
                 logger.info(e)
                 logger.info("html没有解析到[经营风险]..")
-                driver.save_screenshot(path + ".png")
-                img = Image.open(path + ".png")
-                jpg = img.crop((265, 158, 420, 258))
-                jpg.save(path + "_thumb.bmp")
                 monitor_bc.snapshot = str(snapshot)
                 monitor_bc.is_normal = '正常'
                 monitor_bc.kinds = '严重违法'
                 monitor_bc.outline = '页面没有解析到经营风险信息。'
                 monitor_bc.level = '-'
                 monitor_bc_dao.add(monitor_bc)
+
+                # 1.受益人
+                logger.info("企查查检测受益人 : %s", website.merchant_name)
+                rest_url = url + "#base"
+                driver.get(rest_url)
+                time.sleep(random.randint(10, 20))
+                source = driver.page_source
+                soup = BeautifulSoup(source, 'html.parser')
+                shou_yi_rens = soup.find_all(name='section', id=re.compile('partnerslist'))
+                if shou_yi_rens.__len__() > 0:
+                    shouyiren = shou_yi_rens[0]
+                    tables = shouyiren.find_all('table')
+                    trs = tables[0].find_all('tr')
+                    num = 0
+
+                    bc_benefit_dao = BcBenefitDao()
+
+                    for tr in trs:
+                        num += 1
+                        if num != 1:
+                            tds = tr.find_all('td')
+                            if tds.__len__() >= 3:
+                                fullname = tds[1].find_all(name='a')[0].get_text()
+                                shouyirens = tds[1].find_all(name='span',
+                                                             class_=re.compile('ntag sm text-primary click'))
+                                if shouyirens.__len__() >= 1:
+                                    is_shouyiren = shouyirens[
+                                                       0].get_text().find('受益人') > 0
+                                    if is_shouyiren:
+                                        proportion = tds[2].get_text().strip()
+                                        invest_train = '-'
+
+                                        bc_benefit = BcBenefit()
+                                        bc_benefit.batch_num = batch_num
+                                        bc_benefit.merchant_name = website.merchant_name.strip()
+                                        bc_benefit.fullname = fullname.strip()
+                                        bc_benefit.proportion = proportion.strip()
+                                        bc_benefit.invest_train = invest_train.strip()
+                                        bc_benefit_dao.add(bc_benefit)
+
         except Exception as e:
             logger.info(e)
         finally:
@@ -271,12 +258,28 @@ class MonitorBcService:
 
     @staticmethod
     def get_merchant_url(batch_num, website):
+        time.sleep(random.randint(10, 20))
         url = "https://www.qichacha.com"
-        driver = WebDriver.get_chrome_with_cookie()
-        driver.set_window_size(1920, 1080)
+        dcap = dict(DesiredCapabilities.PHANTOMJS.copy())
+        third_config_dao = ThirdConfigDao()
+        cookie = third_config_dao.get_by_name("qichacha")
+        headers = {
+            'cookie': cookie,
+            'Host': 'www.qichacha.com',
+            'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"}
+        for key, value in headers.items():
+            dcap['phantomjs.page.customHeaders.{}'.format(key)] = value
+        driver = webdriver.PhantomJS(executable_path="/usr/bin/phantomjs",
+                                     desired_capabilities=dcap,
+                                     service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'],
+                                     service_log_path="/home/seluser/logs/phantomjs.log")
+
+        driver.set_page_load_timeout(10)
+        driver.set_script_timeout(10)
+        driver.maximize_window()
         try:
             driver.get(url)
-            time.sleep(random.randint(10, 20))
+            time.sleep(random.randint(20, 30))
             driver.find_element_by_id("searchkey").send_keys(website.merchant_name)
             driver.find_element_by_id("V3_Search_bt").click()
             source = driver.page_source
