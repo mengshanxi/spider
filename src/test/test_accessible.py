@@ -1,7 +1,6 @@
-import random
-
-from config.mylog import *
+import os
 
 if __name__ == "__main__":
-    str = " 0"
-    print(len(str.split())==1)
+    job ="bc"
+    print(job)
+    print(job == "bc")
