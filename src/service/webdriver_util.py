@@ -48,17 +48,19 @@ class WebDriver:
     @staticmethod
     def get_chrome_with_cookie():
         logger.info("get_chrome_with_cookie...")
-        desired_capabilities = DesiredCapabilities.PHANTOMJS.copy()
+        dcap = dict(DesiredCapabilities.PHANTOMJS)
         third_config_dao = ThirdConfigDao()
         cookie = third_config_dao.get_by_name("qichacha")
         logger.info("cookie: %s", cookie)
         headers = {
-            'cookie': cookie}
+            'Cookie': cookie,
+            'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"}
         for key, value in headers.items():
-            desired_capabilities['phantomjs.page.customHeaders.{}'.format(key)] = value
+            dcap['phantomjs.page.customHeaders.{}'.format(key)] = value
         driver = webdriver.PhantomJS(executable_path="/usr/bin/phantomjs",
-                                     desired_capabilities=desired_capabilities,
-                                     service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'],
+                                     desired_capabilities=dcap,
+                                     service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any',
+                                                   '--load-images=false'],
                                      service_log_path="/home/seluser/logs/phantomjs.log")
 
         driver.set_page_load_timeout(10)
