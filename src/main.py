@@ -38,7 +38,6 @@ def verify_cookie():
 def execute():
     job = os.environ['job']
     logger.info(job)
-    logger.info(job is "bc" or job is "other")
     if job == "bc" or job == "other":
         gl.set_value('STATUS', True)
         ims_api.heartbeat()
@@ -53,6 +52,7 @@ def execute():
             logger.error(e)
     else:
         logger.info("spider is not my job!")
+        return 'OK'
 
 
 @app.route('/tracking/execute', methods=['POST'])
@@ -73,6 +73,7 @@ def tracking_execute():
             logger.error(e)
     else:
         logger.info("Tracking is not my job!")
+        return 'OK'
 
 
 def inspect_tracking(task_id, status):
@@ -111,6 +112,7 @@ def gather_urls():
             return 'ERROR'
     else:
         logger.info("Gather is not my job!")
+        return 'SUCCESS'
 
 
 @app.route('/spider/stop', methods=['POST'])
