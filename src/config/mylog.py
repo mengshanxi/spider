@@ -3,9 +3,9 @@ import socket
 import time
 
 # logging初始化工作
-rootPath = '/home/seluser/logs/'
+#rootPath = '/home/seluser/logs/'
 
-# rootPath = 'D:/logs/'
+rootPath = 'D:/logs/'
 
 import logging.handlers
 

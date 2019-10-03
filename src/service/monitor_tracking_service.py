@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 import config.global_val as gl
 from config.mylog import logger
 from dao.tracking_detail_dao import TrackingDetailDao
+from manager.ims_api import ImsApi
 from service.snapshot_service import SnapshotService
 from service.strategy_service import StrategyService
 from service.webdriver_util import WebDriver
@@ -20,22 +21,21 @@ class MonitorTrackingService:
     @staticmethod
     def monitor(task_id, status):
         driver = WebDriver.get_chrome()
-        try:
-            tracking_dao = TrackingDetailDao()
-            strategy_service = StrategyService()
-            strategy = strategy_service.get_strategy()
-            tracking_details = tracking_dao.get_by_task(task_id, status)
-            if tracking_details.__len__() > 0:
-                for tracking_detail in tracking_details:
-                    if strategy.frequency == 0 or strategy.frequency is None:
-                        logger.info("未设置爬取频率限制,继续执行任务..")
-                    else:
-                        logger.info("爬取频率限制为:%s 秒", strategy.frequency)
-                        sleep(strategy.frequency)
-                    tracking_detail.start_time = datetime.datetime.now()
-                    tracking_detail.status = "done"
-                    url = "https://www.trackingmore.com/cn/" + tracking_detail.tracking_num
-                    driver.get(url)
+        tracking_dao = TrackingDetailDao()
+        strategy_service = StrategyService()
+        strategy = strategy_service.get_strategy()
+        tracking_details = tracking_dao.get_by_task(task_id, status)
+        if tracking_details.__len__() > 0:
+            for tracking_detail in tracking_details:
+                if strategy.frequency == 0 or strategy.frequency is None:
+                    logger.info("未设置爬取频率限制,继续执行任务..")
+                else:
+                    logger.info("爬取频率限制为:%s 秒", strategy.frequency)
+                tracking_detail.start_time = datetime.datetime.now()
+                tracking_detail.status = "done"
+                url = "https://www.trackingmore.com/cn/" + tracking_detail.tracking_num
+                driver.get(url)
+                try:
                     source = driver.page_source
                     soup = BeautifulSoup(source, 'html.parser')
                     a_tags = soup.find_all("a", attrs={'class': 'ulliselect'})
@@ -83,12 +83,19 @@ class MonitorTrackingService:
                         tracking_detail.url = url
                         tracking_detail.snapshot = snapshot
                     tracking_dao.update(tracking_detail)
+                except Exception as e:
+                    logger.error(e)
+                    snapshot = SnapshotService.snapshot_tracking(driver, tracking_detail)
+                    tracking_detail.result = "true"
+                    tracking_detail.des = "巡检正常"
+                    tracking_detail.end_time = datetime.datetime.now()
+                    tracking_detail.url = url
+                    tracking_detail.snapshot = snapshot
+                    tracking_dao.update(tracking_detail)
             else:
-                gl.set_value('STATUS', False)
                 logger.info("单号任务没有需要检索的单号，任务id：%s，单号状态: %s", task_id, status)
-        except Exception as e:
-            logger.error(e)
-            return
-        finally:
-            gl.set_value('STATUS', False)
+                gl.set_value('STATUS', False)
             driver.quit()
+            ims_api = ImsApi()
+            ims_api.done_tracking(task_id)
+            gl.set_value('STATUS', False)

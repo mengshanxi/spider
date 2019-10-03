@@ -1,6 +1,5 @@
 # -*- coding:utf-8 -*-
-import urllib.request
-
+import time
 from bs4 import BeautifulSoup
 
 from config.mylog import logger
@@ -9,6 +8,7 @@ from dao.weburl_dao import WeburlDao
 from manager.ims_api import ImsApi
 from model.models import Weburl
 from service.inspect_task_service import InspectTaskService
+from service.strategy_service import StrategyService
 from service.webdriver_util import WebDriver
 
 
@@ -28,6 +28,7 @@ class WeburlService:
         else:
             website_dao = WebsiteDao()
             websites = website_dao.get_overtime()
+            logger.info("需要采集url的商户网站供 %s 个 ", websites.__len__())
             for website in websites:
                 if len(website.domain_name) == 0 or website.domain_name is None:
                     logger.info("gather url for %s,but website.domain_name is None,ignored! ", website.merchant_name)
@@ -45,6 +46,15 @@ class WeburlService:
                     ims_api.done_url_gather(website)
 
     def gather_urls(self, website_id, uri, website_name, domain_name, merchant_name, merchant_num, level):
+        strategy_service = StrategyService()
+        strategy = strategy_service.get_strategy()
+        frequency = strategy.frequency
+        if strategy.frequency == 0 or strategy.frequency is None:
+            logger.info("未设置爬取频率限制,继续执行任务..")
+        else:
+            logger.info("爬取频率限制为:%s 秒", strategy.frequency)
+            time.sleep(frequency)
+
         if level == 1:
             logger.info("gather url just to 3 level: %s ", domain_name)
             return
