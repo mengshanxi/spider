@@ -1,5 +1,4 @@
 # -*- coding:utf-8 -*-
-import socket
 
 import os
 
@@ -13,22 +12,21 @@ class TaskPoolService:
 
     @staticmethod
     def get_pending_task(batch_num):
+        agent_name = os.environ['agent_name']
         job = os.environ['job']
         if job == "bc":
             task_pools = session.query(TaskItem).filter(TaskItem.batch_num == batch_num).filter(
                 TaskItem.status == 'pending', TaskItem.type == 'bc')
         else:
             task_pools = session.query(TaskItem).filter(TaskItem.batch_num == batch_num).filter(
-                TaskItem.status == 'pending')
+                TaskItem.status == 'pending', TaskItem.type != 'bc')
         if task_pools.count() == 0:
-            hostname = socket.gethostname()
-            ip = socket.gethostbyname(hostname)
-            logger.info("没有待巡检任务，Agent切换为waiting状态: %s", ip)
+            logger.info("本Agent没有待巡检任务，Agent切换为waiting状态: %s", agent_name)
             #  没有pending状态的任务
             gl.set_value('STATUS', False)
             return None, None
         else:
-            logger.info("准备执行巡检子任务,倒数第：%s 个...", str(task_pools.count()))
+            logger.info("%s 准备执行可以处理的任务,倒数第：%s 个...", agent_name, str(task_pools.count()))
         task_pool = task_pools.first()
         session.query(TaskItem).filter(TaskItem.id == task_pool.id).update({"status": "processing"})
         if task_pool.type == "weburl":
@@ -40,7 +38,6 @@ class TaskPoolService:
 
     @staticmethod
     def close_task(task_pool_id):
-        hostname = socket.gethostname()
-        ip = socket.gethostbyname(hostname)
+        agent_name = os.environ['agent_name']
         session.query(TaskItem).filter(TaskItem.id == task_pool_id).update(
-            {"status": "done", "processor": ip})
+            {"status": "done", "processor": agent_name})

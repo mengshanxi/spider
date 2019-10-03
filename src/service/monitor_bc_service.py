@@ -37,7 +37,9 @@ class MonitorBcService:
         monitor_bc.website_name = website.website_name
         monitor_bc.merchant_name = website.merchant_name
         try:
-            time.sleep(random.randint(10, 20))
+            random_seconds = random.randint(20, 30)
+            logger.info("企查查随机等待 %s 秒...", str(random_seconds))
+            time.sleep(random_seconds)
             driver, snapshot = SnapshotService.snapshot_qichacha(batch_num, url, website)
             if driver is None:
                 monitor_bc.snapshot = str(snapshot)
@@ -50,6 +52,9 @@ class MonitorBcService:
                 logger.info("企查查完成截图 : %s", website.merchant_name)
             logger.info("企查查检测股东成员 : %s", website.merchant_name)
             # 2.股东成员
+            random_seconds = random.randint(10, 20)
+            logger.info("企查查随机等待 %s 秒...", str(random_seconds))
+            time.sleep(random_seconds)
             driver.get(url)
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
@@ -216,7 +221,9 @@ class MonitorBcService:
                 logger.info("企查查检测受益人 : %s", website.merchant_name)
                 rest_url = url + "#base"
                 driver.get(rest_url)
-                time.sleep(random.randint(10, 20))
+                random_seconds = random.randint(20, 30)
+                logger.info("企查查随机等待 %s 秒...", str(random_seconds))
+                time.sleep(random_seconds)
                 source = driver.page_source
                 soup = BeautifulSoup(source, 'html.parser')
                 shou_yi_rens = soup.find_all(name='section', id=re.compile('partnerslist'))
@@ -258,7 +265,6 @@ class MonitorBcService:
 
     @staticmethod
     def get_merchant_url(batch_num, website):
-        time.sleep(random.randint(10, 20))
         url = "https://www.qichacha.com"
         dcap = dict(DesiredCapabilities.PHANTOMJS.copy())
         third_config_dao = ThirdConfigDao()
@@ -278,15 +284,40 @@ class MonitorBcService:
         driver.set_script_timeout(10)
         driver.maximize_window()
         try:
+            random_seconds = random.randint(20, 30)
+            logger.info("企查查随机等待 %s 秒...", str(random_seconds))
+            time.sleep(random_seconds)
             driver.get(url)
-            time.sleep(random.randint(20, 30))
             driver.find_element_by_id("searchkey").send_keys(website.merchant_name)
             driver.find_element_by_id("V3_Search_bt").click()
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
             title = soup.find(name="title").get_text()
             logger.info("qichacha res title :%s", str(title))
-            if str(title) == "会员登录 - 企查查":
+            if str(title) == "会员登录 - 企查查" or str(title) == "405":
+                timestamp = int(time.time())
+                snapshot = batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
+                    timestamp) + ".png"
+                path = base_filepath + "/" + batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
+                    timestamp)
+                driver.save_screenshot(path + ".png")
+                img = Image.open(path + ".png")
+                jpg = img.crop((265, 158, 420, 258))
+                jpg.save(path + "_thumb.bmp")
+                monitor_bc_dao = MonitorBcDao()
+                monitor_bc = MonitorBc(batch_num=batch_num,
+                                       merchant_name=website.merchant_name,
+                                       merchant_num=website.merchant_num,
+                                       website_name=website.website_name,
+                                       domain_name=website.domain_name,
+                                       saler=website.saler,
+                                       snapshot=snapshot,
+                                       is_normal='正常',
+                                       kinds='企业是否可查',
+                                       level='-',
+                                       outline='无法获取企查查信息',
+                                       create_time=datetime.datetime.now())
+                monitor_bc_dao.add(monitor_bc)
                 return None
             tbodys = soup.find_all(id="search-result")
             trs = tbodys[0].find_all('tr')
