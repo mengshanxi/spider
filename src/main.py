@@ -1,4 +1,5 @@
 # coding:utf-8
+import signal
 import threading
 
 import os
@@ -55,10 +56,29 @@ def execute():
         return 'OK'
 
 
+def restart_selenium():
+    logger.info("restart_selenium...")
+    out = os.popen("ps aux | grep selenium").read()
+    logger.info(out.splitlines())
+    for line in out.splitlines():
+        logger.info(line)
+        if 'selenium' in line:
+            pid = int(line.split()[1])
+            try:
+                logger.info(pid)
+                result = os.kill(pid, signal.SIGKILL)
+                logger.info('已杀死pid为%s的进程,　返回值是:%s' % (pid, result))
+            except OSError:
+                logger.info('没有如此进程!!!')
+    os.popen("nohup /opt/bin/start-selenium-standalone.sh &").read()
+
+
 @app.route('/tracking/execute', methods=['POST'])
 def tracking_execute():
     job = os.environ['job']
     if job == "tracking":
+        # 重启selenium
+        restart_selenium()
         gl.set_value('STATUS', True)
         ims_api.heartbeat()
         try:

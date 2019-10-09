@@ -3,7 +3,7 @@ import os, signal
 
 class TestMysql(object):
     if __name__ == "__main__":
-        out = os.popen("ps aux | grep chrome").read()
+        out = os.popen("ps aux | grep selenium").read()
         print(len(out.splitlines()))
         for line in out.splitlines():
             print(line)

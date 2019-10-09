@@ -34,7 +34,18 @@ class MonitorTrackingService:
                 tracking_detail.start_time = datetime.datetime.now()
                 tracking_detail.status = "done"
                 url = "https://www.trackingmore.com/cn/" + tracking_detail.tracking_num
-                driver.get(url)
+                try:
+                    driver.get(url)
+                except Exception as e:
+                    logger.error(e)
+                    tracking_detail.result = "true"
+                    tracking_detail.des = "检测超时"
+                    tracking_detail.end_time = datetime.datetime.now()
+                    tracking_detail.url = url
+                    tracking_detail.snapshot = ""
+                    tracking_dao.update(tracking_detail)
+                    logger.info("单号巡检发生异常，跳过:%s 秒", )
+                    continue
                 try:
                     source = driver.page_source
                     soup = BeautifulSoup(source, 'html.parser')
