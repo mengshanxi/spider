@@ -26,9 +26,11 @@ class GatherCenter:
         else:
             logger.info("爬取频率限制为:%s 秒", strategy.frequency)
         if task_pool.type == "weburl" and check_item["websiteIsBadwords"] is 1:
+            logger.info("weburl monitor begin,url: %s", entity.url)
             monitor_weburl_service = MonitorWeburlService()
             monitor_weburl_service.monitor_website(entity, batch_num)
             task_pool_service.close_task(task_pool.id)
+            logger.info("weburl domain is done,continue! ")
             return
         elif task_pool.type == "website":
             if check_item["websiteIsForward"] is 1 or check_item["websiteIsOpen"] is 1:

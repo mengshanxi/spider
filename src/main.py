@@ -3,6 +3,8 @@ import signal
 import threading
 
 import os
+from time import sleep
+
 from flask import Flask
 from flask import request
 
@@ -38,8 +40,9 @@ def verify_cookie():
 @app.route('/spider/execute', methods=['POST'])
 def execute():
     job = os.environ['job']
-    logger.info(job)
     if job == "bc" or job == "other":
+        # 重启selenium
+        restart_selenium()
         gl.set_value('STATUS', True)
         ims_api.heartbeat()
         try:
@@ -70,7 +73,8 @@ def restart_selenium():
                 logger.info('已杀死pid为%s的进程,　返回值是:%s' % (pid, result))
             except OSError:
                 logger.info('没有如此进程!!!')
-    os.popen("nohup /opt/bin/start-selenium-standalone.sh &").read()
+    os.popen("nohup /opt/bin/start-selenium-standalone.sh >/home/seluser/logs/spider_agent2.out 2>&1 &").read()
+    sleep(10)
 
 
 @app.route('/tracking/execute', methods=['POST'])
@@ -124,7 +128,12 @@ def gather_urls():
             # task_id = request.form['taskId']
             gl.set_value('STATUS', True)
             weburl_service = WeburlService()
-            weburl_service.gather_urls_by_task(None)
+            website_id = request.form['websiteId']
+            if website_id == 'all':
+                website_id = None
+            else:
+                pass
+            weburl_service.gather_urls_by_website(website_id)
             gl.set_value('STATUS', False)
             return 'SUCCESS'
         except KeyError as e:

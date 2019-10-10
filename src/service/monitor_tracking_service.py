@@ -21,6 +21,7 @@ class MonitorTrackingService:
     @staticmethod
     def monitor(task_id, status):
         driver = WebDriver.get_chrome()
+        driver.delete_all_cookies()
         tracking_dao = TrackingDetailDao()
         strategy_service = StrategyService()
         strategy = strategy_service.get_strategy()
@@ -89,7 +90,7 @@ class MonitorTrackingService:
                     else:
                         snapshot = SnapshotService.snapshot_tracking(driver, tracking_detail)
                         tracking_detail.result = "false"
-                        tracking_detail.des = "没有查询到快递公司"
+                        tracking_detail.des = "没有查询物流信息"
                         tracking_detail.end_time = datetime.datetime.now()
                         tracking_detail.url = url
                         tracking_detail.snapshot = snapshot
