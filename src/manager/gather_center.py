@@ -1,5 +1,7 @@
 import json
 
+import time
+
 from config.mylog import logger
 from service.monitor_bc_service import MonitorBcService
 from service.monitor_senti_service import MonitorSentiService
@@ -25,6 +27,7 @@ class GatherCenter:
             logger.info("未设置爬取频率限制,继续执行任务..")
         else:
             logger.info("爬取频率限制为:%s 秒", strategy.frequency)
+            time.sleep(strategy.frequency)
         if task_pool.type == "weburl" and check_item["websiteIsBadwords"] is 1:
             logger.info("weburl monitor begin,url: %s", entity.url)
             monitor_weburl_service = MonitorWeburlService()

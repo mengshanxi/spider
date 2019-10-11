@@ -22,7 +22,8 @@ class AccessibleService:
                 'ERR_CONNECTION_REFUSED') or driver.page_source.__contains__(
                 'ERR_CONNECTION_TIMED_OUT') or driver.page_source.__contains__(
                 'ERR_NAME_NOT_RESOLVED') or driver.page_source.__contains__(
-                'ERR_NAME_RESOLUTION_FAILED') or driver.page_source.__contains__('DNS_PROBE_FINISHED_NXDOMAIN'):
+                'ERR_NAME_RESOLUTION_FAILED') or driver.page_source.__contains__(
+                'DNS_PROBE_FINISHED_NXDOMAIN') or driver.page_source.__contains__('ERR_EMPTY_RESPONSE'):
                 return None, None
             else:
                 return http_url, driver.current_url

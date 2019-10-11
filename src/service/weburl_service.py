@@ -7,7 +7,6 @@ from dao.website_dao import WebsiteDao
 from dao.weburl_dao import WeburlDao
 from manager.ims_api import ImsApi
 from model.models import Weburl
-from service.inspect_task_service import InspectTaskService
 from service.strategy_service import StrategyService
 from service.webdriver_util import WebDriver
 
@@ -72,7 +71,7 @@ class WeburlService:
         logger.info("gather url for website: %s ", uri)
         weburl_service = WeburlDao()
         try:
-            driver = WebDriver.get_chrome_for_access()
+            driver = WebDriver.get_chrome_for_urlgather()
             driver.get(uri)
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
@@ -87,12 +86,14 @@ class WeburlService:
                 elif href.startswith('http://') or href.startswith('https://'):
                     href = href
                 elif href.startswith('/'):
-                    href = "http://" + domain_name + href
+                    href = uri + href
                 elif href.startswith('./'):
                     href = uri + href[1:]
                 else:
                     href = uri + "/" + href
-
+                url = href.replace("//", "/").replace("/../", "/").replace(":/", "://")
+                logger.info("href %s", href)
+                logger.info("url %s", url)
                 title = soup.find('title').string
                 weburl = Weburl(website_id=website_id,
                                 website_name=website_name,
@@ -102,7 +103,7 @@ class WeburlService:
                                 title=title,
                                 type='page',
                                 parent=uri,
-                                url=href.replace("//", "/").replace("/../", "/"))
+                                url=href.replace("//", "/").replace("/../", "/").replace(":/", "://"))
                 weburl_service.add(weburl)
                 # self.gather_urls(website_id, href, website_name, domain_name, level + 1)
         except Exception as e:

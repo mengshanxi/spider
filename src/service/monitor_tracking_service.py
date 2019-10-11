@@ -1,6 +1,6 @@
 import datetime
-from time import sleep
 
+import time
 from bs4 import BeautifulSoup
 
 import config.global_val as gl
@@ -21,6 +21,7 @@ class MonitorTrackingService:
     @staticmethod
     def monitor(task_id, status):
         driver = WebDriver.get_chrome()
+        ims_api = ImsApi()
         driver.delete_all_cookies()
         tracking_dao = TrackingDetailDao()
         strategy_service = StrategyService()
@@ -28,10 +29,19 @@ class MonitorTrackingService:
         tracking_details = tracking_dao.get_by_task(task_id, status)
         if tracking_details.__len__() > 0:
             for tracking_detail in tracking_details:
+                if gl.get_value('TRACKING_STATUS'):
+                    pass
+                else:
+                    logger.info("快递单任务已停止，任务id：%s", task_id)
+                    gl.set_value('STATUS', False)
+                    gl.set_value('TRACKING_STATUS', False)
+                    ims_api.done_tracking(task_id)
+                    return
                 if strategy.frequency == 0 or strategy.frequency is None:
                     logger.info("未设置爬取频率限制,继续执行任务..")
                 else:
                     logger.info("爬取频率限制为:%s 秒", strategy.frequency)
+                    # time.sleep(strategy.frequency)
                 tracking_detail.start_time = datetime.datetime.now()
                 tracking_detail.status = "done"
                 url = "https://www.trackingmore.com/cn/" + tracking_detail.tracking_num
@@ -107,7 +117,8 @@ class MonitorTrackingService:
             else:
                 logger.info("单号任务没有需要检索的单号，任务id：%s，单号状态: %s", task_id, status)
                 gl.set_value('STATUS', False)
+                gl.set_value('TRACKING_STATUS', False)
             driver.quit()
-            ims_api = ImsApi()
             ims_api.done_tracking(task_id)
             gl.set_value('STATUS', False)
+            gl.set_value('TRACKING_STATUS', False)
