@@ -41,38 +41,24 @@ class GatherCenter:
                 logger.info("%s 跳过网站监控", entity.merchant_name)
         elif task_pool.type == "senti":
             # 舆情监控
-            if check_item["baidu"] is 1 or check_item["baike"] is 1 or check_item["paycircle"] is 1 or check_item[
-                "paynews"] is 1 or check_item["zhifujie"] is 1 or check_item["zfzj"] is 1 or check_item[
-                "wenshu"] is 1 or check_item["ts"] is 1 or check_item["tousu"] is 1:
-                logger.info("sentiment monitor begin,merchant_name : %s", entity.merchant_name)
-                monitor_senti_service = MonitorSentiService()
-                monitor_senti_service.monitor_senti(entity.merchant_name, task_pool, batch_num, entity)
-                logger.info("sentiment monitor done!merchantName : %s", entity.merchant_name)
-            else:
-                logger.info("%s 跳过网站监控", entity.merchant_name)
+            logger.info("sentiment monitor begin,merchant_name : %s", entity.merchant_name)
+            monitor_senti_service = MonitorSentiService()
+            monitor_senti_service.monitor_senti(entity.merchant_name, task_pool, batch_num, entity)
+            logger.info("sentiment monitor done!merchantName : %s", entity.merchant_name)
         elif task_pool.type == "bc":
             # 工商监控
-            if check_item["bcIsAbn"] is 1 or check_item["bcIsMoveout"] is 1 or check_item["bcIsLogout"] is 1 or \
-                    check_item["bcLegalpersonChg"] is 1:
-                logger.info("qichacha monitor  begin,merchantName : %s", entity.merchant_name)
-                service = MonitorBcService()
-                # 控制频度
-                # crawler_protect = random.randint(3, 10)
-                # logger.info("加入保护间隔 : %s seconds", crawler_protect)
-                # time.sleep(crawler_protect)
-                url = service.get_merchant_url(str(batch_num), entity)
-                logger.info("get qichacha url  : %s", str(url))
-                if url is not None:
-                    try:
-                        service.inspect(str(batch_num), "https://www.qichacha.com" + url, entity)
-                    except Exception as e:
-                        logger.info(e)
-                        pass
-                else:
-                    logger.info("没有获取到商户企查查信息!merchantName : %s", entity.merchant_name)
-                logger.info("qichacha monitor  done!merchantName : %s", entity.merchant_name)
-
+            logger.info("qichacha monitor  begin,merchantName : %s", entity.merchant_name)
+            service = MonitorBcService()
+            url = service.get_merchant_url(str(batch_num), entity)
+            logger.info("get qichacha url  : %s", str(url))
+            if url is not None:
+                try:
+                    service.inspect(str(batch_num), "https://www.qichacha.com" + url, entity)
+                except Exception as e:
+                    logger.info(e)
+                    pass
             else:
-                logger.info("%s 跳过工商监控", entity.merchant_name)
+                logger.info("没有获取到商户企查查信息!merchantName : %s", entity.merchant_name)
+            logger.info("qichacha monitor  done!merchantName : %s", entity.merchant_name)
 
         task_pool_service.close_task(task_pool.id)

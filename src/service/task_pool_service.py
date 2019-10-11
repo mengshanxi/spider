@@ -2,6 +2,8 @@
 
 import os
 
+import datetime
+
 import config.global_val as gl
 from config.mylog import logger
 from dao.db import session
@@ -39,5 +41,8 @@ class TaskPoolService:
     @staticmethod
     def close_task(task_pool_id):
         agent_name = os.environ['agent_name']
+        current_time = datetime.datetime.now()
         session.query(TaskItem).filter(TaskItem.id == task_pool_id).update(
-            {"status": "done", "processor": agent_name})
+            {TaskItem.status: "done",
+             TaskItem.processor: agent_name,
+             TaskItem.last_update: current_time})
