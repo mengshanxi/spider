@@ -21,3 +21,4 @@ class WeburlDao(object):
             weburl.create_time = datetime.datetime.now()
             weburl.last_update = datetime.datetime.now()
             session.add(weburl)
+            session.commit()

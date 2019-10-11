@@ -1,7 +1,10 @@
 # coding:utf-8
+import signal
 import threading
 
 import os
+from time import sleep
+
 from flask import Flask
 from flask import request
 
@@ -19,6 +22,7 @@ gl._init()
 
 # 定义跨模块全局变量
 gl.set_value('STATUS', False)
+gl.set_value('TRACKING_STATUS', False)
 ims_api = ImsApi()
 
 
@@ -34,32 +38,32 @@ def verify_cookie():
 '''
 
 
-@app.route('/spider/execute', methods=['POST'])
-def execute():
-    job = os.environ['job']
-    logger.info(job)
-    if job == "bc" or job == "other":
-        gl.set_value('STATUS', True)
-        ims_api.heartbeat()
-        try:
-            batch_num = request.form['batchNum']
-            logger.info("spider begin batchNum: %s" % str(batch_num))
-            t = threading.Thread(target=inspect, args=(batch_num,))
-            t.setDaemon(True)
-            t.start()
-            return 'OK'
-        except Exception as e:
-            logger.error(e)
-    else:
-        logger.info("spider is not my job!")
-        return 'OK'
+def restart_selenium():
+    logger.info("restart_selenium...")
+    out = os.popen("ps aux | grep selenium").read()
+    logger.info(out.splitlines())
+    for line in out.splitlines():
+        logger.info(line)
+        if 'selenium' in line:
+            pid = int(line.split()[1])
+            try:
+                logger.info(pid)
+                result = os.kill(pid, signal.SIGKILL)
+                logger.info('已杀死pid为%s的进程,　返回值是:%s' % (pid, result))
+            except OSError:
+                logger.info('没有如此进程!!!')
+    os.popen("nohup /opt/bin/start-selenium-standalone.sh >/home/seluser/logs/spider_agent2.out 2>&1 &").read()
+    sleep(10)
 
 
 @app.route('/tracking/execute', methods=['POST'])
 def tracking_execute():
     job = os.environ['job']
     if job == "tracking":
+        # 重启selenium
+        restart_selenium()
         gl.set_value('STATUS', True)
+        gl.set_value('TRACKING_STATUS', True)
         ims_api.heartbeat()
         try:
             task_id = request.form['taskId']
@@ -78,13 +82,47 @@ def tracking_execute():
 
 def inspect_tracking(task_id, status):
     tracking_service = MonitorTrackingService()
-    while gl.get_value('STATUS'):
+    while gl.get_value('TRACKING_STATUS'):
         logger.info("tracking task start!  task_id:%s" % str(task_id))
         tracking_service.monitor(task_id, status)
         logger.info("tracking task end!  task_id:%s" % str(task_id))
     task_dao = TrackingTaskDao()
     task_dao.close_task(task_id)
     logger.info("tracking task end!  task_id:%s" % str(task_id))
+
+
+@app.route('/tracking/stop', methods=['POST'])
+def stop_tracking():
+    job = os.environ['job']
+    if job == "tracking":
+        gl.set_value('STATUS', False)
+        gl.set_value('TRACKING_STATUS', False)
+        ims_api.heartbeat()
+    else:
+        logger.info("My Job is tracking,ignore the order!")
+    return 'SUCCESS'
+
+
+@app.route('/spider/execute', methods=['POST'])
+def execute():
+    job = os.environ['job']
+    if job == "bc" or job == "other":
+        # 重启selenium
+        restart_selenium()
+        gl.set_value('STATUS', True)
+        ims_api.heartbeat()
+        try:
+            batch_num = request.form['batchNum']
+            logger.info("spider begin batchNum: %s" % str(batch_num))
+            t = threading.Thread(target=inspect, args=(batch_num,))
+            t.setDaemon(True)
+            t.start()
+            return 'OK'
+        except Exception as e:
+            logger.error(e)
+    else:
+        logger.info("spider is not my job!")
+        return 'OK'
 
 
 def inspect(batch_num):
@@ -96,25 +134,6 @@ def inspect(batch_num):
     logger.info("batchNum gather task end!  batch_num:%s" % str(batch_num))
 
 
-@app.route('/spider/gather_urls', methods=['POST'])
-def gather_urls():
-    job = os.environ['job']
-    if job == "gather":
-        try:
-            # task_id = request.form['taskId']
-            gl.set_value('STATUS', True)
-            weburl_service = WeburlService()
-            weburl_service.gather_urls_by_task(None)
-            gl.set_value('STATUS', False)
-            return 'SUCCESS'
-        except KeyError as e:
-            print(e)
-            return 'ERROR'
-    else:
-        logger.info("Gather is not my job!")
-        return 'SUCCESS'
-
-
 @app.route('/spider/stop', methods=['POST'])
 def stop():
     job = os.environ['job']
@@ -123,6 +142,30 @@ def stop():
     else:
         gl.set_value('STATUS', False)
         ims_api.heartbeat()
+        return 'SUCCESS'
+
+
+@app.route('/spider/gather_urls', methods=['POST'])
+def gather_urls():
+    job = os.environ['job']
+    if job == "gather":
+        try:
+            # task_id = request.form['taskId']
+            gl.set_value('STATUS', True)
+            weburl_service = WeburlService()
+            website_id = request.form['websiteId']
+            if website_id == 'all':
+                website_id = None
+            else:
+                pass
+            weburl_service.gather_urls_by_website(website_id)
+            gl.set_value('STATUS', False)
+            return 'SUCCESS'
+        except KeyError as e:
+            print(e)
+            return 'ERROR'
+    else:
+        logger.info("Gather is not my job!")
         return 'SUCCESS'
 
 

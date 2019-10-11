@@ -15,15 +15,21 @@ class TestMysql(object):
         #url = "https://www.trackingmore.com/zto-tracking/cn.html?number=430068804437"
         #快递公司列表
         #url="https://www.trackingmore.com/cn/430068804437"
-        driver = webdriver.Remote(command_executor='http://172.17.161.230:8912/wd/hub',
-                                  desired_capabilities=DesiredCapabilities.CHROME,
-                                  options=chrome_options)
+        # driver = webdriver.Remote(command_executor='http://172.19.27.54:8912/wd/hub',
+        #                           desired_capabilities=DesiredCapabilities.CHROME,
+        #                           options=chrome_options)
+        dcap = dict(DesiredCapabilities.PHANTOMJS)
+        driver = webdriver.PhantomJS(executable_path="D:/develop/phantomjs-2.1.1-windows/bin/phantomjs.exe",
+                                     desired_capabilities=dcap,
+                                     service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any',
+                                                   '--load-images=false'],
+                                     service_log_path="D:/a.log")
         driver.set_page_load_timeout(30)
         driver.set_script_timeout(10)
         driver.maximize_window()
 
         try:
-            driver.get("https://www.trackingmore.com/cn/75168858039903")
+            driver.get("https://www.trackingmore.com/cn/LX43839588")
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
             trackings = soup.find_all("a", attrs={'class': 'ulliselect'})

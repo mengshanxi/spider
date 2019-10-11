@@ -20,6 +20,11 @@ class WebsiteDao(object):
         return website
 
     @staticmethod
+    def get_by_id(website_id):
+        website = session.query(Website).filter(Website.id == website_id).one()
+        return website
+
+    @staticmethod
     def get_by_merchant(merchant_name):
         website = session.query(Website).filter(Website.merchant_name == merchant_name).one()
         return website
