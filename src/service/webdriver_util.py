@@ -34,6 +34,8 @@ class WebDriver:
     @staticmethod
     def get_chrome():
         chrome_options = Options()
+        # chrome_options.add_argument('--incognito')
+        # chrome_options.add_argument("–-disk-cache-size=0")
         # 禁止图片和css加载
         # prefs = {"profile.managed_default_content_settings.images": 2, 'permissions.default.stylesheet': 2}
         # chrome_options.add_experimental_option("prefs", prefs)

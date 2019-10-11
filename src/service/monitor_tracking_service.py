@@ -2,6 +2,7 @@ import datetime
 
 import time
 from bs4 import BeautifulSoup
+from selenium.webdriver.remote.command import Command
 
 import config.global_val as gl
 from config.mylog import logger
@@ -22,7 +23,6 @@ class MonitorTrackingService:
     def monitor(task_id, status):
         driver = WebDriver.get_chrome()
         ims_api = ImsApi()
-        driver.delete_all_cookies()
         tracking_dao = TrackingDetailDao()
         strategy_service = StrategyService()
         strategy = strategy_service.get_strategy()
