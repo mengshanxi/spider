@@ -48,6 +48,19 @@ class WebDriver:
         return driver
 
     @staticmethod
+    def get_chrome_by_local():
+        chrome_options = Options()
+        prefs = {"profile.managed_default_content_settings.images": 2, 'permissions.default.stylesheet': 2}
+        chrome_options.add_experimental_option("prefs", prefs)
+        driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver',
+                                  desired_capabilities=DesiredCapabilities.CHROME,
+                                  options=chrome_options)
+        driver.set_page_load_timeout(20)
+        driver.set_script_timeout(20)
+        driver.maximize_window()
+        return driver
+
+    @staticmethod
     def get_chrome_with_cookie():
         dcap = dict(DesiredCapabilities.PHANTOMJS.copy())
         third_config_dao = ThirdConfigDao()

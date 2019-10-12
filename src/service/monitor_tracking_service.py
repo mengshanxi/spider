@@ -21,7 +21,7 @@ class MonitorTrackingService:
 
     @staticmethod
     def monitor(task_id, status):
-        driver = WebDriver.get_chrome()
+        driver = WebDriver.get_chrome_by_local()
         ims_api = ImsApi()
         tracking_dao = TrackingDetailDao()
         strategy_service = StrategyService()
@@ -41,10 +41,12 @@ class MonitorTrackingService:
                     logger.info("未设置爬取频率限制,继续执行任务..")
                 else:
                     logger.info("爬取频率限制为:%s 秒", strategy.frequency)
-                    # time.sleep(strategy.frequency)
+                    time.sleep(strategy.frequency)
                 tracking_detail.start_time = datetime.datetime.now()
                 tracking_detail.status = "done"
+                logger.info("准备检查单号:%s ", tracking_detail.tracking_num)
                 url = "https://www.trackingmore.com/cn/" + tracking_detail.tracking_num
+                logger.info("url:%s ", url)
                 try:
                     driver.get(url)
                 except Exception as e:
@@ -55,7 +57,7 @@ class MonitorTrackingService:
                     tracking_detail.url = url
                     tracking_detail.snapshot = ""
                     tracking_dao.update(tracking_detail)
-                    logger.info("单号巡检发生异常，跳过:%s 秒", )
+                    logger.info("单号巡检发生异常，跳过")
                     continue
                 try:
                     source = driver.page_source
