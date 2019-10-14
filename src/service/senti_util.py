@@ -79,7 +79,7 @@ class SentiUtil:
             monitor_third.url = href
             monitor_third.type = platform
             monitor_third.level = '-'
-            monitor_third.outline = '-'
+            monitor_third.outline = '首页截图'
             monitor_third.is_normal = is_normal
             monitor_third.snapshot = snapshot
             monitor_third_dao.add(monitor_third)

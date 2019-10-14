@@ -129,7 +129,7 @@ class WebDriver:
                                   desired_capabilities=DesiredCapabilities.CHROME,
                                   options=chrome_options)
 
-        driver.set_page_load_timeout(120)
-        driver.set_script_timeout(120)
+        driver.set_page_load_timeout(30)
+        driver.set_script_timeout(30)
         driver.maximize_window()
         return driver

@@ -292,9 +292,9 @@ class MonitorBcService:
             driver.find_element_by_id("V3_Search_bt").click()
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
-            title = soup.find(name="title").get_text()
-            logger.info("qichacha res title :%s", str(title))
-            if str(title) == "会员登录 - 企查查" or str(title) == "405":
+            title = soup.find(name="title")
+            if title is None or str(title.get_text()) == "会员登录 - 企查查" or str(title.get_text()) == "405":
+                logger.info("qichacha res title :%s", str(title))
                 timestamp = int(time.time())
                 snapshot = batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
                     timestamp) + ".png"
