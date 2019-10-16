@@ -46,6 +46,20 @@ class WebDriver:
         return driver
 
     @staticmethod
+    def get_chrome_by_local():
+        chrome_options = Options()
+        chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36")
+        prefs = {"profile.managed_default_content_settings.images": 2, 'permissions.default.stylesheet': 2}
+        chrome_options.add_experimental_option("prefs", prefs)
+        driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver',
+                                  desired_capabilities=DesiredCapabilities.CHROME,
+                                  options=chrome_options)
+        driver.set_page_load_timeout(20)
+        driver.set_script_timeout(20)
+        driver.maximize_window()
+        return driver
+
+    @staticmethod
     def get_chrome_with_cookie():
         dcap = dict(DesiredCapabilities.PHANTOMJS.copy())
         third_config_dao = ThirdConfigDao()
@@ -114,7 +128,7 @@ class WebDriver:
                                   desired_capabilities=DesiredCapabilities.CHROME,
                                   options=chrome_options)
 
-        driver.set_page_load_timeout(120)
-        driver.set_script_timeout(120)
+        driver.set_page_load_timeout(30)
+        driver.set_script_timeout(30)
         driver.maximize_window()
         return driver

@@ -38,8 +38,8 @@ def verify_cookie():
 '''
 
 
-def restart_selenium():
-    logger.info("restart_selenium...")
+def stop_selenium():
+    logger.info("stop_selenium...")
     out = os.popen("ps aux | grep selenium").read()
     logger.info(out.splitlines())
     for line in out.splitlines():
@@ -52,6 +52,26 @@ def restart_selenium():
                 logger.info('已杀死pid为%s的进程,　返回值是:%s' % (pid, result))
             except OSError:
                 logger.info('没有如此进程!!!')
+
+
+def stop_chrome():
+    logger.info("stop_chrome...")
+    out = os.popen("ps aux | grep chrome").read()
+    logger.info(out.splitlines())
+    for line in out.splitlines():
+        logger.info(line)
+        if 'chrome' in line:
+            pid = int(line.split()[1])
+            try:
+                logger.info(pid)
+                result = os.kill(pid, signal.SIGKILL)
+                logger.info('已杀死pid为%s的进程,　返回值是:%s' % (pid, result))
+            except OSError:
+                logger.info('没有如此进程!!!')
+
+
+def start_selenium():
+    logger.info("start selenium...")
     os.popen("nohup /opt/bin/start-selenium-standalone.sh >/home/seluser/logs/spider_agent2.out 2>&1 &").read()
     sleep(10)
 
@@ -61,7 +81,8 @@ def tracking_execute():
     job = os.environ['job']
     if job == "tracking":
         # 重启selenium
-        restart_selenium()
+        stop_selenium()
+        stop_chrome()
         gl.set_value('STATUS', True)
         gl.set_value('TRACKING_STATUS', True)
         ims_api.heartbeat()
@@ -108,7 +129,8 @@ def execute():
     job = os.environ['job']
     if job == "bc" or job == "other":
         # 重启selenium
-        restart_selenium()
+        stop_selenium()
+        start_selenium()
         gl.set_value('STATUS', True)
         ims_api.heartbeat()
         try:
