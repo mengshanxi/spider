@@ -21,7 +21,6 @@ class MonitorTrackingService:
 
     @staticmethod
     def monitor(task_id, status):
-        driver = WebDriver.get_chrome_by_local()
         ims_api = ImsApi()
         tracking_dao = TrackingDetailDao()
         strategy_service = StrategyService()
@@ -47,6 +46,7 @@ class MonitorTrackingService:
                 logger.info("准备检查单号:%s ", tracking_detail.tracking_num)
                 url = "https://www.trackingmore.com/cn/" + tracking_detail.tracking_num
                 logger.info("url:%s ", url)
+                driver = WebDriver.get_chrome_by_local()
                 try:
                     driver.get(url)
                 except Exception as e:
@@ -58,7 +58,9 @@ class MonitorTrackingService:
                     tracking_detail.snapshot = ""
                     tracking_dao.update(tracking_detail)
                     logger.info("单号巡检发生异常，跳过")
+                    driver.quit()
                     continue
+
                 try:
                     source = driver.page_source
                     soup = BeautifulSoup(source, 'html.parser')
@@ -116,11 +118,12 @@ class MonitorTrackingService:
                     tracking_detail.url = url
                     tracking_detail.snapshot = snapshot
                     tracking_dao.update(tracking_detail)
+                finally:
+                    driver.quit()
             else:
                 logger.info("单号任务没有需要检索的单号，任务id：%s，单号状态: %s", task_id, status)
                 gl.set_value('STATUS', False)
                 gl.set_value('TRACKING_STATUS', False)
-            driver.quit()
             ims_api.done_tracking(task_id)
             gl.set_value('STATUS', False)
             gl.set_value('TRACKING_STATUS', False)
