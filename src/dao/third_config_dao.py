@@ -10,7 +10,6 @@ class ThirdConfigDao(object):
     def get_by_name(name):
         third_config = session.query(ThirdConfig).filter(ThirdConfig.name == name).all()
         if len(third_config):
-            logger.info("cookie: %s", third_config[0].cookie)
             return third_config[0].cookie
         else:
             return "nocookie"

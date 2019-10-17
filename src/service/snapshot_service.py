@@ -2,12 +2,9 @@ import time
 from urllib import request
 
 from PIL import Image
-from selenium import webdriver
-from selenium.webdriver import DesiredCapabilities
 
 from config.config_load import base_filepath, ims_rest_base
 from config.mylog import logger
-from dao.third_config_dao import ThirdConfigDao
 from service.webdriver_util import WebDriver
 
 
@@ -54,22 +51,12 @@ class SnapshotService:
         path = base_filepath + "/" + batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
             timestamp)
         try:
-            dcap = dict(DesiredCapabilities.PHANTOMJS.copy())
-            third_config_dao = ThirdConfigDao()
-            cookie = third_config_dao.get_by_name("qichacha")
-            headers = {
-                'cookie': cookie,
-                'Host': 'www.qichacha.com',
-                'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"}
-            for key, value in headers.items():
-                dcap['phantomjs.page.customHeaders.{}'.format(key)] = value
-            driver = webdriver.PhantomJS(executable_path="/usr/bin/phantomjs",
-                                         desired_capabilities=dcap,
-                                         service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'],
-                                         service_log_path="/home/seluser/logs/phantomjs.log")
-
-            driver.set_page_load_timeout(10)
-            driver.set_script_timeout(10)
+            driver = WebDriver.get_chrome_by_local()
+            # driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver',
+            #                           desired_capabilities=dcap,
+            #                           options=chrome_options)
+            driver.set_page_load_timeout(60)
+            driver.set_script_timeout(60)
             driver.maximize_window()
             driver.get(url)
             driver.save_screenshot(path + ".png")
@@ -92,10 +79,10 @@ class SnapshotService:
             im = Image.open(path + ".png")
             im_resize = im.resize((50, 50), Image.ANTIALIAS)
             im_resize.save(path + "_thumb.bmp")
+            return snapshot
         except Exception as e:
             logger.info(e)
-            return snapshot
-        return snapshot
+            return None
 
     @staticmethod
     def simulation_404(url):

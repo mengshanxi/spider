@@ -5,8 +5,6 @@ import time
 
 from PIL import Image
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 
 from config.config_load import base_filepath
@@ -14,10 +12,10 @@ from config.mylog import logger
 from dao.bc_benefit_dao import BcBenefitDao
 from dao.bc_person_dao import BcPersonDao
 from dao.monitor_bc_dao import MonitorBcDao
-from dao.third_config_dao import ThirdConfigDao
 from model.models import BcPerson, BcBenefit
 from model.models import MonitorBc
 from service.snapshot_service import SnapshotService
+from service.webdriver_util import WebDriver
 
 """
 企查查监控服务
@@ -36,17 +34,21 @@ class MonitorBcService:
         monitor_bc.merchant_num = website.merchant_num
         monitor_bc.website_name = website.website_name
         monitor_bc.merchant_name = website.merchant_name
+        monitor_bc.saler = website.saler
+        random_seconds = random.randint(20, 30)
+        logger.info("企查查随机等待 %s 秒...", str(random_seconds))
+        time.sleep(random_seconds)
+        driver, snapshot = SnapshotService.snapshot_qichacha(batch_num, url, website)
+        logger.info("driver: %s ,snapshot:%s", driver, snapshot)
         try:
-            random_seconds = random.randint(20, 30)
-            logger.info("企查查随机等待 %s 秒...", str(random_seconds))
-            time.sleep(random_seconds)
-            driver, snapshot = SnapshotService.snapshot_qichacha(batch_num, url, website)
             if driver is None:
-                monitor_bc.snapshot = str(snapshot)
+                logger.info("由于企查查反扒策略无法继续！")
+                monitor_bc.snapshot = '中'
                 monitor_bc.is_normal = '异常'
-                monitor_bc.kinds = '经营状态'
-                monitor_bc.outline = '检测到经营异常风险',
+                monitor_bc.kinds = '检测失败'
+                monitor_bc.outline = '由于企查查反扒策略无法访问企业详情页。请尝试手动访问：' + url,
                 monitor_bc.level = '高'
+                monitor_bc_dao.add(monitor_bc)
                 return
             else:
                 logger.info("企查查完成截图 : %s", website.merchant_name)
@@ -119,7 +121,7 @@ class MonitorBcService:
                 monitor_bc_dao.add(monitor_bc)
             try:
                 #  4.经营状态：注销 迁出
-                logger.info("企查查检测经营状态：注销 迁出 : %s", website.merchant_name)
+                logger.info("准备检测经营状态：注销 迁出 : %s ...", website.merchant_name)
                 cminfo = soup.find_all(name='section', id=re.compile('Cominfo'))
                 tables = cminfo[0].find_all(name='table', class_='ntable')
                 trs = tables[0].find_all(name='tr')
@@ -261,28 +263,24 @@ class MonitorBcService:
         except Exception as e:
             logger.info(e)
         finally:
-            driver.quit()
+            if driver is not None:
+                driver.quit()
+            else:
+                pass
 
     @staticmethod
     def get_merchant_url(batch_num, website):
+        monitor_bc_dao = MonitorBcDao()
         url = "https://www.qichacha.com"
-        dcap = dict(DesiredCapabilities.PHANTOMJS.copy())
-        third_config_dao = ThirdConfigDao()
-        cookie = third_config_dao.get_by_name("qichacha")
-        headers = {
-            'cookie': cookie,
-            'Host': 'www.qichacha.com',
-            'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"}
-        for key, value in headers.items():
-            dcap['phantomjs.page.customHeaders.{}'.format(key)] = value
-        driver = webdriver.PhantomJS(executable_path="/usr/bin/phantomjs",
-                                     desired_capabilities=dcap,
-                                     service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'],
-                                     service_log_path="/home/seluser/logs/phantomjs.log")
-
-        driver.set_page_load_timeout(10)
-        driver.set_script_timeout(10)
+        driver = WebDriver.get_chrome_by_local()
+        driver.set_page_load_timeout(60)
+        driver.set_script_timeout(60)
         driver.maximize_window()
+        timestamp = int(time.time())
+        snapshot = batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
+            timestamp) + ".png"
+        path = base_filepath + "/" + batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
+            timestamp)
         try:
             random_seconds = random.randint(20, 30)
             logger.info("企查查随机等待 %s 秒...", str(random_seconds))
@@ -295,16 +293,10 @@ class MonitorBcService:
             title = soup.find(name="title")
             if title is None or str(title.get_text()) == "会员登录 - 企查查" or str(title.get_text()) == "405":
                 logger.info("qichacha res title :%s", str(title))
-                timestamp = int(time.time())
-                snapshot = batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
-                    timestamp) + ".png"
-                path = base_filepath + "/" + batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
-                    timestamp)
                 driver.save_screenshot(path + ".png")
                 img = Image.open(path + ".png")
                 jpg = img.crop((265, 158, 420, 258))
                 jpg.save(path + "_thumb.bmp")
-                monitor_bc_dao = MonitorBcDao()
                 monitor_bc = MonitorBc(batch_num=batch_num,
                                        merchant_name=website.merchant_name,
                                        merchant_num=website.merchant_num,
@@ -312,10 +304,10 @@ class MonitorBcService:
                                        domain_name=website.domain_name,
                                        saler=website.saler,
                                        snapshot=snapshot,
-                                       is_normal='正常',
+                                       is_normal='异常',
                                        kinds='企业是否可查',
                                        level='-',
-                                       outline='无法获取企查查信息',
+                                       outline='由于企查查反扒策略无法获取企业详情链接地址。',
                                        create_time=datetime.datetime.now())
                 monitor_bc_dao.add(monitor_bc)
                 return None
@@ -328,11 +320,6 @@ class MonitorBcService:
             if name == website.merchant_name.strip() and str(href) is not None:
                 return href.strip()
             else:
-                timestamp = int(time.time())
-                snapshot = batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
-                    timestamp) + ".png"
-                path = base_filepath + "/" + batch_num + "_" + website.merchant_name + "_" + website.merchant_num + "_工商_" + str(
-                    timestamp)
                 driver.save_screenshot(path + ".png")
                 img = Image.open(path + ".png")
                 jpg = img.crop((265, 158, 420, 258))
@@ -354,6 +341,26 @@ class MonitorBcService:
             return None
         except Exception as e:
             logger.error(e)
+            driver.save_screenshot(path + ".png")
+            img = Image.open(path + ".png")
+            jpg = img.crop((265, 158, 420, 258))
+            jpg.save(path + "_thumb.bmp")
+            monitor_bc = MonitorBc(batch_num=batch_num,
+                                   merchant_name=website.merchant_name,
+                                   merchant_num=website.merchant_num,
+                                   website_name=website.website_name,
+                                   domain_name=website.domain_name,
+                                   saler=website.saler,
+                                   snapshot=snapshot,
+                                   is_normal='异常',
+                                   kinds='企业是否可查',
+                                   level='-',
+                                   outline='由于企查查反扒策略无法获取企业详情链接地址。建议手动进行验证。',
+                                   create_time=datetime.datetime.now())
+            monitor_bc_dao.add(monitor_bc)
             return None
         finally:
-            driver.quit()
+            if driver is not None:
+                driver.quit()
+            else:
+                pass

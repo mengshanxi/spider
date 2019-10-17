@@ -150,10 +150,10 @@ def execute():
 def inspect(batch_num):
     spider_manager = GatherCenter()
     while gl.get_value('STATUS'):
-        logger.info("gather task start!  batch_num:%s" % str(batch_num))
+        logger.info("inspect task start!  batch_num:%s" % str(batch_num))
         spider_manager.gather(batch_num)
-        logger.info("gather task end!  batch_num:%s" % str(batch_num))
-    logger.info("batchNum gather task end!  batch_num:%s" % str(batch_num))
+        logger.info("inspect task end!  batch_num:%s" % str(batch_num))
+    logger.info("batchNum inspect task end!  batch_num:%s" % str(batch_num))
 
 
 @app.route('/spider/stop', methods=['POST'])
