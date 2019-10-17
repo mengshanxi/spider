@@ -1,4 +1,5 @@
 import json
+import random
 
 import time
 
@@ -30,6 +31,9 @@ class GatherCenter:
             time.sleep(strategy.frequency)
         if task_pool.type == "weburl" and check_item["websiteIsBadwords"] is 1:
             logger.info("weburl monitor begin,url: %s", entity.url)
+            random_seconds = random.randint(5, 10)
+            logger.info("随机等待 %s 秒...", str(random_seconds))
+            time.sleep(random_seconds)
             monitor_weburl_service = MonitorWeburlService()
             monitor_weburl_service.monitor_website(entity, batch_num)
             task_pool_service.close_task(task_pool.id)
@@ -39,6 +43,9 @@ class GatherCenter:
             if check_item["websiteIsForward"] is 1 or check_item["websiteIsOpen"] is 1:
                 # 网站监控
                 logger.info("website monitor begin,domain_name: %s", entity.domain_name)
+                random_seconds = random.randint(5, 10)
+                logger.info("随机等待 %s 秒...", str(random_seconds))
+                time.sleep(random_seconds)
                 service = MonitorWebsiteService()
                 service.monitor_website(entity, batch_num)
                 logger.info("website domain is empty,continue! ")
@@ -47,6 +54,9 @@ class GatherCenter:
         elif task_pool.type == "senti":
             # 舆情监控
             logger.info("sentiment monitor begin,merchant_name : %s", entity.merchant_name)
+            random_seconds = random.randint(5, 10)
+            logger.info("随机等待 %s 秒...", str(random_seconds))
+            time.sleep(random_seconds)
             monitor_senti_service = MonitorSentiService()
             monitor_senti_service.monitor_senti(entity.merchant_name, task_pool, batch_num, entity)
             logger.info("sentiment monitor done!merchantName : %s", entity.merchant_name)
