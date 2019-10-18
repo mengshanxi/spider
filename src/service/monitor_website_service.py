@@ -54,15 +54,17 @@ class MonitorWebsiteService:
                 monitor_website.kinds = "首页是否可打开"
                 monitor_website.level = '-'
                 monitor_website.snapshot = ""
-                domain_name_rich, current_url = access.get_access_res(domain_name)
-                logger.info("domain_name: %s", domain_name)
-                logger.info("domain_name_rich: %s", domain_name_rich)
+                logger.info("预留使用代理入口...")
+                domain_name_rich, current_url = access.get_proxy_access_res(domain_name)
                 # 使用代理再查一遍
                 if domain_name_rich is None:
-                    logger.info("使用代理重试访问： %s", domain_name_rich)
-                    domain_name_rich, current_url = access.get_proxy_access_res(domain_name)
+                    logger.info("不使用代理重试访问： %s", domain_name_rich)
+                    domain_name_rich, current_url = access.get_access_res(domain_name)
                 else:
-                    logger.info("不使用代理可以访问: %s", domain_name_rich)
+                    logger.info("使用代理可以访问: %s", domain_name_rich)
+                logger.info("domain_name: %s", domain_name)
+                logger.info("domain_name_rich: %s", domain_name_rich)
+                logger.info("current_url: %s", current_url)
                 if domain_name_rich is not None:
                     logger.info("domain : %s", str(domain_name_rich))
                     monitor_website.access = '正常'
@@ -97,19 +99,23 @@ class MonitorWebsiteService:
                         monitor_website.batch_num = batch_num
                         monitor_website_dao.add(monitor_website)
                 else:
-                    logger.info("domain_name: %s", domain_name)
+                    logger.info("current_url: %s", current_url)
                     monitor_website.access = '异常'
                     monitor_website.is_normal = '异常'
                     monitor_website.outline = '首页访问检测到异常'
                     monitor_website.level = '高'
                     monitor_website.pageview = '-'
-                    monitor_website.snapshot = SnapshotService.simulation_404(domain_name)
                     monitor_website.batch_num = batch_num
-                    monitor_website_dao.add(monitor_website)
+                    if current_url is None:
+                        monitor_website.snapshot = SnapshotService.simulation_404(domain_name)
+                    else:
+                        driver.get(current_url)
+                        snapshot = SnapshotService.create_snapshot(driver, batch_num, website, '网站')
+                        monitor_website.snapshot = snapshot
                     logger.info("website is not available : %s return!", domain_name)
+                    monitor_website_dao.add(monitor_website)
                     return
             except Exception as e:
-                logger.info("check whether website available : %s ,there is exception", domain_name)
                 logger.info(e)
             finally:
                 driver.quit()

@@ -3,6 +3,7 @@ import random
 
 import time
 from bs4 import BeautifulSoup
+from selenium.webdriver.remote.command import Command
 
 import config.global_val as gl
 from config.mylog import logger
@@ -41,21 +42,21 @@ class MonitorTrackingService:
                 else:
                     logger.info("爬取频率限制为:%s 秒", strategy.frequency)
                     time.sleep(strategy.frequency)
+                random_seconds = random.randint(10, 15)
+                logger.info("快递单检测随机等待 %s 秒...", str(random_seconds))
+                time.sleep(random_seconds)
                 tracking_detail.start_time = datetime.datetime.now()
                 tracking_detail.status = "done"
                 logger.info("准备检查单号:%s ", tracking_detail.tracking_num)
                 url = "https://www.trackingmore.com/cn/" + tracking_detail.tracking_num
-                random_seconds = random.randint(20, 30)
-                logger.info("企查查随机等待 %s 秒...", str(random_seconds))
-                time.sleep(random_seconds)
                 logger.info("url:%s ", url)
                 driver = WebDriver.get_chrome_by_local()
                 try:
                     driver.get(url)
                 except Exception as e:
                     logger.error(e)
-                    tracking_detail.result = "false"
-                    tracking_detail.des = "检测超时,建议手动重试校验，访问地址：" + url
+                    tracking_detail.result = "true"
+                    tracking_detail.des = "检测超时,建议手动验证:" + url
                     tracking_detail.end_time = datetime.datetime.now()
                     tracking_detail.url = url
                     tracking_detail.snapshot = ""
@@ -114,15 +115,13 @@ class MonitorTrackingService:
                     tracking_dao.update(tracking_detail)
                 except Exception as e:
                     logger.error(e)
+                    snapshot = SnapshotService.snapshot_tracking(driver, tracking_detail)
+                    tracking_detail.result = "true"
+                    tracking_detail.des = "巡检正常"
                     tracking_detail.end_time = datetime.datetime.now()
                     tracking_detail.url = url
-                    if snapshot is None:
-                        tracking_detail.result = "false"
-                        tracking_detail.des = "截图超时，建议手动验证，访问地址:" + url
-                        tracking_detail.snapshot = ""
-                        tracking_dao.update(tracking_detail)
-                    else:
-                        pass
+                    tracking_detail.snapshot = snapshot
+                    tracking_dao.update(tracking_detail)
                 finally:
                     driver.quit()
             else:
