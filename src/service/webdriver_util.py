@@ -143,24 +143,24 @@ class WebDriver:
     @staticmethod
     def get_phantomjs_with_cookie():
         dcap = dict(DesiredCapabilities.PHANTOMJS.copy())
-        third_config_dao = ThirdConfigDao()
-        cookie = third_config_dao.get_by_name("qichacha")
+        # third_config_dao = ThirdConfigDao()
+        # cookie = third_config_dao.get_by_name("qichacha")
         for key, value in headers.items():
             dcap['phantomjs.page.customHeaders.{}'.format(key)] = value
         driver = webdriver.PhantomJS(executable_path="/usr/bin/phantomjs",
                                      desired_capabilities=dcap,
                                      service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'],
                                      service_log_path="/home/seluser/logs/phantomjs.log")
-        cookies = dict([l.split("=", 1) for l in cookie.split("; ")])
-        for key in cookies:
-            c = {}
-            c['name'] = key
-            c['value'] = cookies[key]
-            c['domain'] = '.qichacha.com'
-            c['path'] = '/'
-            c['httponly'] = False
-            c['secure'] = False
-            driver.add_cookie(c)
+        # cookies = dict([l.split("=", 1) for l in cookie.split("; ")])
+        # for key in cookies:
+        #     c = {}
+        #     c['name'] = key
+        #     c['value'] = cookies[key]
+        #     c['domain'] = '.qichacha.com'
+        #     c['path'] = '/'
+        #     c['httponly'] = False
+        #     c['secure'] = False
+        #     driver.add_cookie(c)
         driver.set_page_load_timeout(60)
         driver.set_script_timeout(60)
         driver.maximize_window()

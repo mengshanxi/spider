@@ -34,7 +34,7 @@ class MonitorWebsiteService:
         else:
             logger.info("website_domain is not None! merchant_name: %s ", website.domain_name)
         # 首页监控
-        driver = WebDriver.get_chrome_for_access()
+        driver = WebDriver.get_phantomjs_with_cookie()
         service = TrafficService()
         access = AccessibleService()
 
@@ -42,6 +42,7 @@ class MonitorWebsiteService:
         domain_name_list = domain_names.split(",")
         for domain_name in domain_name_list:
             try:
+                logger.info("-------------------")
                 logger.info("check whether website available,domain_name : %s", website.domain_name)
                 #  截图
                 monitor_website = MonitorWebsite()
@@ -55,13 +56,13 @@ class MonitorWebsiteService:
                 monitor_website.level = '-'
                 monitor_website.snapshot = ""
                 logger.info("预留使用代理入口...")
-                domain_name_rich, current_url = access.get_proxy_access_res(domain_name)
-                # 使用代理再查一遍
-                if domain_name_rich is None:
-                    logger.info("不使用代理重试访问： %s", domain_name_rich)
-                    domain_name_rich, current_url = access.get_access_res(domain_name)
-                else:
-                    logger.info("使用代理可以访问: %s", domain_name_rich)
+                # domain_name_rich, current_url = access.get_proxy_access_res(domain_name)
+                # if domain_name_rich is None:
+                #     logger.info("不使用代理重试访问： %s", domain_name)
+                #     domain_name_rich, current_url = access.get_access_res(domain_name)
+                # else:
+                #     logger.info("使用代理可以访问: %s", domain_name_rich)
+                domain_name_rich, current_url = access.get_access_res(domain_name)
                 logger.info("domain_name: %s", domain_name)
                 logger.info("domain_name_rich: %s", domain_name_rich)
                 logger.info("current_url: %s", current_url)
@@ -99,7 +100,6 @@ class MonitorWebsiteService:
                         monitor_website.batch_num = batch_num
                         monitor_website_dao.add(monitor_website)
                 else:
-                    logger.info("current_url: %s", current_url)
                     monitor_website.access = '异常'
                     monitor_website.is_normal = '异常'
                     monitor_website.outline = '首页访问检测到异常'
@@ -107,11 +107,19 @@ class MonitorWebsiteService:
                     monitor_website.pageview = '-'
                     monitor_website.batch_num = batch_num
                     if current_url is None:
+                        logger.info("snapshot 404")
                         monitor_website.snapshot = SnapshotService.simulation_404(domain_name)
                     else:
-                        driver.get(current_url)
-                        snapshot = SnapshotService.create_snapshot(driver, batch_num, website, '网站')
-                        monitor_website.snapshot = snapshot
+                        chrome_driver = WebDriver.get_chrome()
+                        try:
+                            chrome_driver.get(current_url)
+                            snapshot = SnapshotService.create_snapshot(chrome_driver, batch_num, website, '网站')
+                            monitor_website.snapshot = snapshot
+                        except Exception as e:
+                            logger.error(e)
+                            return None, None
+                        finally:
+                            chrome_driver.quit()
                     logger.info("website is not available : %s return!", domain_name)
                     monitor_website_dao.add(monitor_website)
                     return

@@ -10,24 +10,17 @@ if __name__ == "__main__":
         'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"}
     for key, value in headers.items():
         dcap['phantomjs.page.customHeaders.{}'.format(key)] = value
-    driver = webdriver.PhantomJS(executable_path="/usr/bin/phantomjs",
+    driver = webdriver.PhantomJS(executable_path="D:/develop/phantomjs-2.1.1-windows/bin/phantomjs.exe",
                                  desired_capabilities=dcap,
                                  service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any',
-                                               '--load-images=false'],
-                                 service_log_path="/home/seluser/logs/a.log")
+                                               '--load-images=false'])
     driver.set_page_load_timeout(10)
     driver.set_script_timeout(10)
     driver.maximize_window()
     try:
 
-        driver.get("https://www.qichacha.com/firm_b40ecf6c3e7e4e0414c501f6ce53dd37.html#base")
-        source = driver.page_source
-        soup = BeautifulSoup(source, 'html.parser')
-        legalmans = soup.find_all(class_='seo font-20')
-        print(legalmans)
-        if legalmans.__len__() > 0:
-            print(legalmans[0].get_text())
-        driver.save_screenshot("/home/seluser/logs/222.png")
+        driver.get("http://08huisheng.com")
+        driver.save_screenshot("D:/222.png")
         driver.quit()
     except Exception as e:
         print(e)
