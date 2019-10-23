@@ -48,7 +48,6 @@ class GatherCenter:
                 time.sleep(random_seconds)
                 service = MonitorWebsiteService()
                 service.monitor_website(entity, batch_num)
-                logger.info("website domain is empty,continue! ")
             else:
                 logger.info("%s 跳过网站监控", entity.merchant_name)
         elif task_pool.type == "senti":

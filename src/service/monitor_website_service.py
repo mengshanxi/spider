@@ -117,6 +117,15 @@ class MonitorWebsiteService:
                             monitor_website.snapshot = snapshot
                         except Exception as e:
                             logger.error(e)
+                            index = str(e).find("timeout")
+                            if index != -1:
+                                logger.info("访问超时")
+                                monitor_website.outline = '访问超时'
+                                monitor_website.snapshot = SnapshotService.simulation_404(current_url)
+                            else:
+                                monitor_website.outline = str(e)
+                                monitor_website.snapshot = SnapshotService.simulation_404(current_url)
+                            monitor_website_dao.add(monitor_website)
                             return None, None
                         finally:
                             chrome_driver.quit()
