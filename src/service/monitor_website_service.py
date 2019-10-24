@@ -34,7 +34,7 @@ class MonitorWebsiteService:
         else:
             logger.info("website_domain is not None! merchant_name: %s ", website.domain_name)
         # 首页监控
-        driver = WebDriver.get_phantomjs_with_cookie()
+        driver = WebDriver.get_phantomjs()
         service = TrafficService()
         access = AccessibleService()
 
