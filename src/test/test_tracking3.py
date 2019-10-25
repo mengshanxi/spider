@@ -8,6 +8,7 @@ from selenium.webdriver.chrome.options import Options
 
 class TestMysql(object):
     if __name__ == "__main__":
+        print("http://shailuoa.cn"[7:])
         chrome_options = Options()
         dcap = dict(DesiredCapabilities.PHANTOMJS.copy())
         headers = {
@@ -23,10 +24,9 @@ class TestMysql(object):
         driver.set_script_timeout(120)
         driver.maximize_window()
         try:
-            driver.get("http://shailuoa.cn")
             print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
-            driver.implicitly_wait(10)
-            print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+            driver.implicitly_wait(60)
+            driver.get("http://baidu.com")
             print(time.time())
             current_url = driver.current_url
             title = driver.title
@@ -41,6 +41,7 @@ class TestMysql(object):
             print(driver.current_url)
             print(driver.current_url)
             driver.save_screenshot("D://666.png")
+            print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
 
         except Exception as e:
             print(e)

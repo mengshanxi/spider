@@ -23,12 +23,12 @@ class GatherCenter:
             return
         check_item = json.loads(task_pool.check_item)
         strategy_service = StrategyService()
-        strategy = strategy_service.get_strategy()
-        if strategy.frequency == 0 or strategy.frequency is None:
-            logger.info("未设置爬取频率限制,继续执行任务..")
-        else:
-            logger.info("爬取频率限制为:%s 秒", strategy.frequency)
-            time.sleep(strategy.frequency)
+        # strategy = strategy_service.get_strategy()
+        # if strategy.frequency == 0 or strategy.frequency is None:
+        #     logger.info("未设置爬取频率限制,继续执行任务..")
+        # else:
+        #     logger.info("爬取频率限制为:%s 秒", strategy.frequency)
+        #     time.sleep(strategy.frequency)
         if task_pool.type == "weburl" and check_item["websiteIsBadwords"] is 1:
             logger.info("weburl monitor begin,url: %s", entity.url)
             random_seconds = random.randint(5, 10)

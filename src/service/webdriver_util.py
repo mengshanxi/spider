@@ -151,8 +151,8 @@ class WebDriver:
                                      desired_capabilities=dcap,
                                      service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'],
                                      service_log_path="/home/seluser/logs/phantomjs.log")
-        driver.set_page_load_timeout(30)
-        driver.set_script_timeout(30)
+        driver.set_page_load_timeout(180)
+        driver.set_script_timeout(180)
         driver.maximize_window()
         return driver
 
