@@ -1,5 +1,7 @@
 # -*- coding:utf-8 -*-
-from urllib.request import urlopen
+import http.client
+
+import time
 
 from config.mylog import logger
 from dao.monitor_website_dao import MonitorWebsiteDao
@@ -53,15 +55,29 @@ class MonitorWebsiteService:
             monitor_website.batch_num = batch_num
             monitor_website.pageview = "-"
             domain_name_rich = domain_name
+            dns = domain_name
             if str(domain_name).startswith("http"):
-                pass
+                temp = domain_name[domain_name.find("/") + 2:]
+                logger.info("domain with out http::  %s", temp)
+                if str(temp).find("/") == -1:
+                    dns = temp
+                else:
+                    start = temp.find("/")
+                    dns = temp[0:start]
             else:
+                if str(domain_name).find("/") == -1:
+                    pass
+                else:
+                    start = domain_name.find("/")
+                    dns = domain_name[0:start]
+                pass
                 domain_name_rich = "http://" + domain_name
             try:
+                logger.info("dns  %s ... ", dns)
                 logger.info("check  %s ... ", domain_name_rich)
                 driver = WebDriver.get_phantomjs()
                 driver.get(domain_name_rich)
-                driver.implicitly_wait(10)
+                time.sleep(5)
                 current_url = driver.current_url
                 title = driver.title
                 source = driver.page_source
@@ -155,15 +171,17 @@ class MonitorWebsiteService:
                 logger.error(e)
                 # 重试
                 try:
-                    resp = urlopen(domain_name_rich, timeout=10)
-                    code = resp.getcode()
+                    conn = http.client.HTTPSConnection(dns, timeout=10)
+                    conn.request('GET', domain_name_rich)
+                    resp = conn.getresponse()
+                    code = resp.code
                     logger.info("code:  %s", code)
                     if code == 200:
                         logger.info("需要增加超时时间，重试...")
                         driver.set_page_load_timeout(180)
                         driver.set_script_timeout(180)
                         driver.refresh()
-                        driver.implicitly_wait(10)
+                        time.sleep(5)
                         source = driver.page_source
                         current_url = driver.current_url
                         logger.info("current_url:%s..", current_url)
