@@ -100,6 +100,8 @@ class SnapshotService:
         except Exception as e:
             logger.info(e)
             return snapshot
+        finally:
+            driver.quit()
         return snapshot
 
     @staticmethod

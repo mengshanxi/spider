@@ -1,5 +1,6 @@
 import time
 from bs4 import BeautifulSoup
+from datetime import date
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
@@ -18,12 +19,29 @@ class TestMysql(object):
                                      desired_capabilities=dcap,
                                      service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any',
                                                    '--load-images=false'])
-        driver.set_page_load_timeout(25)
-        driver.set_script_timeout(25)
+        driver.set_page_load_timeout(120)
+        driver.set_script_timeout(120)
         driver.maximize_window()
         try:
-            driver.get("http://2018ocm.medmeeting.org")
-            driver.save_screenshot("D:/bbb.png")
+            driver.get("http://shailuoa.cn")
+            print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+            driver.implicitly_wait(10)
+            print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+            print(time.time())
+            current_url = driver.current_url
+            title = driver.title
+            source = driver.page_source
+            print(str(current_url)=="about:blank")
+            print(str(title) == "")
+            print(str(source) == "<html><head></head><body></body></html>")
+            print(title)
+            print(source)
+            print(current_url)
+            print(driver.current_url)
+            print(driver.current_url)
+            print(driver.current_url)
+            driver.save_screenshot("D://666.png")
+
         except Exception as e:
             print(e)
             print(str(e))

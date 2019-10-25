@@ -43,9 +43,6 @@ class GatherCenter:
             if check_item["websiteIsForward"] is 1 or check_item["websiteIsOpen"] is 1:
                 # 网站监控
                 logger.info("website monitor begin,domain_name: %s", entity.domain_name)
-                random_seconds = random.randint(5, 10)
-                logger.info("随机等待 %s 秒...", str(random_seconds))
-                time.sleep(random_seconds)
                 service = MonitorWebsiteService()
                 service.monitor_website(entity, batch_num)
             else:
