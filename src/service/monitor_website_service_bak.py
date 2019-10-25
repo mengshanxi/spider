@@ -134,5 +134,10 @@ class MonitorWebsiteService:
                     return
             except Exception as e:
                 logger.info(e)
+                monitor_website.access = '异常'
+                monitor_website.is_normal = '异常'
+                monitor_website.outline = '巡检系统异常，建议手动重试!'
+                monitor_website.level = '高'
+                monitor_website_dao.add(monitor_website)
             finally:
                 driver.quit()
