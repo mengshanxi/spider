@@ -223,6 +223,7 @@ class WebDriver:
         driver.maximize_window()
         return driver
 
+
     @staticmethod
     def get_chrome_for_access():
         chrome_options = Options()

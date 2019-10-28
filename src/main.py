@@ -126,12 +126,16 @@ def stop_tracking():
 
 @app.route('/spider/execute', methods=['POST'])
 def execute():
+    logger.info("receive execute req !")
     job = os.environ['job']
     if job == "bc" or job == "other":
         # 重启selenium
+        logger.info("restart  selenium...")
         stop_selenium()
         start_selenium()
+        logger.info("update status...")
         gl.set_value('STATUS', True)
+        logger.info("heartbeat...")
         ims_api.heartbeat()
         try:
             batch_num = request.form['batchNum']
@@ -169,6 +173,7 @@ def stop():
 
 @app.route('/spider/gather_urls', methods=['POST'])
 def gather_urls():
+    logger.info("receive gather_urls req !")
     job = os.environ['job']
     if job == "gather":
         try:

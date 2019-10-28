@@ -19,7 +19,6 @@ class WeburlService:
         website_dao = WebsiteDao()
         if website_id is not None:
             website = website_dao.get_by_id(website_id)
-            logger.info("gather url for websiteId: %s  ", website_id)
             logger.info("gather url for website: %s  ", website)
             if len(website.domain_name) == 0 or website.domain_name is None:
                 logger.info("gather url for %s,but website.domain_name is None,ignored! ", website.merchant_name)
@@ -64,7 +63,6 @@ class WeburlService:
         else:
             logger.info("爬取频率限制为:%s 秒", strategy.frequency)
             time.sleep(frequency)
-
         if level == 1:
             logger.info("gather url just to 3 level: %s ", domain_name)
             return

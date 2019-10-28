@@ -37,7 +37,7 @@ class GatherCenter:
             monitor_weburl_service = MonitorWeburlService()
             monitor_weburl_service.monitor_website(entity, batch_num)
             task_pool_service.close_task(task_pool.id)
-            logger.info("weburl domain is done,continue! ")
+            logger.info("weburl monitor is done,continue! ")
             return
         elif task_pool.type == "website":
             if check_item["websiteIsForward"] is 1 or check_item["websiteIsOpen"] is 1:

@@ -27,7 +27,6 @@ class ImsApi(object):
         except Exception as e:
             logger.info("register fail")
             logger.info(e)
-            pass
 
     @staticmethod
     def heartbeat():
@@ -42,9 +41,8 @@ class ImsApi(object):
             new_url = request.Request(url, data)
             request.urlopen(new_url)
         except Exception as e:
-            logger.info("register fail")
             logger.info(e)
-            pass
+            logger.info("heartbeat fail")
 
     @staticmethod
     def done_url_gather(website):
@@ -56,9 +54,8 @@ class ImsApi(object):
             logger.info("done url gather: %s" % str(website.domain_name))
             request.urlopen(new_url)
         except Exception as e:
-            logger.info("register fail")
             logger.info(e)
-            pass
+            logger.info("url gather res fail!")
 
     @staticmethod
     def done_tracking(task_id):
@@ -70,6 +67,5 @@ class ImsApi(object):
             logger.info("done tricking: %s" % str(task_id))
             request.urlopen(new_url)
         except Exception as e:
-            logger.info("notification fail")
             logger.info(e)
-            pass
+            logger.info("tracking  fail")
