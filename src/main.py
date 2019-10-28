@@ -48,8 +48,8 @@ def stop_selenium():
             pid = int(line.split()[1])
             try:
                 logger.info(pid)
-                result = os.kill(pid, signal.SIGKILL)
-                logger.info('已杀死pid为%s的进程,　返回值是:%s' % (pid, result))
+                os.kill(pid, signal.SIGKILL)
+                logger.info('已杀死pid为%s的进程')
             except OSError:
                 logger.info('没有如此进程!!!')
 
