@@ -27,7 +27,7 @@ class MonitorWeburlService:
         monitor_weburl.url = weburl.url
         monitor_weburl.batch_num = batch_num
         monitor_weburl.title = weburl.title
-        driver = WebDriver.get_chrome_for_urlgather()
+        driver = WebDriver.get_phantomjs()
         try:
             driver.get(weburl.url)
             snapshot = SnapshotService.snapshot_weburl(driver, batch_num, weburl, '网站内容')
