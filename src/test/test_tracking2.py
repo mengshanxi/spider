@@ -29,16 +29,16 @@ class TestMysql(object):
         driver.maximize_window()
 
         try:
-            driver.get("https://www.trackingmore.com/cn/LX43839588")
-            source = driver.page_source
-            soup = BeautifulSoup(source, 'html.parser')
-            trackings = soup.find_all("a", attrs={'class': 'ulliselect'})
-            if trackings.__len__() > 0:
-                for tracking in trackings:
-                    print(tracking.get_text())
-                    print("http:"+tracking.get("href"))
+            driver.get("http://www.trackingmore.com/usps-tracking/cn.html?number=9374889697090677379574")
+            # source = driver.page_source
+            # soup = BeautifulSoup(source, 'html.parser')
+            # trackings = soup.find_all("a", attrs={'class': 'ulliselect'})
+            # if trackings.__len__() > 0:
+            #     for tracking in trackings:
+            #         print(tracking.get_text())
+            #         print("http:"+tracking.get("href"))
             #Not Found
-            #driver.save_screenshot("D:/物流公司.png")
+            driver.save_screenshot("D:/gggg.png")
         except Exception as e:
             print(e)
         finally:

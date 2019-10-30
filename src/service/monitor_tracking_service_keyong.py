@@ -67,7 +67,6 @@ class MonitorTrackingService:
                 try:
                     source = driver.page_source
                     soup = BeautifulSoup(source, 'html.parser')
-                    snapshot = SnapshotService.snapshot_tracking(driver, tracking_detail)
                     a_tags = soup.find_all("a", attrs={'class': 'ulliselect'})
                     has_tracking = False
                     if a_tags.__len__() > 0:
@@ -80,24 +79,17 @@ class MonitorTrackingService:
                                 try:
                                     source = driver.page_source
                                     soup = BeautifulSoup(source, 'html.parser')
-                                    item_length = soup.find_all("li", attrs={'class': 's-packStatst'}).__len__()
-                                    if item_length > 0:
-                                        tracking_detail.result = "true"
-                                        tracking_detail.des = "物流正常"
-                                        tracking_detail.end_time = datetime.datetime.now()
-                                        tracking_detail.url = url
-                                        tracking_detail.snapshot = snapshot
-                                    else:
-                                        tracking_detail.result = "false"
-                                        tracking_detail.des = "没有查询到物流信息"
-                                        tracking_detail.end_time = datetime.datetime.now()
-                                        tracking_detail.url = url
-                                        tracking_detail.snapshot = snapshot
+                                    soup.find_all("li", attrs={'class': 's-packStatst'})
+                                    tracking_detail.result = "false"
+                                    tracking_detail.des = "没有查询到物流信息"
+                                    tracking_detail.end_time = datetime.datetime.now()
+                                    tracking_detail.url = url
+                                    tracking_detail.snapshot = snapshot
                                 except Exception as e:
                                     print(e)
                                     # 正常
-                                    tracking_detail.result = "false"
-                                    tracking_detail.des = "检测疑似异常，建议手动验证！"
+                                    tracking_detail.result = "true"
+                                    tracking_detail.des = "物流正常"
                                     tracking_detail.end_time = datetime.datetime.now()
                                     tracking_detail.url = url
                                     tracking_detail.snapshot = snapshot
@@ -105,6 +97,7 @@ class MonitorTrackingService:
                             else:
                                 continue
                         if not has_tracking:
+                            snapshot = SnapshotService.snapshot_tracking(driver, tracking_detail)
                             tracking_detail.result = "false"
                             tracking_detail.des = "提供的单号-快递公司关系疑似不匹配"
                             tracking_detail.end_time = datetime.datetime.now()
@@ -112,27 +105,21 @@ class MonitorTrackingService:
                             tracking_detail.snapshot = snapshot
 
                     else:
-                        item_length = soup.find_all("dd", attrs={'class': 'post_message'})
-                        if item_length.__len__() > 0:
-                            tracking_detail.result = "true"
-                            tracking_detail.des = "巡检正常"
-                            tracking_detail.end_time = datetime.datetime.now()
-                            tracking_detail.url = url
-                            tracking_detail.snapshot = snapshot
-                        else:
-                            tracking_detail.result = "false"
-                            tracking_detail.des = "没有查询物流信息"
-                            tracking_detail.end_time = datetime.datetime.now()
-                            tracking_detail.url = url
-                            tracking_detail.snapshot = snapshot
+                        snapshot = SnapshotService.snapshot_tracking(driver, tracking_detail)
+                        tracking_detail.result = "false"
+                        tracking_detail.des = "没有查询物流信息"
+                        tracking_detail.end_time = datetime.datetime.now()
+                        tracking_detail.url = url
+                        tracking_detail.snapshot = snapshot
                     tracking_dao.update(tracking_detail)
                 except Exception as e:
                     logger.error(e)
-                    tracking_detail.result = "false"
-                    tracking_detail.des = "检测疑似异常，建议手动验证！"
+                    snapshot = SnapshotService.snapshot_tracking(driver, tracking_detail)
+                    tracking_detail.result = "true"
+                    tracking_detail.des = "巡检正常"
                     tracking_detail.end_time = datetime.datetime.now()
                     tracking_detail.url = url
-                    tracking_detail.snapshot = ""
+                    tracking_detail.snapshot = snapshot
                     tracking_dao.update(tracking_detail)
                 finally:
                     driver.quit()
