@@ -27,7 +27,7 @@ class MonitorBcService:
         monitor_bc.merchant_name = website.merchant_name
         monitor_bc.saler = website.saler
         monitor_bc.is_normal = '正常'
-        monitor_bc.kinds = '企业工商信息'
+        monitor_bc.kinds = '工商巡检'
         monitor_bc.outline = '企业工商信息检查正常'
         monitor_bc.level = '-'
         url = ims_rest_base + "open/api/v1/agent/monitor_bc"
@@ -37,10 +37,9 @@ class MonitorBcService:
         res = request.urlopen(new_url).read().decode('utf-8')
         bc_response = json.loads(res)
         if bc_response['status'] is True:
-            logger.info("企查查检测正常：%s", website.merchant_name)
-            pass
+            logger.info("企业工商信息检测正常：%s", website.merchant_name)
         else:
-            logger.info("企查查检测异常：%s", website.merchant_name)
+            logger.info("企业工商信息检测异常：%s", website.merchant_name)
             monitor_bc.is_normal = '异常'
             monitor_bc.kinds = '企业工商信息'
             monitor_bc.outline = bc_response['msg']
@@ -48,6 +47,7 @@ class MonitorBcService:
         url = ims_rest_base + "views/system/qichacha.jsp?merchantNum=" + website.merchant_num
         driver = WebDriver.get_phantomjs()
         try:
+            logger.info("企业工商信息截图：%s", website.merchant_name)
             driver.get(url)
             snapshot = SnapshotService.create_snapshot(driver, batch_num, website, "工商巡检")
             monitor_bc.snapshot = snapshot
