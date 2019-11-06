@@ -31,7 +31,7 @@ class GatherCenter:
         #     time.sleep(strategy.frequency)
         if task_pool.type == "weburl" and check_item["websiteIsBadwords"] is 1:
             logger.info("weburl monitor begin,url: %s", entity.url)
-            random_seconds = random.randint(5, 10)
+            random_seconds = random.randint(1, 3)
             logger.info("随机等待 %s 秒...", str(random_seconds))
             time.sleep(random_seconds)
             monitor_weburl_service = MonitorWeburlService()
@@ -50,7 +50,7 @@ class GatherCenter:
         elif task_pool.type == "senti":
             # 舆情监控
             logger.info("sentiment monitor begin,merchant_name : %s", entity.merchant_name)
-            random_seconds = random.randint(5, 10)
+            random_seconds = random.randint(1, 3)
             logger.info("随机等待 %s 秒...", str(random_seconds))
             time.sleep(random_seconds)
             monitor_senti_service = MonitorSentiService()

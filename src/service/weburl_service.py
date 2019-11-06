@@ -19,7 +19,7 @@ class WeburlService:
         website_dao = WebsiteDao()
         if website_id is not None:
             website = website_dao.get_by_id(website_id)
-            logger.info("gather url for website: %s  ", website)
+            logger.info("gather url for website: %s  ", website.domain_name)
             if len(website.domain_name) == 0 or website.domain_name is None:
                 logger.info("gather url for %s,but website.domain_name is None,ignored! ", website.merchant_name)
             else:
