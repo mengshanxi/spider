@@ -79,20 +79,28 @@ class MonitorTrackingService:
                                 snapshot = SnapshotService.snapshot_tracking(driver, tracking_detail)
                                 try:
                                     source = driver.page_source
-                                    soup = BeautifulSoup(source, 'html.parser')
-                                    item_length = soup.find_all("li", attrs={'class': 's-packStatst'}).__len__()
-                                    if item_length > 0:
-                                        tracking_detail.result = "true"
-                                        tracking_detail.des = "物流正常"
+                                    index = source.find("防火墙检测到您的IP异常")
+                                    if index != -1:
+                                        tracking_detail.result = "false"
+                                        tracking_detail.des = "爬虫请求疑似被拦截，建议手动验证!"
                                         tracking_detail.end_time = datetime.datetime.now()
                                         tracking_detail.url = url
                                         tracking_detail.snapshot = snapshot
                                     else:
-                                        tracking_detail.result = "false"
-                                        tracking_detail.des = "没有查询到物流信息"
-                                        tracking_detail.end_time = datetime.datetime.now()
-                                        tracking_detail.url = url
-                                        tracking_detail.snapshot = snapshot
+                                        soup = BeautifulSoup(source, 'html.parser')
+                                        item_length = soup.find_all("li", attrs={'class': 's-packStatst'}).__len__()
+                                        if item_length > 0:
+                                            tracking_detail.result = "true"
+                                            tracking_detail.des = "物流正常"
+                                            tracking_detail.end_time = datetime.datetime.now()
+                                            tracking_detail.url = url
+                                            tracking_detail.snapshot = snapshot
+                                        else:
+                                            tracking_detail.result = "false"
+                                            tracking_detail.des = "没有查询到物流信息"
+                                            tracking_detail.end_time = datetime.datetime.now()
+                                            tracking_detail.url = url
+                                            tracking_detail.snapshot = snapshot
                                 except Exception as e:
                                     print(e)
                                     # 正常
