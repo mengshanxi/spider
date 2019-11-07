@@ -18,8 +18,8 @@ class MonitorZhifujieService:
     def monitor(keyword, batch_num, website):
         driver = WebDriver.get_chrome()
         senti_util = SentiUtil()
+        url = "http://www.zhifujie.com/search/search"
         try:
-            url = "http://www.zhifujie.com/search/search"
             driver.get(url)
             search_text_blank = driver.find_element_by_id("searchbox")
             search_text_blank.send_keys(keyword)
@@ -27,7 +27,7 @@ class MonitorZhifujieService:
             time.sleep(5)
             source = driver.page_source
             senti_util.snapshot_home("支付界", url,
-                                     batch_num, website,driver)
+                                     batch_num, website, driver)
             soup = BeautifulSoup(source, 'html.parser')
             items = soup.find_all(attrs={'class': 'main-news-content-item'})
             if items.__len__() > 0:
@@ -37,11 +37,13 @@ class MonitorZhifujieService:
                     if content.find(keyword) != -1:
                         senti_util.senti_process_text("支付界", content,
                                                       "http://www.paycircle.cn" + href[1:],
-                                                      batch_num,website)
+                                                      batch_num, website)
             else:
                 logger.info("支付界没有搜索到数据: %s", keyword)
         except Exception as e:
             logger.error(e)
+            senti_util.snapshot_home("支付界", url,
+                                     batch_num, website, driver)
             return
         finally:
             driver.quit()

@@ -4,15 +4,10 @@ from config.mylog import logger
 from service.inspect_task_service import InspectTaskService
 from service.monitor_baidu_service import MonitorBaiduService
 from service.monitor_baike_service import MonitorBaikeService
-from service.monitor_bus_service import MonitorBusService
-from service.monitor_chinaft_service import MonitorChinaftService
-from service.monitor_p2peye_service import MonitorP2peyeService
 from service.monitor_paycircle_service import MonitorPaycircleService
 from service.monitor_paynews_service import MonitorPaynewsService
-from service.monitor_tieba_service import MonitorTiebaService
 from service.monitor_tousu_service import MonitorTousuService
 from service.monitor_ts_service import MonitorTsService
-from service.monitor_wdzj_service import MonitorWdzjService
 from service.monitor_wenshu_service import MonitorWenshuService
 from service.monitor_zfzj_service import MonitorZfzjService
 from service.monitor_zhifujie_service import MonitorZhifujieService
