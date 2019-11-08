@@ -1,6 +1,5 @@
-import urllib.request
-
 import time
+
 from bs4 import BeautifulSoup
 
 from config.mylog import logger
@@ -16,10 +15,10 @@ class MonitorZhifujieService:
 
     @staticmethod
     def monitor(keyword, batch_num, website):
-        driver = WebDriver.get_chrome()
-        senti_util = SentiUtil()
         url = "http://www.zhifujie.com/search/search"
         try:
+            driver = WebDriver.get_chrome()
+            senti_util = SentiUtil()
             driver.get(url)
             search_text_blank = driver.find_element_by_id("searchbox")
             search_text_blank.send_keys(keyword)

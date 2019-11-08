@@ -9,13 +9,19 @@ headers = {
     'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"}
 for key, value in headers.items():
     dcap['phantomjs.page.customHeaders.{}'.format(key)] = value
-driver = webdriver.PhantomJS(executable_path="D:/develop/phantomjs-2.1.1-windows/bin/phantomjs.exe",
-                             desired_capabilities=dcap,
-                             service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any',
-                                           '--load-images=false'])
-driver.get(url)
-source = driver.page_source
-soup = BeautifulSoup(source, 'html.parser')
-print(source)
-search_for_text = source.find('更多')
-print(search_for_text)
+
+try:
+    driver = webdriver.PhantomJS(executable_path="D:/develop/phantomjs-2.1.1-windows/bin/phantomjs.exe",
+                                 desired_capabilities=dcap,
+                                 service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any',
+                                               '--load-images=false'])
+    driver.get(url)
+    source = driver.page_source
+    soup = BeautifulSoup(source, 'html.parser')
+    search_for_text = source.find('更多')
+except Exception as e:
+    print(driver.page_source)
+finally:
+    print(driver.page_source)
+    driver.quit()
+

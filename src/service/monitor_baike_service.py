@@ -18,10 +18,10 @@ class MonitorBaikeService:
         driver = webdriver.Chrome(chrome_options=chrome_options,
                                   executable_path=chromedriver_path)
         """
-        driver = WebDriver.get_chrome()
-        senti_util = SentiUtil()
         url = 'https://baike.baidu.com/item/%s' % urllib.parse.quote(keyword)
         try:
+            driver = WebDriver.get_chrome()
+            senti_util = SentiUtil()
             driver.get(url)
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')

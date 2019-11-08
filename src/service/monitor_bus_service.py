@@ -21,9 +21,9 @@ class MonitorBusService:
         driver = webdriver.Chrome(chrome_options=chrome_options,
                                   executable_path=chromedriver_path)
         """
-        driver = WebDriver.get_chrome()
-        senti_util = SentiUtil()
         try:
+            driver = WebDriver.get_chrome()
+            senti_util = SentiUtil()
             url = "http://www.wangdaibus.com/search/list?subject=" + urllib.parse.quote(website_name)
             driver.get(url)
             time.sleep(10)
@@ -41,7 +41,7 @@ class MonitorBusService:
                     href = new.find_all('a')[0].get("href")
                     content = new.get_text()
                     if content.find(website_name) != -1:
-                        senti_util.senti_process_text("网贷巴士", merchant_name,content,
+                        senti_util.senti_process_text("网贷巴士", merchant_name, content,
                                                       "http://www.wangdaibus.com/" + href,
                                                       batch_num)
             else:

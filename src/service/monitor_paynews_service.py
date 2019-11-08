@@ -14,9 +14,9 @@ class MonitorPaynewsService:
 
     @staticmethod
     def monitor(keyword, batch_num, website):
-        driver = WebDriver.get_chrome()
-        senti_util = SentiUtil()
         try:
+            driver = WebDriver.get_chrome()
+            senti_util = SentiUtil()
             url = "http://paynews.net/search.php?mod=forum"
             driver.get(url)
             search_text_blank = driver.find_element_by_id("scform_srchtxt")

@@ -1,6 +1,5 @@
-import urllib.request
-
 import time
+
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.keys import Keys
 
@@ -17,9 +16,9 @@ class MonitorZfzjService:
 
     @staticmethod
     def monitor(keyword, batch_num, website):
-        driver = WebDriver.get_chrome()
-        senti_util = SentiUtil()
         try:
+            driver = WebDriver.get_chrome()
+            senti_util = SentiUtil()
             url = "http://www.zfzj.cn/search.php"
             driver.get(url)
             source = driver.page_source

@@ -15,9 +15,9 @@ class MonitorTousuService:
 
     @staticmethod
     def monitor(keyword, batch_num, website):
-        driver = WebDriver.get_chrome()
-        senti_util = SentiUtil()
         try:
+            driver = WebDriver.get_chrome()
+            senti_util = SentiUtil()
             url = "https://tousu.sina.com.cn/index/search/?keywords=" + urllib.parse.quote(keyword) + "&t=0"
             driver.get(url)
             source = driver.page_source

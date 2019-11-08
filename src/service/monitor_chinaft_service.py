@@ -22,9 +22,9 @@ class MonitorChinaftService:
         driver = webdriver.Chrome(chrome_options=chrome_options,
                                   executable_path=chromedriver_path)
         """
-        driver = WebDriver.get_chrome()
-        senti_util = SentiUtil()
         try:
+            driver = WebDriver.get_chrome()
+            senti_util = SentiUtil()
             url = "http://www.chinaft.com.cn/news/search/_1.shtml?key=" + urllib.parse.quote(website_name)
             driver.get(url)
             source = driver.page_source

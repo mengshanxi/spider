@@ -15,9 +15,9 @@ class MonitorP2peyeService:
 
     @staticmethod
     def monitor(website_name, merchant_name, batch_num):
-        driver = WebDriver.get_chrome()
-        senti_util = SentiUtil()
         try:
+            driver = WebDriver.get_chrome()
+            senti_util = SentiUtil()
             url = "https://www.p2peye.com/search.php?mod=zonghe&srchtxt=" + urllib.parse.quote(website_name)
             driver.get(url)
             source = driver.page_source

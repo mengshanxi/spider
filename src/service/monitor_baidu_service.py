@@ -16,9 +16,9 @@ class MonitorBaiduService(IMonitor):
 
     @staticmethod
     def monitor(keyword, batch_num, website):
-        driver = WebDriver.get_chrome()
-        senti_util = SentiUtil()
         try:
+            driver = WebDriver.get_chrome()
+            senti_util = SentiUtil()
             url = "https://www.baidu.com/"
             driver.get(url)
             search_text_blank = driver.find_element_by_id("kw")

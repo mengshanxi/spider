@@ -15,9 +15,9 @@ class MonitorPaycircleService:
 
     @staticmethod
     def monitor(keyword, batch_num, website):
-        driver = WebDriver.get_chrome()
-        senti_util = SentiUtil()
         try:
+            driver = WebDriver.get_chrome()
+            senti_util = SentiUtil()
             url = "http://www.paycircle.cn/company/search.php?kw=" + urllib.parse.quote(
                 keyword) + "&c=SearchList&"
             driver.get(url)

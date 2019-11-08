@@ -17,9 +17,9 @@ class MonitorWenshuService(IMonitor):
 
     @staticmethod
     def monitor(keyword, batch_num, website):
-        driver = WebDriver.get_chrome()
-        senti_util = SentiUtil()
         try:
+            driver = WebDriver.get_chrome()
+            senti_util = SentiUtil()
             url = "http://wenshu.court.gov.cn/"
             driver.get(url)
             search_text_blank = driver.find_element_by_xpath("//*[@class='searchKey search-inp']")
