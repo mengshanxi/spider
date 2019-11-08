@@ -19,7 +19,8 @@ class WeburlService:
         website_dao = WebsiteDao()
         if website_id is not None:
             website = website_dao.get_by_id(website_id)
-            logger.info("gather url for website: %s  ", website.domain_name)
+            logger.info("gather url for domain_name: %s ", website.domain_name)
+            logger.info("gather url for websiteId: %s  ", website.id)
             if website.domain_name is None or len(website.domain_name) == 0:
                 logger.info("gather url for %s,but website.domain_name is None,ignored! ", website.merchant_name)
             else:
@@ -102,6 +103,7 @@ class WeburlService:
                                 type='page',
                                 parent=uri,
                                 url=href.replace("//", "/").replace("/../", "/").replace(":/", "://"))
+                logger.info("add weburl to db..")
                 weburl_service.add(weburl)
                 # self.gather_urls(website_id, href, website_name, domain_name, level + 1)
         except Exception as e:

@@ -18,9 +18,10 @@ try:
     driver.get(url)
     source = driver.page_source
     soup = BeautifulSoup(source, 'html.parser')
-    search_for_text = source.find('更多')
+    search_for_text = source.find('更多').string
+    print(driver.search_for_text)
 except Exception as e:
-    print(driver.page_source)
+    print()
 finally:
     print(driver.page_source)
     driver.quit()

@@ -12,5 +12,5 @@ engine = create_engine('mysql://%s:%s@%s/%s?charset=utf8&autocommit=true' %
                        (username, password, host, database),
                        encoding='utf-8', echo=False,
                        pool_size=100, pool_recycle=10)
-DB_Session = sessionmaker(bind=engine)
+DB_Session = sessionmaker(bind=engine, autocommit=True)
 session = DB_Session()
