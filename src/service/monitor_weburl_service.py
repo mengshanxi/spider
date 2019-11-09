@@ -3,6 +3,7 @@
 from bs4 import BeautifulSoup
 
 from config.mylog import logger
+from dao.db import DB_Session
 from dao.keyword_dao import KeywordDao
 from dao.monitor_weburl_dao import MonitorWeburlDao
 from model.models import MonitorUrl
@@ -71,14 +72,23 @@ class MonitorWeburlService:
                 monitor_weburl.kinds = '误导宣传'
                 monitor_weburl_dao.add(monitor_weburl)
         except Exception as e:
+            #ERROR No transaction is begun.
             logger.error(e)
-            logger.info("检测到误404 : %s", weburl.url)
-            monitor_weburl.outline = '检测到误404'
-            monitor_weburl.is_normal = '异常'
-            monitor_weburl.level = '高'
-            snapshot = SnapshotService.simulation_404(weburl.url)
-            monitor_weburl.snapshot = snapshot
-            monitor_weburl.kinds = '死链接'
-            monitor_weburl_dao.add(monitor_weburl)
+            conn = DB_Session()
+            try:
+                logger.info("检测到误404 : %s", weburl.url)
+                monitor_weburl.outline = '检测到误404'
+                monitor_weburl.is_normal = '异常'
+                monitor_weburl.level = '高'
+                snapshot = SnapshotService.simulation_404(weburl.url)
+                monitor_weburl.snapshot = snapshot
+                monitor_weburl.kinds = '死链接'
+                monitor_weburl_dao.add(monitor_weburl)
+            except Exception as e:
+                print(e)
+                conn.rollback()
+                raise
+            finally:
+                conn.close()
         finally:
             driver.quit()
