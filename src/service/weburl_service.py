@@ -68,7 +68,7 @@ class WeburlService:
             logger.info("gather url just to 3 level: %s ", domain_name)
             return
         logger.info("gather url for website: %s ", uri)
-        weburl_service = WeburlDao()
+        weburl_dao = WeburlDao()
         try:
             driver = WebDriver.get_chrome_for_urlgather()
             driver.get(uri)
@@ -102,9 +102,9 @@ class WeburlService:
                                 title=title,
                                 type='page',
                                 parent=uri,
-                                url=href.replace("//", "/").replace("/../", "/").replace(":/", "://"))
-                logger.info("add weburl to db..")
-                weburl_service.add(weburl)
+                                url=url.replace("http:/http:/", "http://").replace("http:/https:/", "https://").replace(
+                                    "https:/http:/", "https://"))
+                weburl_dao.add(weburl)
                 # self.gather_urls(website_id, href, website_name, domain_name, level + 1)
         except Exception as e:
             logger.error(e)
