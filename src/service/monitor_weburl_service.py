@@ -30,6 +30,7 @@ class MonitorWeburlService:
         monitor_weburl.title = weburl.title
         driver = WebDriver.get_phantomjs()
         try:
+            logger.info("monitor_url: %s", weburl.url)
             driver.get(weburl.url)
             snapshot = SnapshotService.snapshot_weburl(driver, batch_num, weburl, '网站内容')
             monitor_weburl.outline = '网页打开正常'
@@ -37,6 +38,7 @@ class MonitorWeburlService:
             monitor_weburl.level = '-'
             monitor_weburl.snapshot = snapshot
             monitor_weburl.kinds = '是否能打开'
+            logger.info("monitor_url: add %s", weburl.url)
             monitor_weburl_dao.add(monitor_weburl)
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')
@@ -83,6 +85,7 @@ class MonitorWeburlService:
                 snapshot = SnapshotService.simulation_404(weburl.url)
                 monitor_weburl.snapshot = snapshot
                 monitor_weburl.kinds = '死链接'
+                logger.info("monitor_url:Exception %s", weburl.url)
                 monitor_weburl_dao.add(monitor_weburl)
             except Exception as e:
                 print(e)

@@ -32,11 +32,15 @@ class TaskPoolService:
         task_pool = task_pools.first()
         session.query(TaskItem).filter(TaskItem.id == task_pool.id).update({"status": "processing"})
         if task_pool.type == "weburl":
+            logger.info("task_pool.website_id：%s", task_pool.website_id)
             weburl = session.query(Weburl).filter(Weburl.url == task_pool.url).filter(
                 Weburl.website_id == task_pool.website_id).all()
             if len(weburl):
                 return weburl[0], task_pool
             else:
+                logger.info("task_pool.website_id：%s", task_pool.website_id)
+                logger.info("task_pool.id：%s", task_pool.id)
+                session.query(TaskItem).filter(TaskItem.id == task_pool.id).update({"status": "done"})
                 return None, None
         else:
             website = session.query(Website).filter(Website.id == task_pool.website_id).one()

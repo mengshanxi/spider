@@ -36,6 +36,7 @@ class GatherCenter:
             time.sleep(random_seconds)
             monitor_weburl_service = MonitorWeburlService()
             monitor_weburl_service.monitor_website(entity, batch_num)
+            logger.info("task_pool.id : %s! ", task_pool.id)
             task_pool_service.close_task(task_pool.id)
             logger.info("weburl monitor is done,continue! ")
             return
