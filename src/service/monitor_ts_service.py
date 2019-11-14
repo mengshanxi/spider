@@ -15,10 +15,15 @@ class MonitorTsService:
 
     @staticmethod
     def monitor(keyword, batch_num, website):
+        driver = WebDriver.get_chrome()
+        senti_util = SentiUtil()
+        url = "http://ts.21cn.com/home/search?keyword=" + urllib.parse.quote(keyword)
+        if driver is None:
+            senti_util.log_error("聚投诉", url, batch_num, website)
+            return
+        else:
+            pass
         try:
-            driver = WebDriver.get_chrome()
-            senti_util = SentiUtil()
-            url = "http://ts.21cn.com/home/search?keyword=" + urllib.parse.quote(keyword)
             driver.get(url)
             driver.implicitly_wait(3)
             source = driver.page_source

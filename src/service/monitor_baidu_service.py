@@ -16,10 +16,15 @@ class MonitorBaiduService(IMonitor):
 
     @staticmethod
     def monitor(keyword, batch_num, website):
+        driver = WebDriver.get_chrome()
+        senti_util = SentiUtil()
+        url = "https://www.baidu.com/"
+        if driver is None:
+            senti_util.log_error("百度搜索", url, batch_num, website)
+            return
+        else:
+            pass
         try:
-            driver = WebDriver.get_chrome()
-            senti_util = SentiUtil()
-            url = "https://www.baidu.com/"
             driver.get(url)
             search_text_blank = driver.find_element_by_id("kw")
             search_text_blank.send_keys(keyword)

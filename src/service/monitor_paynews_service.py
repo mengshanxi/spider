@@ -14,10 +14,15 @@ class MonitorPaynewsService:
 
     @staticmethod
     def monitor(keyword, batch_num, website):
+        driver = WebDriver.get_chrome()
+        senti_util = SentiUtil()
+        url = "http://paynews.net/search.php?mod=forum"
+        if driver is None:
+            senti_util.log_error("支付产业网", url, batch_num, website)
+            return
+        else:
+            pass
         try:
-            driver = WebDriver.get_chrome()
-            senti_util = SentiUtil()
-            url = "http://paynews.net/search.php?mod=forum"
             driver.get(url)
             search_text_blank = driver.find_element_by_id("scform_srchtxt")
             search_text_blank.send_keys(keyword)

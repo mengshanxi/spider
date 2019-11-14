@@ -108,42 +108,38 @@ class WebDriver:
     def get_chrome():
         chrome_options = Options()
         # 禁止图片和css加载
-        # prefs = {"profile.managed_default_content_settings.images": 2, 'permissions.default.stylesheet': 2}
-        # chrome_options.add_experimental_option("prefs", prefs)
-        # driver = webdriver.Remote(command_executor='http://localhost:4444/wd/hub',
-        #                           desired_capabilities=DesiredCapabilities.CHROME,
-        #                           options=chrome_options)
         prefs = {"profile.managed_default_content_settings.images": 2, 'permissions.default.stylesheet': 2}
         chrome_options.add_experimental_option("prefs", prefs)
-        driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver',
-                                  desired_capabilities=DesiredCapabilities.CHROME,
-                                  options=chrome_options)
-        driver.set_page_load_timeout(60)
-        driver.set_script_timeout(60)
-        driver.maximize_window()
-        return driver
+        try:
+            driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver',
+                                      desired_capabilities=DesiredCapabilities.CHROME,
+                                      options=chrome_options)
+            driver.set_page_load_timeout(60)
+            driver.set_script_timeout(60)
+            driver.maximize_window()
+            return driver
+        except Exception as e:
+            logger.error(e)
+            return None
 
     @staticmethod
     def get_chrome_by_local():
         chrome_options = Options()
         chrome_options.add_argument('--headless')
-        # proxyauth_plugin_path = create_proxyauth_extension(
-        #     proxy_host="http-pro.abuyun.com11",
-        #     proxy_port=9010,
-        #     proxy_username="H7F4JF5541549K7P",
-        #     proxy_password="6049D8127FBD957E"
-        # )
-        # chrome_options.add_extension(proxyauth_plugin_path)
         # 设置代理IP
         prefs = {"profile.managed_default_content_settings.images": 2, 'permissions.default.stylesheet': 2}
         chrome_options.add_experimental_option("prefs", prefs)
-        driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver',
-                                  desired_capabilities=DesiredCapabilities.CHROME,
-                                  options=chrome_options)
-        driver.set_page_load_timeout(30)
-        driver.set_script_timeout(30)
-        driver.maximize_window()
-        return driver
+        try:
+            driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver',
+                                      desired_capabilities=DesiredCapabilities.CHROME,
+                                      options=chrome_options)
+            driver.set_page_load_timeout(30)
+            driver.set_script_timeout(30)
+            driver.maximize_window()
+            return driver
+        except Exception as e:
+            logger.error(e)
+            return None
 
     @staticmethod
     def get_phantomjs():

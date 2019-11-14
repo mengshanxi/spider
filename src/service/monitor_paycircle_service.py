@@ -15,11 +15,16 @@ class MonitorPaycircleService:
 
     @staticmethod
     def monitor(keyword, batch_num, website):
+        driver = WebDriver.get_chrome()
+        senti_util = SentiUtil()
+        url = "http://www.paycircle.cn/company/search.php?kw=" + urllib.parse.quote(
+            keyword) + "&c=SearchList&"
+        if driver is None:
+            senti_util.log_error("支付圈", url, batch_num, website)
+            return
+        else:
+            pass
         try:
-            driver = WebDriver.get_chrome()
-            senti_util = SentiUtil()
-            url = "http://www.paycircle.cn/company/search.php?kw=" + urllib.parse.quote(
-                keyword) + "&c=SearchList&"
             driver.get(url)
             source = driver.page_source
             senti_util.snapshot_home("支付圈", url,

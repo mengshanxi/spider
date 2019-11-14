@@ -12,16 +12,15 @@ from config.mylog import logger
 class MonitorBaikeService:
     @staticmethod
     def monitor(keyword, batch_num, website):
-        """
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument('--headless')
-        driver = webdriver.Chrome(chrome_options=chrome_options,
-                                  executable_path=chromedriver_path)
-        """
+        driver = WebDriver.get_chrome()
+        senti_util = SentiUtil()
         url = 'https://baike.baidu.com/item/%s' % urllib.parse.quote(keyword)
+        if driver is None:
+            senti_util.log_error("百度百科", url, batch_num, website)
+            return
+        else:
+            pass
         try:
-            driver = WebDriver.get_chrome()
-            senti_util = SentiUtil()
             driver.get(url)
             source = driver.page_source
             soup = BeautifulSoup(source, 'html.parser')

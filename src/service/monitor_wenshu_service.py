@@ -17,10 +17,15 @@ class MonitorWenshuService(IMonitor):
 
     @staticmethod
     def monitor(keyword, batch_num, website):
+        driver = WebDriver.get_chrome()
+        senti_util = SentiUtil()
+        url = "http://wenshu.court.gov.cn/"
+        if driver is None:
+            senti_util.log_error("黑猫投诉", url, batch_num, website)
+            return
+        else:
+            pass
         try:
-            driver = WebDriver.get_chrome()
-            senti_util = SentiUtil()
-            url = "http://wenshu.court.gov.cn/"
             driver.get(url)
             search_text_blank = driver.find_element_by_xpath("//*[@class='searchKey search-inp']")
             search_text_blank.send_keys(keyword)

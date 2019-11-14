@@ -86,3 +86,27 @@ class SentiUtil:
         except Exception as e:
             logger.error(e)
             return
+
+    @staticmethod
+    def log_error(platform, href, batch_num, website):
+        monitor_third_dao = MonitorThirdDao()
+        #  截图
+        try:
+            is_normal = "异常"
+            monitor_third = MonitorThird()
+            monitor_third.merchant_num = website.merchant_num
+            monitor_third.merchant_name = website.merchant_name
+            monitor_third.website_name = website.website_name
+            monitor_third.domain_name = website.domain_name
+            monitor_third.saler = website.saler
+            monitor_third.batch_num = batch_num
+            monitor_third.url = href
+            monitor_third.type = platform
+            monitor_third.level = '-'
+            monitor_third.outline = '异常截图失败'
+            monitor_third.is_normal = is_normal
+            monitor_third.snapshot = ""
+            monitor_third_dao.add(monitor_third)
+        except Exception as e:
+            logger.error(e)
+            return

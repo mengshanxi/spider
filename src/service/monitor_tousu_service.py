@@ -15,10 +15,15 @@ class MonitorTousuService:
 
     @staticmethod
     def monitor(keyword, batch_num, website):
+        driver = WebDriver.get_chrome()
+        senti_util = SentiUtil()
+        url = "https://tousu.sina.com.cn/index/search/?keywords=" + urllib.parse.quote(keyword) + "&t=0"
+        if driver is None:
+            senti_util.log_error("黑猫投诉", url, batch_num, website)
+            return
+        else:
+            pass
         try:
-            driver = WebDriver.get_chrome()
-            senti_util = SentiUtil()
-            url = "https://tousu.sina.com.cn/index/search/?keywords=" + urllib.parse.quote(keyword) + "&t=0"
             driver.get(url)
             source = driver.page_source
             senti_util.snapshot_home("黑猫投诉", url, batch_num, website, driver)

@@ -16,10 +16,15 @@ class MonitorZfzjService:
 
     @staticmethod
     def monitor(keyword, batch_num, website):
+        driver = WebDriver.get_chrome()
+        senti_util = SentiUtil()
+        url = "http://www.zfzj.cn/search.php"
+        if driver is None:
+            senti_util.log_error("支付快讯", url, batch_num, website)
+            return
+        else:
+            pass
         try:
-            driver = WebDriver.get_chrome()
-            senti_util = SentiUtil()
-            url = "http://www.zfzj.cn/search.php"
             driver.get(url)
             source = driver.page_source
             search_text_blank = driver.find_element_by_id("scform_srchtxt")
