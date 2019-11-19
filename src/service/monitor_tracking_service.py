@@ -79,8 +79,10 @@ class MonitorTrackingService:
                                 snapshot = SnapshotService.snapshot_tracking(driver, tracking_detail)
                                 try:
                                     source = driver.page_source
-                                    index = source.find("防火墙检测到您的IP异常")
-                                    if index != -1:
+                                    soup = BeautifulSoup(source, 'html.parser')
+                                    items = soup.find_all(attrs={'class': 'line-gutter-backdrop'})
+                                    # 异常为0
+                                    if items.__len__() != 0:
                                         tracking_detail.result = "false"
                                         tracking_detail.des = "爬虫请求疑似被拦截，建议手动验证!"
                                         tracking_detail.end_time = datetime.datetime.now()
