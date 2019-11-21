@@ -24,6 +24,7 @@ class MonitorTrackingService:
         ims_api = ImsApi()
         tracking_dao = TrackingDetailDao()
         strategy_service = StrategyService()
+        strategy = strategy_service.get_strategy()
         tracking_details = tracking_dao.get_by_task(task_id, status)
         if tracking_details.__len__() > 0:
             for tracking_detail in tracking_details:
@@ -35,9 +36,19 @@ class MonitorTrackingService:
                     gl.set_value('TRACKING_STATUS', False)
                     ims_api.done_tracking(task_id)
                     return
+                if strategy.frequency == 0 or strategy.frequency is None:
+                    logger.info("未设置爬取频率限制,继续执行任务..")
+                else:
+                    logger.info("爬取频率限制为:%s 秒", strategy.frequency)
+                    time.sleep(strategy.frequency)
+                random_seconds = random.randint(10, 15)
+                logger.info("快递单检测随机等待 %s 秒...", str(random_seconds))
+                time.sleep(random_seconds)
                 tracking_detail.start_time = datetime.datetime.now()
                 tracking_detail.status = "done"
                 logger.info("准备检查单号:%s ", tracking_detail.tracking_num)
+                url = "https://www.trackingmore.com/cn/" + tracking_detail.tracking_num
+                logger.info("url:%s ", url)
                 driver = WebDriver.get_phantomjs()
                 try:
                     driver.get(url)
