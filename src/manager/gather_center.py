@@ -51,11 +51,22 @@ class GatherCenter:
         elif task_pool.type == "senti":
             # 舆情监控
             logger.info("sentiment monitor begin,merchant_name : %s", entity.merchant_name)
+            target_merchant_name = entity.merchant_name
+            if target_merchant_name.index("-") != -1:
+                target_merchant_name = target_merchant_name[0:target_merchant_name.index("-")]
+                logger.info("merchant_name contain -,after process: %s", target_merchant_name)
+            else:
+                pass
+            if target_merchant_name.index("——") != -1:
+                target_merchant_name = target_merchant_name[0:target_merchant_name.index("——")]
+                logger.info("merchant_name contain ——,after process: %s", target_merchant_name)
+            else:
+                pass
             random_seconds = random.randint(1, 3)
             logger.info("随机等待 %s 秒...", str(random_seconds))
             time.sleep(random_seconds)
             monitor_senti_service = MonitorSentiService()
-            monitor_senti_service.monitor_senti(entity.merchant_name, task_pool, batch_num, entity)
+            monitor_senti_service.monitor_senti(target_merchant_name, task_pool, batch_num, entity)
             logger.info("sentiment monitor done!merchantName : %s", entity.merchant_name)
         elif task_pool.type == "bc":
             # 工商监控
@@ -65,7 +76,7 @@ class GatherCenter:
             logger.info("get qichacha url  : %s", str(url))
             if url is not None:
                 try:
-                    service.inspect(str(batch_num), "https://www.qichacha.com" + url, entity)
+                    service.inspect(str(batch_num), "https://www.qichacha.com" + url, entity, task_pool.task_id)
                 except Exception as e:
                     logger.info(e)
                     pass

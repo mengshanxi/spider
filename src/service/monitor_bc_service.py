@@ -17,7 +17,7 @@ url = "https://www.qichacha.com/company_getinfos?unique="+url[30:62]+"&companyna
 class MonitorBcService:
 
     @staticmethod
-    def inspect(batch_num, url, website):
+    def inspect(batch_num, url, website, task_id):
         monitor_bc_dao = MonitorBcDao()
         monitor_bc = MonitorBc()
         monitor_bc.batch_num = batch_num
@@ -31,7 +31,7 @@ class MonitorBcService:
         monitor_bc.outline = '企业工商信息检查正常'
         monitor_bc.level = '-'
         url = ims_rest_base + "open/api/v1/agent/monitor_bc"
-        data_json = {"merchantNum": website.merchant_num, "merchantName": website.merchant_name}
+        data_json = {"merchantNum": website.merchant_num, "merchantName": website.merchant_name, "taskId": task_id}
         data = bytes(parse.urlencode(data_json), encoding="utf8")
         new_url = request.Request(url, data)
         res = request.urlopen(new_url).read().decode('utf-8')
