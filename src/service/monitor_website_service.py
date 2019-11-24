@@ -26,7 +26,8 @@ class MonitorWebsiteService:
         monitor_website.pageview = '-'
         if website.domain_name is None or len(website.domain_name) == 0:
             logger.info("website_domain is None! merchant_name: %s ", website.merchant_name)
-            monitor_website.outline = '商户网址为空。'
+            monitor_website.is_normal = '无法获取'
+            monitor_website.outline = '网址为空，无法获取。'
             monitor_website_dao.add(monitor_website)
             return
         else:

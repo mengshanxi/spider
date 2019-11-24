@@ -36,8 +36,12 @@ class MonitorBcService:
         new_url = request.Request(url, data)
         res = request.urlopen(new_url).read().decode('utf-8')
         bc_response = json.loads(res)
-        if bc_response['status'] is True:
+        if bc_response['status'] == "正常":
             logger.info("企业工商信息检测正常：%s", website.merchant_name)
+        elif bc_response['status'] == "无法获取":
+            logger.info("企业工商信息检测无法获取：%s", website.merchant_name)
+            monitor_bc.is_normal = '无法获取'
+            monitor_bc.outline = '企业工商信息无法获取,跳过巡检。'
         else:
             logger.info("企业工商信息检测异常：%s", website.merchant_name)
             monitor_bc.is_normal = '异常'

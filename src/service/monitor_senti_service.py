@@ -27,28 +27,18 @@ class MonitorSentiService:
         for platform in platforms:
             if platform == "网贷天眼":
                 logger.info("sentiment monitor with  : %s", platform)
-                # p2peye_service = MonitorP2peyeService()
-                # p2peye_service.monitor(website_name, merchant_name, batch_num)
                 continue
             if platform == "网贷巴士":
                 logger.info("sentiment monitor with  : %s", platform)
-                # bus_service = MonitorBusService()
-                # bus_service.monitor(website_name, merchant_name, batch_num)
                 continue
             if platform == "交易中国":
                 logger.info("sentiment monitor with  : %s", platform)
-                # chinaft_service = MonitorChinaftService()
-                # chinaft_service.monitor(website_name, merchant_name, batch_num)
                 continue
             if platform == "百度贴吧":
                 logger.info("sentiment monitor with  : %s", platform)
-                # tieba_service = MonitorTiebaService()
-                # tieba_service.monitor(keyword, website_name, batch_num, merchant_name,merchant_num)
                 continue
             if platform == "网贷之家":
                 logger.info("sentiment monitor with  : %s", platform)
-                # wdzj_service = MonitorWdzjService()
-                # wdzj_service.monitor(website_name, merchant_name, batch_num)
                 continue
             if platform == "百度搜索" and check_item["baidu"] is 1:
                 logger.info("sentiment monitor with  : %s", platform)
