@@ -48,7 +48,7 @@ class MonitorBcService:
             monitor_bc.kinds = '企业工商信息'
             monitor_bc.outline = bc_response['msg']
             monitor_bc.level = '高'
-        url = ims_rest_base + "views/system/qichacha.jsp?merchantNum=" + website.merchant_num
+        url = ims_rest_base + "views/system/enterprise.jsp?merchantNum=" + website.merchant_num
         driver = WebDriver.get_phantomjs()
         try:
             logger.info("企业工商信息截图：%s", website.merchant_name)
