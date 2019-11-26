@@ -52,13 +52,13 @@ class GatherCenter:
             # 舆情监控
             logger.info("sentiment monitor begin,merchant_name : %s", entity.merchant_name)
             target_merchant_name = entity.merchant_name
-            if target_merchant_name.index("-") != -1:
-                target_merchant_name = target_merchant_name[0:target_merchant_name.index("-")]
+            if target_merchant_name.find("-") != -1:
+                target_merchant_name = target_merchant_name[0:target_merchant_name.find("-")]
                 logger.info("merchant_name contain -,after process: %s", target_merchant_name)
             else:
                 pass
-            if target_merchant_name.index("——") != -1:
-                target_merchant_name = target_merchant_name[0:target_merchant_name.index("——")]
+            if target_merchant_name.find("——") != -1:
+                target_merchant_name = target_merchant_name[0:target_merchant_name.find("——")]
                 logger.info("merchant_name contain ——,after process: %s", target_merchant_name)
             else:
                 pass
