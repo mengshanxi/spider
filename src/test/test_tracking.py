@@ -66,5 +66,12 @@ from selenium.webdriver import DesiredCapabilities
 #     driver.quit()
 
 aaa = "测试-"
-print(aaa.index("-") != -1)
-print(aaa[0:aaa.index("-")])
+print(aaa.find("-")!= -1 )
+print(aaa.find("-") )
+print(aaa.find("-") != -1)
+print(aaa[0:aaa.find("-")])
+
+aaa = "测试"
+print(aaa.find("-")!= -1 )
+print(aaa.find("-") )
+print(aaa.find("-") != -1)
