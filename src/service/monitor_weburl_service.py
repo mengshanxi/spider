@@ -88,7 +88,7 @@ class MonitorWeburlService:
                 logger.info("monitor_url:Exception %s", weburl.url)
                 monitor_weburl_dao.add(monitor_weburl)
             except Exception as e:
-                print(e)
+                logger.info(e)
                 conn.rollback()
                 raise
             finally:
