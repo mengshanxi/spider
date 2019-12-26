@@ -25,7 +25,7 @@ class MonitorWebsiteService:
             monitor_website.kinds = "首页是否可打开"
             monitor_website.level = '-'
             monitor_website.access = '异常'
-            monitor_website.is_normal = '异常'
+            monitor_website.is_normal = '无法获取'
             monitor_website.outline = '商户域名为空。'
             monitor_website.level = '-'
             monitor_website.pageview = '-'
