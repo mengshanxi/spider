@@ -31,12 +31,14 @@ class MonitorBcService:
         monitor_bc.outline = '企业工商信息检查正常'
         monitor_bc.level = '-'
         url = ims_rest_base + "open/api/v1/agent/monitor_bc"
-        data_json = {"merchantNum": website.merchant_num, "merchantName": website.merchant_name, "taskId": task_id}
+        data_json = {"merchantNum": website.merchant_num, "merchantName": website.merchant_name, "taskId": task_id,
+                     "batchNum": batch_num}
         data = bytes(parse.urlencode(data_json), encoding="utf8")
         new_url = request.Request(url, data)
         res = request.urlopen(new_url).read().decode('utf-8')
         bc_response = json.loads(res)
         if bc_response['status'] == "正常":
+            monitor_bc.status = bc_response['businessInfo']['enterpriseBase']['entStatus']
             logger.info("企业工商信息检测正常：%s", website.merchant_name)
         elif bc_response['status'] == "无法获取":
             logger.info("企业工商信息检测无法获取：%s", website.merchant_name)
@@ -47,6 +49,7 @@ class MonitorBcService:
             monitor_bc.is_normal = '异常'
             monitor_bc.kinds = '企业工商信息'
             monitor_bc.outline = bc_response['msg']
+            monitor_bc.status = bc_response['businessInfo']['enterpriseBase']['entStatus']
             monitor_bc.level = '高'
         url = ims_rest_base + "views/system/enterprise.jsp?merchantNum=" + website.merchant_num
         driver = WebDriver.get_phantomjs()

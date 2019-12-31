@@ -163,6 +163,7 @@ class MonitorBc(Base):
     domain_name = Column(String(100))
     outline = Column(String(100))
     snapshot = Column(String(100))
+    status = Column(String(100))
     is_normal = Column(String(100))
     outline = Column(String(100))
     kinds = Column(String(100))
