@@ -1,77 +1,29 @@
-import json
-import time
-
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 
-# url = "https://www.trackingmore.com/login-cn.html"
-# dcap = dict(DesiredCapabilities.PHANTOMJS.copy())
-# headers = {
-#     'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"}
-# for key, value in headers.items():
-#     dcap['phantomjs.page.customHeaders.{}'.format(key)] = value
-# status_dict = {'0': '查询中', '1': '查询不到', '2': '运输途中', '3': '到达待取', '4': '成功签收', '5': '运输过久',
-#                '6': '投递失败', '7': '可能异常'}
-# normal_status_dict = {'0': '查询中', '1': '查询不到', '2': '运输途中', '3': '到达待取', '4': '成功签收', '5': '运输过久'}
-# try:
-#     # driver = webdriver.PhantomJS(executable_path="D:/develop/phantomjs-2.1.1-windows/bin/phantomjs.exe",
-#     #                              desired_capabilities=dcap,
-#     #                              service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any',
-#     #                                            '--load-images=false'])
-#     driver = webdriver.PhantomJS(executable_path="D:/software/phantomjs-2.1.1-windows/bin/phantomjs.exe",
-#                                  desired_capabilities=dcap,
-#                                  service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'])
-#     driver.get(url)
-#     driver.find_element_by_id("email").send_keys("rujiahua@payeasenet.com")
-#     driver.find_element_by_id("password").send_keys("0418YXYwlx")
-#     driver.find_element_by_id("login_test").click()
-#     list = ['LX43903175',
-#             'LX44244508',
-#             'LX44142367', 'LX44142038']
-#
-#     time.sleep(5)
-# for i in range(len(list)):
-#     number = list[i]
-#     driver.get(
-#         "https://my.trackingmore.com/numbers.php?lang=cn&p=1&keywordType=trackNumber&searchnumber=" + number)
-#     driver.maximize_window()
-#     time.sleep(1)
-#     driver.find_element_by_class_name("show_lastEvent").click()
-#     time.sleep(1)
-#     driver.save_screenshot("D://snapshots/" + str(time.time()) + ".png")
-#     number = '1Z2051YX0306842250'
-#     driver.get(
-#         "https://my.trackingmore.com/numbers.php?lang=cn&p=1&keywordType=trackNumber&searchnumber=" + number)
-#     driver.maximize_window()
-#     time.sleep(2)
-#     driver.find_element_by_class_name("show_lastEvent").click()
-#     time.sleep(1)
-#     driver.save_screenshot("D://snapshots/" + str(time.time()) + ".png")
-#     url = "https://my.trackingmore.com/data/data-numbers.php?lang=cn&action=get_my_number" \
-#           "&source=2&where=lang%3Dcn%26p%3D1%26keywordType%3DtrackNumber%26searchnumber%3D" + number + "&page=1"
-#     driver.get(url)
-#     json_data = driver.find_element_by_tag_name("body").text
-#     json_obj = json.loads(str(json_data))
-#     print(json_obj['data'])
-#     print(json_obj['data'][0])
-#     status = json_obj['data'][0]['track_status']
-#     print(status)
-#     if status in normal_status_dict:
-#         print("正常")
-#     else:
-#         print("异常")
-# except Exception as e:
-#     print(e)
-# finally:
-#     driver.quit()
-
-aaa = "测试-"
-print(aaa.find("-")!= -1 )
-print(aaa.find("-") )
-print(aaa.find("-") != -1)
-print(aaa[0:aaa.find("-")])
-
-aaa = "测试"
-print(aaa.find("-")!= -1 )
-print(aaa.find("-") )
-print(aaa.find("-") != -1)
+try:
+    dcap = dict(DesiredCapabilities.PHANTOMJS.copy())
+    headers = {
+        'Cookie': '_uab_collina=152905475626038564211156; zg_did=%7B%22did%22%3A%20%2216402c3dd9f1a3-048c8f157b8bef-62101875-15f900-16402c3dda240e%22%7D; _umdata=65F7F3A2F63DF020E71AEDA6F30593EA2A3D12D925F079E1C3AD72E105725A3834473AB8A6F2708CCD43AD3E795C914CDE7897677D443EB4C388E3204FFBF1CF; saveFpTip=true; UM_distinctid=16c2cc5326d31c-0c9a87f30aaef5-3f385c06-15f900-16c2cc5326ee7; QCCSESSID=lajs6k2n011qdt4muhp6pvpvu6; acw_tc=8bd7c0a715688745163558521e01768ca3582d4469d3fedb6973ead086; Hm_lvt_3456bee468c83cc63fb5147f119f1075=1568874516,1568958347,1569310892,1569379185; CNZZDATA1254842228=2046742533-1539154952-https%253A%252F%252Fwww.baidu.com%252F%7C1569381685; zg_de1d1a35bfa24ce29bbf2c7eb17e6c4f=%7B%22sid%22%3A%201569382004980%2C%22updated%22%3A%201569382005321%2C%22info%22%3A%201568874515460%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22www.qichacha.com%22%2C%22cuid%22%3A%20%22211a877f4df3307566603a3b5918bf6e%22%2C%22zs%22%3A%200%2C%22sc%22%3A%200%7D; Hm_lpvt_3456bee468c83cc63fb5147f119f1075=1569382005',
+        'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"}
+    for key, value in headers.items():
+        dcap['phantomjs.page.customHeaders.{}'.format(key)] = value
+    driver = webdriver.PhantomJS(executable_path="D:/develop/phantomjs-2.1.1-windows/bin/phantomjs.exe",
+                                 desired_capabilities=dcap,
+                                 service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any',
+                                               '--load-images=false'])
+    driver.get("https://www.trackingmore.com/login-cn.html")
+    driver.find_element_by_id("email").send_keys("rujiahua@payeasenet.com")
+    driver.find_element_by_id("password").send_keys("0418YXYwlx")
+    driver.find_element_by_id("login_test").click()
+    driver.get(
+        "https://my.trackingmore.com/numbers.php?lang=cn&p=1&keywordType=trackNumber&searchnumber=9374889725009005838333")
+    driver.maximize_window()
+    source = driver.page_source
+    driver.find_element_by_class_name("show_lastEvent").click()
+    source = driver.page_source
+    driver.save_screenshot("D:/aaa.png")
+except Exception as e:
+    print(e)
+finally:
+    driver.quit()

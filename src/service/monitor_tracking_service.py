@@ -44,31 +44,40 @@ class MonitorTrackingService:
                     tracking_detail.start_time = datetime.datetime.now()
                     tracking_detail.status = "done"
                     logger.info("准备检查单号:%s ", tracking_detail.tracking_num)
-                    driver.get(
-                        "https://my.trackingmore.com/numbers.php?lang=cn&p=1&keywordType=trackNumber&searchnumber="
-                        + tracking_detail.tracking_num)
-                    driver.maximize_window()
-                    time.sleep(3)
-                    driver.find_element_by_class_name("show_lastEvent").click()
-                    time.sleep(1)
-                    snapshot = SnapshotService.snapshot_tracking(driver, tracking_detail)
-                    url = "https://my.trackingmore.com/data/data-numbers.php?lang=cn&action=get_my_number" \
-                          "&source=2&where=lang%3Dcn%26p%3D1%26keywordType%3DtrackNumber%26searchnumber%3D" \
-                          + tracking_detail.tracking_num + "&page=1"
-                    driver.get(url)
-                    json_data = driver.find_element_by_tag_name("body").text
-                    json_obj = json.loads(str(json_data))
-                    status = json_obj['data'][0]['track_status']
-                    tracking_detail.des = status_dict[status]
-                    tracking_detail.end_time = datetime.datetime.now()
-                    tracking_detail.url = ""
-                    tracking_detail.snapshot = snapshot
-                    if status in normal_status_dict:
-                        logger.info("单号巡检状态:%s", status)
-                        tracking_detail.result = "true"
-                    else:
+                    try:
+                        driver.get(
+                            "https://my.trackingmore.com/numbers.php?lang=cn&p=1&keywordType=trackNumber&searchnumber="
+                            + tracking_detail.tracking_num)
+                        driver.maximize_window()
+                        time.sleep(3)
+                        driver.find_element_by_class_name("show_lastEvent").click()
+                        time.sleep(1)
+                        snapshot = SnapshotService.snapshot_tracking(driver, tracking_detail)
+                        url = "https://my.trackingmore.com/data/data-numbers.php?lang=cn&action=get_my_number" \
+                              "&source=2&where=lang%3Dcn%26p%3D1%26keywordType%3DtrackNumber%26searchnumber%3D" \
+                              + tracking_detail.tracking_num + "&page=1"
+                        driver.get(url)
+                        json_data = driver.find_element_by_tag_name("body").text
+                        json_obj = json.loads(str(json_data))
+                        status = json_obj['data'][0]['track_status']
+                        tracking_detail.des = status_dict[status]
+                        tracking_detail.end_time = datetime.datetime.now()
+                        tracking_detail.url = ""
+                        tracking_detail.snapshot = snapshot
+                        if status in normal_status_dict:
+                            logger.info("单号巡检状态:%s", status)
+                            tracking_detail.result = "true"
+                        else:
+                            tracking_detail.result = "false"
+                        tracking_dao.update(tracking_detail)
+                    except Exception as e:
+                        logger.error(e)
                         tracking_detail.result = "false"
-                    tracking_dao.update(tracking_detail)
+                        tracking_detail.des = "检测疑似异常，建议手动验证！"
+                        tracking_detail.end_time = datetime.datetime.now()
+                        tracking_detail.url = ""
+                        tracking_detail.snapshot = ""
+                        tracking_dao.update(tracking_detail)
             except Exception as e:
                 logger.error(e)
                 tracking_detail.result = "false"
