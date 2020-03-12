@@ -78,7 +78,7 @@ class MonitorTrackingService:
                         tracking_detail.url = ""
                         tracking_detail.snapshot = ""
                         tracking_dao.update(tracking_detail)
-                        time.sleep(120)
+                        time.sleep(600)
             except Exception as e:
                 logger.error(e)
                 tracking_detail.result = "false"
