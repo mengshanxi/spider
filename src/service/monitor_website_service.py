@@ -36,6 +36,18 @@ class MonitorWebsiteService:
         domain_names = str(website.domain_name)
         domain_name_list = domain_names.split(",")
         for domain_name in domain_name_list:
+            monitor_website = MonitorWebsite()
+            monitor_website.website_name = website.website_name
+            monitor_website.merchant_name = website.merchant_name
+            monitor_website.merchant_num = website.merchant_num
+            monitor_website.domain_name = website.domain_name
+            monitor_website.saler = website.saler
+            monitor_website.batch_num = batch_num
+            monitor_website.kinds = "首页是否可打开"
+            monitor_website.level = '高'
+            monitor_website.access = '异常'
+            monitor_website.is_normal = '异常'
+            monitor_website.pageview = '-'
             logger.info("-------------------")
             domain_name_rich = domain_name
             dns = domain_name
