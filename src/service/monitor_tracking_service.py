@@ -26,7 +26,7 @@ class MonitorTrackingService:
         tracking_details = tracking_dao.get_by_task(task_id, status)
         if tracking_details.__len__() > 0:
             try:
-                driver = WebDriver.get_phantomjs()
+                driver = WebDriver.get_chrome()
                 driver.get("https://www.trackingmore.com/login-cn.html")
                 driver.find_element_by_id("email").send_keys("rujiahua@payeasenet.com")
                 driver.find_element_by_id("password").send_keys("0418YXYwlx")
@@ -50,7 +50,8 @@ class MonitorTrackingService:
                             + tracking_detail.tracking_num)
                         driver.maximize_window()
                         time.sleep(3)
-                        driver.find_element_by_class_name("show_lastEvent").click()
+                        # driver.find_element_by_class_name("show_lastEvent").click()
+                        driver.find_element_by_id('trackItem_0').click()
                         time.sleep(1)
                         snapshot = SnapshotService.snapshot_tracking(driver, tracking_detail)
                         url = "https://my.trackingmore.com/data/data-numbers.php?lang=cn&action=get_my_number" \
