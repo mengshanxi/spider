@@ -46,7 +46,7 @@ class MonitorTrackingService:
                     logger.info("准备检查单号:%s ", tracking_detail.tracking_num)
                     try:
                         driver.get(
-                            "https://my.trackingmore.com/numbers.php?lang=cn&p=1&keywordType=trackNumber&searchnumber="
+                            "https://my.51tracking.com/numbers.php?lang=cn&keywordType=trackNumber&p=1&searchnumber="
                             + tracking_detail.tracking_num)
                         driver.maximize_window()
                         time.sleep(3)
@@ -54,7 +54,7 @@ class MonitorTrackingService:
                         driver.find_element_by_id('trackItem_0').click()
                         time.sleep(1)
                         snapshot = SnapshotService.snapshot_tracking(driver, tracking_detail)
-                        url = "https://my.trackingmore.com/data/data-numbers.php?lang=cn&action=get_my_number" \
+                        url = "https://my.51tracking.com/data/data-numbers.php?lang=cn&action=get_my_number" \
                               "&source=2&where=lang%3Dcn%26p%3D1%26keywordType%3DtrackNumber%26searchnumber%3D" \
                               + tracking_detail.tracking_num + "&page=1"
                         driver.get(url)
