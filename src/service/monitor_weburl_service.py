@@ -31,16 +31,28 @@ class MonitorWeburlService:
         driver = WebDriver.get_phantomjs()
         try:
             logger.info("monitor_url: %s", weburl.url)
+            if str(weburl.url).startswith("http"):
+                print()
+            else:
+                weburl.url = "http://" + weburl.url
+            logger.info("weburl.url: %s", weburl)
+            logger.info("weburl.url: %s", weburl.url)
             driver.get(weburl.url)
             snapshot = SnapshotService.snapshot_weburl(driver, batch_num, weburl, '网站内容')
+            logger.info("snapshot: %s", snapshot)
             monitor_weburl.outline = '网页打开正常'
             monitor_weburl.is_normal = '正常'
             monitor_weburl.level = '-'
             monitor_weburl.snapshot = snapshot
             monitor_weburl.kinds = '是否能打开'
             logger.info("monitor_url: add %s", weburl.url)
-            monitor_weburl_dao.add(monitor_weburl)
             source = driver.page_source
+            if source.__eq__('<html><head></head><body></body></html>'):
+                monitor_weburl.outline = '网页打开异常'
+                monitor_weburl.is_normal = '异常'
+            else:
+                print()
+            monitor_weburl_dao.add(monitor_weburl)
             soup = BeautifulSoup(source, 'html.parser')
             # 监测页面敏感词
             for keyword in keywords:
@@ -74,7 +86,7 @@ class MonitorWeburlService:
                 monitor_weburl.kinds = '误导宣传'
                 monitor_weburl_dao.add(monitor_weburl)
         except Exception as e:
-            #ERROR No transaction is begun.
+            # ERROR No transaction is begun.
             logger.error(e)
             conn = DB_Session()
             try:
