@@ -91,7 +91,7 @@ class MonitorWeburlService:
             conn = DB_Session()
             try:
                 logger.info("检测到误404 : %s", weburl.url)
-                monitor_weburl.outline = '检测到误404'
+                monitor_weburl.outline = '检测到页面404'
                 monitor_weburl.is_normal = '异常'
                 monitor_weburl.level = '高'
                 snapshot = SnapshotService.simulation_404(weburl.url)
