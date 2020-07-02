@@ -39,10 +39,10 @@ class MonitorBcService:
         logger.info("res：%s", res)
         bc_response = json.loads(res)
         logger.info("bc_response：%s", bc_response)
-        if bc_response['status'] == "正常":
+        if bc_response['isNormal'] == "正常":
             monitor_bc.status = bc_response['businessInfo']['enterpriseBase']['entStatus']
             logger.info("企业工商信息检测正常：%s", website.merchant_name)
-        elif bc_response['status'] == "无法获取":
+        elif bc_response['isNormal'] == "无法获取":
             logger.info("企业工商信息检测无法获取：%s", website.merchant_name)
             monitor_bc.is_normal = '无法获取'
             monitor_bc.outline = '企业工商信息无法获取,跳过巡检。'

@@ -40,7 +40,7 @@ class MonitorWeburlService:
             driver.get(weburl.url)
             snapshot = SnapshotService.snapshot_weburl(driver, batch_num, weburl, '网站内容')
             logger.info("snapshot: %s", snapshot)
-            monitor_weburl.outline = '网页打开正常'
+            monitor_weburl.outline = ''
             monitor_weburl.is_normal = '正常'
             monitor_weburl.level = '-'
             monitor_weburl.snapshot = snapshot

@@ -98,7 +98,7 @@ class MonitorWebsiteService:
                 if str(current_url) == "about:blank" and str(
                         source) == "<html><head></head><body></body></html>" and str(title) == "":
                     logger.info("检测到about:blank :  %s", current_url)
-                    monitor_website.outline = "网站疑似无法访问"
+                    monitor_website.outline = "疑似无法访问"
                     monitor_website.snapshot = SnapshotService.simulation_404(domain_name_rich)
                     monitor_website_dao.add(monitor_website)
                     driver.quit()
@@ -117,7 +117,7 @@ class MonitorWebsiteService:
                 monitor_website.snapshot = snapshot
                 logger.info("check title和source...")
                 if title.__contains__('404'):
-                    monitor_website.outline = "疑似异常，检测到404"
+                    monitor_website.outline = "疑似无法访问"
                 elif source.__contains__(
                         'ERR_NAME_NOT_RESOLVED'):
                     monitor_website.outline = "疑似异常，Title信息:" + title
