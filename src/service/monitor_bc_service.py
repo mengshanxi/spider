@@ -53,7 +53,7 @@ class MonitorBcService:
             monitor_bc.outline = bc_response['msg']
             enterpriseBase = bc_response['businessInfo']['enterpriseBase']
             if enterpriseBase is None:
-                monitor_bc.status = "异常"
+                monitor_bc.status = ""
             else:
                 monitor_bc.status = bc_response['businessInfo']['enterpriseBase']['entStatus']
             monitor_bc.level = '高'
