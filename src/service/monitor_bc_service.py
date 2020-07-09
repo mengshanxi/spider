@@ -45,6 +45,8 @@ class MonitorBcService:
         elif bc_response['isNormal'] == "无法获取":
             logger.info("企业工商信息检测无法获取：%s", website.merchant_name)
             monitor_bc.is_normal = '无法获取'
+            monitor_bc.status = bc_response['status']
+            monitor_bc.outline = bc_response['msg']
             monitor_bc.outline = '企业工商信息无法获取,跳过巡检。'
         else:
             logger.info("企业工商信息检测异常：%s", website.merchant_name)
